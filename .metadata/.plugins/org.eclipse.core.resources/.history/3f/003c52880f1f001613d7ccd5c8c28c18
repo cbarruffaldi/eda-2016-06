@@ -1,0 +1,10 @@
+package structures;
+
+public class Test {
+
+	public static void main(String[] args) {
+		BinaryMinHeap<Integer> heap = new BinaryMinHeap<>((a,b)->Integer.compare(a, b));
+
+		heap.add(elem);
+	}
+}

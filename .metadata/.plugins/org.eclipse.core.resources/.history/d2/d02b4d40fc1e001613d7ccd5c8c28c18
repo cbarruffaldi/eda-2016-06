@@ -1,0 +1,16 @@
+package structures;
+
+import java.util.TreeMap;
+
+public class Test {
+
+	public static void main(String[] args) {
+		AVLMap<Integer, String> map = new AVLMap<>((a,b)-> a-b);
+		map.put(6, "hola");
+		System.out.println(map.get(9));
+
+		TreeMap<Integer, String> map2 = new TreeMap<>((a,b)-> a-b);
+		map2.put(5, "sdf");
+	}
+
+}

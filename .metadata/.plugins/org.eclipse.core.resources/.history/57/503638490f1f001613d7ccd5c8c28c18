@@ -1,0 +1,8 @@
+package structures;
+
+public class Test {
+
+	public static void main(String[] args) {
+		BinaryMinHeap<Integer> heap = new BinaryMinHeap<>();
+	}
+}
