@@ -4,25 +4,37 @@ import java.util.Scanner;
 
 // TODO statics??
 public class Parser {
-    public static int AIRPORT_NAME_LENGHT = 3;
-    public static int AIRLINE_NAME_MAX_LENGHT = 3;
-    public static double MAX_LATITUDE = 90.0;
-    public static double MAX_LONGITUDE = 180.0;
+    public static final int AIRPORT_NAME_LENGHT = 3;
+    public static final int AIRLINE_NAME_MAX_LENGHT = 3;
+    public static final double MAX_LATITUDE = 90.0;
+    public static final double MAX_LONGITUDE = 180.0;
 
     private static Scanner sc;
 
     public  static void main(String[] args) {
         String ej1 = "insert airport BUE -34.602535 -58.368731";
         String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
-        //parse(new Scanner(ej2));
+     //   parse(new Scanner(ej2));
+       
         String test = "123 LU BUE";
         Scanner sc = new Scanner(test);
+        
+        
+        String flight = "AA 132 Lu-Ju-Mi-Sa BUE PAR 18:19 14h45m 1850.00";
+        System.out.println(validateFlight(flight));
     }
 
+    private static boolean validateFlight(String line) {
+    	String regex = "[a-zA-Z]{1,3} [0-9]+ (Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))* [a-zA-Z]{3} [a-zA-Z]{3} ([01]?[0-9]|2[0-3]):[0-5][0-9] ([0-9]+h)?[0-5][0-9]m [0-9]+(\\.[0-9]+)?";
+		return line.matches(regex);
+	}
+
+    
+    
     static void parse(Scanner scanner) {
         sc = scanner;
         while (sc.hasNext()) {
-            parseCmd();
+           parseCmd();
         }
     }
 
@@ -30,6 +42,8 @@ public class Parser {
     static void errorMsg() {
         System.out.println("Entrada incorrecta");
     }
+    
+    
 
     private static void parseCmd() {
         String str = sc.next();
@@ -146,6 +160,8 @@ public class Parser {
         // IDEA
         String line = sc.nextLine();
         //  Matchea la expresion regular.
+        validateFlight(line);
+        
         sc = new Scanner(line);
         // Si matchea sigue, y se pueden sacar todos los ifs y si no retorna false
         //
@@ -189,7 +205,8 @@ public class Parser {
         return valid;
     }
 
-    private static boolean validOption(String option) {
+
+	private static boolean validOption(String option) {
         return option.equals("ft") || option.equals("pr") || option.equals("tt");
     }
 
