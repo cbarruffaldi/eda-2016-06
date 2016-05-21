@@ -29,7 +29,7 @@ public class RegexHelper {
 	
 	
 	
-    public static boolean validateFlight(String line) {
+    public static boolean validateFlightInsertion(String line) {
     	String flightFormat = airlineName + spc + integer + spc + days + spc + airportName + spc + airportName +
     			spc + twentyFourHourFormat + spc + hours + spc + realNum;
     	//String regex = "[a-zA-Z]{1,3} [0-9]+ (Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))* [a-zA-ZÒ—]{3} [a-zA-ZÒ—]{3} ([01]?[0-9]|2[0-3]):[0-5][0-9] ([0-9]+h)?[0-5][0-9]m [0-9]+(\\.[0-9]+)?";
@@ -38,7 +38,7 @@ public class RegexHelper {
 	}
     
     
-    public static boolean validateAirport(String line) {
+    public static boolean validateAirportInsertion(String line) {
     	String airportFormat = airportName + spc + latitude + spc + longitude;
     	return line.matches(airportFormat);
 	}

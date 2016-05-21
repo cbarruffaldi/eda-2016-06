@@ -125,25 +125,22 @@ public class Parser {
         return valid;
     }
 
-    // O pongo scanner como variable en la clase??
+    
+    
     private static boolean airportInsert(Scanner sc) {
-        boolean valid = sc.hasNext();
-        String name; double lat, lng;
-        if (valid) {
-            name = sc.next();
-            valid = validAirportName(name);
-        }
-        if (valid = valid && sc.hasNext()) {
-            lat = new Double(sc.next());
-            valid = validLatitude(lat);
-        }
-        if (valid = valid && sc.hasNext()) {
-            lng = new Double(sc.next());
-            valid = validLongitude(lng);
-        }
-        if (valid);
+        String line = sc.nextLine();
+        
+        if(!RegexHelper.validateAirport(line))
+        	return false; //Error en el formato
+        
+        sc = new Scanner(line); //Tambien podria hacerse un split
+        
+        String name = sc.next(); 
+        double lat = new Double(sc.next());
+        double lng = new Double(sc.next());
+        
         // TODO metodo de insertar aeropuerto
-        // TODO podría chequear que no quede nada sin 'consumir'
+
         return valid;
     }
 
