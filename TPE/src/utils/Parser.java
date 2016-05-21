@@ -147,6 +147,8 @@ public class Parser {
         return valid;
     }
 
+    
+    
     // Se puede matchear con una expresion regular gigante y despues saco la info sin tener que validar a cada rato
     private static boolean flightInsert(Scanner sc) {
         boolean valid = sc.hasNext();
@@ -157,9 +159,7 @@ public class Parser {
         if(!RegexHelper.validateFlight(line))
         	return false; //Salir, algo esta mal escrito 
 
-        sc = new Scanner(line);
-        
-        
+        sc = new Scanner(line); //Tambien podria hacerse un split
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
         String days = sc.next();
@@ -169,18 +169,60 @@ public class Parser {
         String durationOfFlight = sc.next();
         double price = new Double(sc.next());
 
+        //Procesar las cosas
+        boolean[] daysOfDeparture = daysOfDep(days);
         
         return true;
     }
+
+    
+    
+
+	private static boolean[] daysOfDep(String days) {
+		String[] daysArr = days.split("-");
+		boolean[] departs = new boolean[7];
+		
+		for(int i = 0 ; i < daysArr.length ; i++){
+			switch(daysArr[i]){
+				case "Lu":
+					departs[0] = true;
+				break;
+				case "Ma":
+					departs[1] = true;
+				break;
+				
+				case "Mi":
+					departs[2] = true;
+				break;
+				
+				case "Ju":
+					departs[3] = true;
+				break;
+				
+				case "Vi":
+					departs[4] = true;
+				break;
+				
+				case "Sa":
+					departs[5] = true;
+				break;
+				
+				case "Do":
+					departs[6] = true;
+				break;
+				
+			}
+		}
+		return departs;
+	}
+
+
 
 
 	private static boolean validOption(String option) {
         return option.equals("ft") || option.equals("pr") || option.equals("tt");
     }
 
-    private static boolean validAirportName(String name) {
-        return name.length() != AIRPORT_NAME_LENGHT;
-    }
 
     private static boolean validLatitude(double lat) {
         return Math.abs(lat) <= MAX_LATITUDE;
@@ -190,17 +232,7 @@ public class Parser {
         return Math.abs(lng) <= MAX_LONGITUDE;
     }
 
-    private static boolean validAirlineName(String name) {
-        return name.length() <= AIRLINE_NAME_MAX_LENGHT;
-    }
 
-    private static boolean validFlightNumber(int flnum) {
-        return flnum > 0;
-    }
-
-    private static boolean validPrice(double price) {
-        return price > 0;
-    }
 
     //TODO
     //    private static boolean allInsert(Scanner sc) {
