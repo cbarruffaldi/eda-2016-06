@@ -1,3 +1,5 @@
+package utils;
+
 public class Day {
 
     public static final Day LU = new Day(0);
