@@ -1,0 +1,260 @@
+package structures;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
+
+public class AVLMap<K, V> implements SimpleMap<K, V> {
+
+	private Node<K,V> root;
+	private Comparator<K> cmp;
+
+	public AVLMap(Comparator<K> c) {
+		cmp = c;
+	}
+
+	public boolean contains(T value) {
+		return contains(value, root);
+	}
+
+	public boolean contains(T value, Node<K,V> t) {
+		if (t == null)
+			return false;
+		int comp = cmp.compare(value, t.value);
+		if (comp > 0)
+			return contains(value, t.right);
+		else if (comp < 0)
+			return contains(value, t.left);
+		return true;
+	}
+
+	public void insert(T value) {
+		root = insert(value, root);
+	}
+
+	private Node<K,V> insert(T value, Node<K,V> n) {
+		if (n == null)
+			return new Node<K,V>(value);
+		int comp = cmp.compare(value, n.value);
+		if (comp > 0)
+			n.right = insert(value, n.right);
+		else if (comp < 0)
+			n.left = insert(value, n.left);
+		n.updateHeight();
+		return rebalance(n);
+	}
+
+	private Node<K,V> rebalance(Node<K,V> n) {
+		int bf = n.getBF();
+		if (bf < -1) {
+			if (n.right.getBF() > 0)
+				n.right = rotateRight(n.right);
+			n = rotateLeft(n);
+		}
+		else if (bf > 1) {
+			if (n.left.getBF() < 0)
+				n.left = rotateLeft(n.left);
+			n = rotateRight(n);
+		}
+		return n;
+	}
+
+	public void remove(T value) {
+		root = remove(value, root);
+	}
+
+	private Node<K,V> remove(T value, Node<K,V> n) {
+		if (n == null)
+			return n;
+		int comp = cmp.compare(value, n.value);
+
+		if (comp < 0)
+			n.left = remove(value, n.left);
+		else if (comp > 0)
+			n.right = remove(value, n.right);
+		else {
+			if(!n.hasChildren())
+				return null;
+
+			if (!n.hasBothChildren())
+				return n.hasRightChild() ? n.right : n.left;
+
+			if (n.right.hasLeftChild())
+				n.value = removeMin(n.right.left, n.right); // devuelve el minímo mientras balancea
+			else {
+				n.value = n.right.value;
+				n.right = n.right.right;
+			}
+		}
+
+		n.updateHeight();
+		return rebalance(n);
+	}
+
+	private T removeMin(Node<K,V> n, Node<K,V> prev) {
+		if (!n.hasLeftChild()) {
+			prev.left = n.right;
+			return n.value;
+		}
+		T min = removeMin(n.left, n);
+		n.updateHeight();
+		prev.left = rebalance(n);
+		return min;
+	}
+
+	private Node<K,V> rotateLeft(Node<K,V> n) {
+		Node<K,V> right = n.right;
+		n.right = right.left;
+		right.left = n;
+		n.updateHeight();
+		right.updateHeight();
+		return right; // devolvemos lo q ahora ocupa el lugar de n
+	}
+
+	private Node<K,V> rotateRight(Node<K,V> n) {
+		Node<K,V> left = n.left;
+		n.left = left.right;
+		left.right = n;
+		n.updateHeight();
+		left.updateHeight();
+		return left; // devolvemos lo q ahora ocupa el lugar de n
+	}
+
+	public int getHeight() {
+		return getHeight(root);
+	}
+
+	private int getHeight(Node<K,V> n) {
+		if (n == null)
+			return -1;
+		return 1 + Integer.max(getHeight(n.left), getHeight(n.right));
+	}
+
+	@Override
+	public String toString() {
+		return toString(root);
+	}
+
+	private String toString(Node<K,V> n) {
+		String str = "";
+		if (n != null) {
+			str = str.concat(toString(n.left));
+			str = str.concat(n.value.toString() + " ");
+			str = str.concat(toString(n.right));
+		}
+		return str;
+	}
+
+	private static class Container {
+		private boolean isValid; // indica si el árbol es AVL
+		private int height;		 // contiene la altura del árbol
+	}
+
+	public boolean isAVL() {
+		return isAVL(root, null, null).isValid;
+	}
+
+	private Container isAVL(Node<K,V> n, T maxValue, T minValue) {
+		Container c = new Container();
+		if (n == null) {
+			c.isValid = true;
+			c.height = -1;
+			return c;
+		}
+		if (maxValue != null && cmp.compare(n.value, maxValue) > 0) {
+			c.isValid = false;
+			return c;
+		}
+		if (minValue != null && cmp.compare(n.value, minValue) < 0) {
+			c.isValid = false;
+			return c;
+		}
+		Container leftc = isAVL(n.left, n.value, minValue);
+		Container rightc = isAVL(n.right, maxValue, n.value);
+
+		if (!leftc.isValid || !rightc.isValid) {
+			c.isValid = false;
+			return c;
+		}
+
+		c.isValid = Math.abs(leftc.height - rightc.height) <= 1;
+		c.height = 1 + Integer.max(leftc.height, rightc.height);
+		return c;
+	}
+
+	private static class Node<K,V> {
+		private T value;
+		private Node<K,V> left;
+		private Node<K,V> right;
+		private int height;
+
+		public Node(T v) {
+			value = v;
+		}
+
+		public void updateHeight() {
+			int lh = left == null ? -1 : left.height;
+			int rh = right == null ? -1 : right.height;
+			height = Integer.max(lh, rh) + 1;
+		}
+
+		public boolean hasChildren() {
+			return hasLeftChild() || hasRightChild();
+		}
+
+		public boolean hasLeftChild() {
+			return left != null;
+		}
+
+		public boolean hasRightChild() {
+			return right != null;
+		}
+
+		public boolean hasBothChildren() {
+			return hasLeftChild() && hasRightChild();
+		}
+
+		public int getBF() {
+			int lh = left == null ? -1 : left.height;
+			int rh = right == null ? -1 : right.height;
+			return lh - rh;
+		}
+	}
+
+
+	@Override
+	public void put(K key, V value) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public V get(K key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void remove(K key) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Set<K> keySet() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<V> values() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

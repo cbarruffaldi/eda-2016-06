@@ -1,0 +1,14 @@
+package structures;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class MinHeap<T> {
+	private ArrayList<T> array;
+	private Comparator<T> cmp;
+	private int size;
+
+	public MinHeap(Comparator<T> cmp) {
+		this.cmp = cmp;
+	}
+}

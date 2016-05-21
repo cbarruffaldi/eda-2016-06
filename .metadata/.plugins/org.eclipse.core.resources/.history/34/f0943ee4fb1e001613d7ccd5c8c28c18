@@ -1,0 +1,11 @@
+package structures;
+
+public class Test {
+
+	public static void main(String[] args) {
+		AVLMap<Integer, String> map = new AVLMap<>((a,b)-> a-b);
+		map.put(6, "hola");
+		System.out.println(map.get("hasd"));
+	}
+
+}

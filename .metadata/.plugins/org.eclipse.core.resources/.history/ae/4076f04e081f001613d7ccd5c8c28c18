@@ -1,0 +1,33 @@
+package structures;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class BinaryMinHeap<T> {
+	private ArrayList<T> array;
+	private Comparator<T> cmp;
+
+	public BinaryMinHeap(Comparator<T> cmp) {
+		this.cmp = cmp;
+		array = new ArrayList<>();
+	}
+
+	public BinaryMinHeap(Comparator<T> cmp, int initialCapacity) {
+		if (initialCapacity < 1)
+			throw new IllegalArgumentException("Illegal capacity < 1");
+		this.cmp = cmp;
+		array = new ArrayList<>(initialCapacity);
+	}
+
+	private int getParent(int i) {
+		return (i-1)/2;
+	}
+
+	private int getLeft(int i) {
+		return i*2+1;
+	}
+
+	private int getRight(int i) {
+		return i*2+2;
+	}
+}

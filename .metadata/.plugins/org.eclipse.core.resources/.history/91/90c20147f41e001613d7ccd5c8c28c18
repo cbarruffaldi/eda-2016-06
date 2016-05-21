@@ -1,0 +1,44 @@
+package structures;
+
+import java.util.Collection;
+import java.util.Set;
+
+public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
+
+	@Override
+	public void put(K key, V value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public V get(K key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void remove(K key) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Set<K> keySet() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<V> values() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

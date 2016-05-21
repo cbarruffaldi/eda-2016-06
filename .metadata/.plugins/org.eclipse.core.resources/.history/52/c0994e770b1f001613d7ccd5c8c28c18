@@ -1,0 +1,83 @@
+package structures;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class BinaryMinHeap<T> {
+	private ArrayList<T> array;
+	private Comparator<T> cmp;
+
+	public BinaryMinHeap(Comparator<T> cmp) {
+		this.cmp = cmp;
+		array = new ArrayList<>();
+	}
+
+	public BinaryMinHeap(Comparator<T> cmp, int initialCapacity) {
+		if (initialCapacity < 1)
+			throw new IllegalArgumentException("Illegal capacity < 1");
+		this.cmp = cmp;
+		array = new ArrayList<>(initialCapacity);
+	}
+
+	public void insert(T elem) {
+		int i = array.size();
+		array.set(i, elem);
+		moveUp(i);
+	}
+
+	public T removeMin() {
+
+	}
+
+	private void remove(int index) {
+		int last = array.size()-1;
+		array.set(index, array.get(last));
+		array.remove(last); // O(1), pues borra el ultimo elemento; no hay nada q shiftear
+	}
+
+	private int moveUp(int i) {
+		int parent = getParent(i);
+		T elem = array.get(i);
+		while (i != 0 && cmp.compare(elem, array.get(parent)) < 0) {
+			array.set(i, array.get(parent));
+			i = parent;
+			parent = getParent(i);
+		}
+		array.set(i, elem);
+		return i;
+	}
+
+	private int moveDown(int i) {
+		int min = getMinChild(i);
+		T elem = array.get(i);
+		while (min != -1 && cmp.compare(elem, array.get(min)) > 0) {
+			array.set(i, array.get(min));
+			i = min;
+			min = getMinChild(i);
+		}
+		array.set(i, elem);
+		return i;
+	}
+
+	private int getMinChild(int i) {
+		int leftChild = getLeft(i);
+		int rightChild = getRight(i);
+		if (leftChild >= array.size()) // array[i] es hoja
+			return -1;
+		if (rightChild == array.size()) // solo tiene hijo izquierdo
+			return leftChild;
+		return cmp.compare(array.get(leftChild), array.get(rightChild)) < 0 ? leftChild : rightChild;
+	}
+
+	private int getParent(int i) {
+		return (i-1)/2;
+	}
+
+	private int getLeft(int i) {
+		return i*2+1;
+	}
+
+	private int getRight(int i) {
+		return i*2+2;
+	}
+}
