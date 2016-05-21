@@ -23,8 +23,8 @@ public class RegexHelper {
 	private static String hours = "([0-9]+h)?[0-5][0-9]m"; // [xxh]xxm
 	private static String realNum = "[0-9]+(\\.[0-9]+)?";
 	
-	private static String latitude = "-?[0-8]?[0-9](\\.[0-9]+)? | 90(\\.0+)?"; //0.000 - 90.0000
-	private static String longitude = "-?([0-9]|1[0-7])(\\.[0-9]+)? | 180(\\.0+)?"; //0.000 - 180.0000
+	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //0.000 - 90.0000
+	private static String longitude = "-?(([0-9]|1[0-7])[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //0.000 - 180.0000
 
 	
 	
@@ -37,11 +37,21 @@ public class RegexHelper {
     	return line.matches(flightFormat);
 	}
     
+    
+    public static boolean validateAirport(String line) {
+    	String airportFormat = airportName + spc + latitude + spc + longitude;
+    	return line.matches(airportFormat);
+	}
+    
+    
+
+    
     public static void main(String[] args) {
         String flight = "AA 132 Lu-Ju-Mi-Sa BUE PÑR 18:19 14h45m 1850.00";
         System.out.println(validateFlight(flight));
         
         String coordinate = "-34.602535 -58.368731";
+        
         System.err.println(coordinate.matches(latitude + spc + longitude));
         		
         
