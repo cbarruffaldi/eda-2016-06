@@ -92,68 +92,74 @@ public class Parser {
         return valid;
     }
 
-    private static boolean parseRoute(Scanner sc) {
-        sc.useDelimiter("");
-        String n = sc.next();
-        if (true);
-        sc.skip("src=");
-        boolean valid = sc.hasNext();
-        String orig, dest, option;
-        if (valid) {
-            orig = sc.next();
-            valid = validAirportName(orig);
-        }
-        sc.skip("dst=");
-        if (valid = valid && sc.hasNext()) {
-            dest = sc.next();
-            valid = validAirportName(dest);
-        }
-        sc.skip("priority=");
-        if (valid = valid && sc.hasNext()) {
-            option = sc.next();
-            valid = validOption(option);
-        }
+    static boolean parseRoute(Scanner sc) {
+    	if(!sc.hasNext())
+    		return false;
+    	
+    	String line = sc.nextLine();
+    	sc.close();
+
+    	if(!RegexHelper.validateRoute(line))
+    		return false; //Mal formato
+    	
+    	sc = new Scanner(line);
+    	
+        String orig,dest, option, days;
+        
+        sc.skip(" src=");
+        orig = sc.next();
+        
+        sc.skip(" dst=");
+        dest = sc.next();
+        
+        sc.skip(" priority=");
+        option = sc.next();
+        
+        
         if (sc.hasNext()) { // Los weekDays son opcionales
-            String days = sc.next();
-            if (valid = days.matches("\\w\\w(-\\w\\w){1,4}?")) {
-                String[] strs = days.split("\\w-\\w");
-                //TODO con cada s[] hago el weekday, hay que ver la implementación
-            }
-        }
-        if (valid);
+        	sc.skip(" weekdays=");
+        	days = sc.next();
+        }else{
+        	days = "";
+        	}
+        
         // TODO Llama al metodo de buscar la ruta
-        return valid;
+        return true;
     }
 
     
     
-    private static boolean airportInsert(Scanner sc) {
-        String line = sc.nextLine();
-        
-        if(!RegexHelper.validateAirport(line))
-        	return false; //Error en el formato
-        
-        sc = new Scanner(line); //Tambien podria hacerse un split
-        
+    private static boolean airportInsert(Scanner sc){
+    	if(!sc.hasNext())
+    		return false;
+    	
+    	String line = sc.nextLine();
+    	sc.close();
+    	
+        if(!RegexHelper.validateAirportInsertion(line))
+        	return false; //Error en el formato        
+
+        sc = new Scanner(line);
         String name = sc.next(); 
         double lat = new Double(sc.next());
         double lng = new Double(sc.next());
         
         // TODO metodo de insertar aeropuerto
 
-        return valid;
+        return true;
     }
 
     
     
-    // Se puede matchear con una expresion regular gigante y despues saco la info sin tener que validar a cada rato
     private static boolean flightInsert(Scanner sc) {
-        boolean valid = sc.hasNext();
+    	if(!sc.hasNext())
+    		return false;
+    	
+    	String line = sc.nextLine();
+    	sc.close();
 
-        String line = sc.nextLine();
-        
         //  Matchea la expresion regular.
-        if(!RegexHelper.validateFlight(line))
+        if(!RegexHelper.validateFlightInsertion(line))
         	return false; //Salir, algo esta mal escrito 
 
         sc = new Scanner(line); //Tambien podria hacerse un split
@@ -216,20 +222,6 @@ public class Parser {
 
 
 
-	private static boolean validOption(String option) {
-        return option.equals("ft") || option.equals("pr") || option.equals("tt");
-    }
-
-
-    private static boolean validLatitude(double lat) {
-        return Math.abs(lat) <= MAX_LATITUDE;
-    }
-
-    private static boolean validLongitude(double lng) {
-        return Math.abs(lng) <= MAX_LONGITUDE;
-    }
-
-
 
     //TODO
     //    private static boolean allInsert(Scanner sc) {
@@ -258,31 +250,38 @@ public class Parser {
 
 
     private static boolean airportDelete(Scanner sc) {
-        boolean valid = sc.hasNext();
-        String name;
-        // Repite esto en airportInsert
-        if (valid) {
-            name = sc.next();
-            valid = validAirportName(name);
-        }
-        //TODO metodo borrar aeropuerto.
-        return valid;
+    	if(!sc.hasNext())
+    		return false; //Error
+    	
+    	String line = sc.nextLine();
+    	sc.close();
+    	
+    	if(!RegexHelper.validateAirportName(line))
+    		return false;
+
+    	//Else en line quedo el nombre bien
+    	//TODO metodo borrar aeropuerto.
+        return true;
     }
+    
+    
 
     private static boolean flightDelete(Scanner sc) {
-        boolean valid = sc.hasNext();
-        String airline; int flnumber;
-        // Repite esto de flight insert
-        if (valid) {
-            airline = sc.next();
-            valid = validAirlineName(airline);
-        }
-        if (valid = valid && sc.hasNext()) {
-            flnumber = new Integer(sc.next());
-            valid = validFlightNumber(flnumber);
-        }
-        //TODO metodo de borrar vuelo
-        return valid;
+        if(!sc.hasNext())
+        	return false;
+        
+        String line = sc.next();
+        sc.close();
+        
+        if(!RegexHelper.validateFlightName(line))
+        	return false;
+        
+        //Todo validado
+        sc = new Scanner(line);
+        String airline = sc.next(); 
+        int flnumber = new Integer(sc.next());
+
+        return true;
     }
 
     private static boolean allDelete(Scanner sc) {

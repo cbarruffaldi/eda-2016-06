@@ -59,10 +59,11 @@ public class RegexHelper {
     	return line.matches(routeFormat);
 	}
     
+	public static boolean validateAirportName(String line) {
+		return line.matches(airportName);
+	}
 
-    
-
-    
+   
     public static void main(String[] args) {
         String flight = "AA 132 Lu-Ju-Mi-Sa BUE PÑR 18:19 14h45m 1850.00";
         System.out.println(validateFlightInsertion(flight));
@@ -72,9 +73,9 @@ public class RegexHelper {
         System.err.println(coordinate.matches(latitude + spc + longitude));
         		
         
-        String route = "src=BUE dst=LON priority=pr";
-        System.err.println(validateRoute(route));
+        String route = "src=BUE dst=LON priority=pr weekdays=Lu-Mi-Vi";
         
+        System.err.println(Parser.parseRoute(new Scanner(route)));
         
         Scanner sc = new Scanner(flight);
         
@@ -104,6 +105,7 @@ public class RegexHelper {
 
 
 	}
+
     
     
 
