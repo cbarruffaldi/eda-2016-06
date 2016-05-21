@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 // TODO statics??
@@ -9,36 +11,28 @@ public class Parser {
     public static final double MAX_LATITUDE = 90.0;
     public static final double MAX_LONGITUDE = 180.0;
 
-    private static Scanner sc;
-
     public  static void main(String[] args) {
         String ej1 = "insert airport BUE -34.602535 -58.368731";
         String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
      //   parse(new Scanner(ej2));
-       
+
         String test = "123 LU BUE";
         Scanner sc = new Scanner(test);
-        
-      }
-
+    }
 
     
-    
-    static void parse(Scanner scanner) {
-        sc = scanner;
+    static void parse(Scanner sc) {
         while (sc.hasNext()) {
-           parseCmd();
+           parseFunction(sc);
         }
     }
 
     // Provisorio, se tendria que encargar un "outputmanager"
     static void errorMsg() {
-        System.out.println("Entrada incorrecta");
+        System.err.println("Entrada incorrecta");
     }
-    
-    
 
-    private static void parseCmd() {
+    private static void parseFunction(Scanner sc) {
         String str = sc.next();
         boolean valid = false;
         switch(str) {
@@ -52,6 +46,8 @@ public class Parser {
                 valid = parseRoute(sc);
                 break;
         }
+        sc.close();
+
         if (!valid) {
             errorMsg(); // llamaría al outputmanager para que mande mensaje de error
             // podría poner un mensajito de exito si fue valid
@@ -68,8 +64,7 @@ public class Parser {
                 valid = flightInsert(sc);
                 break;
             case "all":
-                //TODO
-                //valid = allInsert(sc);
+                valid = fileInsert(sc);
                 break;
         }
         return valid;
@@ -92,12 +87,11 @@ public class Parser {
         return valid;
     }
 
-    static boolean parseRoute(Scanner sc) {
+    private static boolean parseRoute(Scanner sc) {
     	if(!sc.hasNext())
     		return false;
     	
     	String line = sc.nextLine();
-    	sc.close();
 
     	if(!RegexHelper.validateRoute(line))
     		return false; //Mal formato
@@ -134,9 +128,9 @@ public class Parser {
     		return false;
     	
     	String line = sc.nextLine();
-    	sc.close();
-    	
-        if(!RegexHelper.validateAirportInsertion(line))
+    	//sc.close(); Me lo cerraría cuando leo de archivo.
+
+        if(!RegexHelper.validateAirportInsertion(line, sc.delimiter().toString()))
         	return false; //Error en el formato        
 
         sc = new Scanner(line);
@@ -156,13 +150,13 @@ public class Parser {
     		return false;
     	
     	String line = sc.nextLine();
-    	sc.close();
 
         //  Matchea la expresion regular.
-        if(!RegexHelper.validateFlightInsertion(line))
+        if(!RegexHelper.validateFlightInsertion(line, sc.delimiter().toString()))
         	return false; //Salir, algo esta mal escrito 
 
         sc = new Scanner(line); //Tambien podria hacerse un split
+
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
         String days = sc.next();
@@ -178,8 +172,6 @@ public class Parser {
         return true;
     }
 
-    
-    
 
 	private static boolean[] daysOfDep(String days) {
 		String[] daysArr = days.split("-");
@@ -219,34 +211,42 @@ public class Parser {
 		return departs;
 	}
 
+    private static boolean fileInsert(Scanner sc) {
+        boolean valid = false;
+        if (!sc.hasNext()) { return false; }
+        switch (sc.next()) {
+            case "airport":
+                valid = insertAirportFromFile(sc);
+                break;
+            case "flight":
+                valid = insertFlightFromFile(sc);
+                break;
+        }
+        return valid;
+    }
 
+    private static boolean insertAirportFromFile(Scanner sc) {
+        if (!sc.hasNext()) { return false; }
+        String pathToFile = sc.next();
 
+        boolean valid = true;
+        try {
+            Scanner fileSc = new Scanner(new File(pathToFile));
+            fileSc.useDelimiter("#");
+            // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
+            while (valid && fileSc.hasNextLine()) {
+                valid = airportInsert(fileSc);
+            }
+        } catch (FileNotFoundException e) {
+            // Error de que no se pudo abrir el archivo
+        }
+        return valid;
+    }
 
-
-    //TODO
-    //    private static boolean allInsert(Scanner sc) {
-    //        boolean valid = false;
-    //        if (!sc.hasNext()) { return false; }
-    //        switch (sc.next()) {
-    //            case "airport":
-    //                valid = insertAirportFromFile(sc);
-    //                break;
-    //            case "flight":
-    //                valid = insertFlightFromFile(sc);
-    //                break;
-    //        }
-    //        return valid;
-    //    }
-    //
-    //    private static boolean insertAirportFromFile(Scanner sc) {
-    //        // Leer de archivo como para airport e insertar
-    //        return false;
-    //    }
-    //
-    //    private static boolean insertFlightFromFile(Scanner sc) {
-    //        //Leer de archivo como para flight e insertar
-    //        return false;
-    //    }
+    //TODO: IGUAL AL DE AIRPORT PERO CON UN METODO CAMBIADO. VER COMO REUSAR CODIGO.
+    private static boolean insertFlightFromFile(Scanner sc) {
+       return false;
+    }
 
 
     private static boolean airportDelete(Scanner sc) {
@@ -254,8 +254,7 @@ public class Parser {
     		return false; //Error
     	
     	String line = sc.nextLine();
-    	sc.close();
-    	
+
     	if(!RegexHelper.validateAirportName(line))
     		return false;
 
@@ -271,8 +270,7 @@ public class Parser {
         	return false;
         
         String line = sc.next();
-        sc.close();
-        
+
         if(!RegexHelper.validateFlightName(line))
         	return false;
         
