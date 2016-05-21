@@ -19,28 +19,8 @@ public class Parser {
         String test = "123 LU BUE";
         Scanner sc = new Scanner(test);
         
-        
-        String flight = "AA 132 Lu-Ju-Mi-Sa BUE P—R 18:19 14h45m 1850.00";
-        System.out.println(validateFlight(flight));
-    }
+      }
 
-    private static boolean validateFlight(String line) {
-    	//Regex
-    	String spc = " ";
-    	String airlineName = "[a-zA-Z]{1," + AIRLINE_NAME_MAX_LENGHT + "}";
-    	String integer = "[0-9]+";
-    	String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
-    	String airportName = "[a-zA-Zn—]{" + AIRPORT_NAME_LENGHT + "}";
-    	String twentyFourHourFormat = "([01]?[0-9]|2[0-3]):[0-5][0-9]"; //00:00 - 23:59
-    	String hours = "([0-9]+h)?[0-5][0-9]m"; // [xxh]xxm
-    	String realNum = "[0-9]+(\\.[0-9]+)?";
-    	
-    	String regex = airlineName + spc + integer + spc + days + spc + airportName + spc + airportName +
-    			spc + twentyFourHourFormat + spc + hours + spc + realNum;
-    	
-    	//String regex = "[a-zA-Z]{1,3} [0-9]+ (Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))* [a-zA-ZÒ—]{3} [a-zA-ZÒ—]{3} ([01]?[0-9]|2[0-3]):[0-5][0-9] ([0-9]+h)?[0-5][0-9]m [0-9]+(\\.[0-9]+)?";
-		return line.matches(regex);
-	}
 
     
     
@@ -174,50 +154,23 @@ public class Parser {
         String line = sc.nextLine();
         
         //  Matchea la expresion regular.
-        if(!validateFlight(line))
-        	return false; //? 
+        if(!RegexHelper.validateFlight(line))
+        	return false; //Salir, algo esta mal escrito 
 
         sc = new Scanner(line);
-        // Si matchea sigue, y se pueden sacar todos los ifs y si no retorna false
-        //
-        String airline, orig, dest; int flnumber; double price;
-        if (valid) {
-            airline = sc.next();
-            valid = validAirlineName(airline);
-        }
-        if (valid = valid && sc.hasNext()) {
-            flnumber = new Integer(sc.next());
-            valid = validFlightNumber(flnumber);
-        }
-        if (valid = valid && sc.hasNext()) {
-            orig = sc.next();
-            valid = validAirportName(orig);
-        }
-        if (valid = valid && sc.hasNext()) {
-            dest = sc.next();
-            valid = validAirportName(dest);
-        }
-        if (valid = valid && sc.hasNext()) {
-            String days = sc.next();
-            if (valid = days.matches("\\w\\w(-\\w\\w){1,4}?")) {
-                String[] strs = days.split("\\w-\\w");
-                //TODO con cada s[] hago el weekday, hay que ver la implementaci√≥n
-            }
-        }
-        if (valid = valid && sc.hasNext()) {
-            //TODO hora salida
-        }
-        if (valid = valid && sc.hasNext()) {
-            //TODO duracion
-        }
-        if (valid = valid && sc.hasNext()) {
-            price = new Double(sc.next());
-            valid = validPrice(price);
-        }
-        if (valid);
-        //TODO metodo insertar vuelo
+        
+        
+        String airline = sc.next();
+        int flnumber = new Integer(sc.next());
+        String days = sc.next();
+        String orig = sc.next();
+        String dest = sc.next();
+        String timeOfDeparture = sc.next();
+        String durationOfFlight = sc.next();
+        double price = new Double(sc.next());
 
-        return valid;
+        
+        return true;
     }
 
 
