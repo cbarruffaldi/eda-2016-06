@@ -1,8 +1,6 @@
-package AirportAux;
-
 import java.util.Scanner;
 
-// todo static?
+// TODO statics??
 public class Parser {
     public static int AIRPORT_NAME_LENGHT = 3;
     public static int AIRLINE_NAME_MAX_LENGHT = 3;
@@ -47,7 +45,7 @@ public class Parser {
         }
         if (!valid) {
             errorMsg(); // llamaría al outputmanager para que mande mensaje de error
-                        // podría poner un mensajito de exito si fue valid
+            // podría poner un mensajito de exito si fue valid
         }
     }
 
@@ -144,9 +142,9 @@ public class Parser {
     private static boolean flightInsert(Scanner sc) {
         boolean valid = sc.hasNext();
         // IDEA
-            String line = sc.nextLine();
+        String line = sc.nextLine();
         //  Matchea la expresion regular.
-            sc = new Scanner(line);
+        sc = new Scanner(line);
         // Si matchea sigue, y se pueden sacar todos los ifs y si no retorna false
         //
         String airline, orig, dest; int flnumber; double price;
@@ -184,7 +182,7 @@ public class Parser {
             valid = validPrice(price);
         }
         if (valid);
-            //TODO metodo insertar vuelo
+        //TODO metodo insertar vuelo
 
         return valid;
     }

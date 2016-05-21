@@ -1,9 +1,5 @@
-package AirportAux;
-
-/**
- * Created by Bianchi on 21/5/16.
- */
 public class Day {
+
     public static final Day LU = new Day(0);
     public static final Day MA = new Day(1);
     public static final Day MI = new Day(2);
