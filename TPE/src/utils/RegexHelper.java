@@ -24,7 +24,7 @@ public class RegexHelper {
 	private static String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
 	
 	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //0.000 - 90.0000
-	private static String longitude = "-?(([0-9]|1[0-7])[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //0.000 - 180.0000
+	private static String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //0.000 - 180.0000
 
     // Se usa de igual manera para leer de línea de comandos o de archivo, con la única diferencia que en
     // los archivos se separan las palabras por medio de "#".
@@ -97,12 +97,7 @@ public class RegexHelper {
        System.out.println(durationOfFlight);
        System.out.println(price);
 
-
-
-
-
-
-	}
+    }
 
     
     

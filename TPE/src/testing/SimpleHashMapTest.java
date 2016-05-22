@@ -58,17 +58,20 @@ public class SimpleHashMapTest {
 	    	assertTrue(intMap.isEmpty());
 	    	assertTrue(stringMap.isEmpty());
 	    	
+	    }
+
+
+	    @Test
+	    public void testIntMap(){
+	    	
 	    	for(int i=0 ; i < CAPACITY ; i++){
 	    		storedInts[i] = 1000*i + rand.nextInt()%1000;		//Asi son todos valores distintos
 	    		storedIntKeys[i] = 100*i + rand.nextInt()%100; 		//Lo mismo
 	    		
 	    		intMap.put(storedIntKeys[i], storedInts[i]);
 	    	}
-	    }
-
-
-	    @Test
-	    public void testIntMap(){
+	    	
+	    	
 	    	assertTrue(intMap.size() == CAPACITY);
 	    	for(int i = 0; i < CAPACITY ; i++){
 	    		  		
@@ -92,5 +95,8 @@ public class SimpleHashMapTest {
 	    	assertTrue(intMap.containsValue(remV));
 	    	
 	    }
+	    
+	    
+	    
 	    
 }
