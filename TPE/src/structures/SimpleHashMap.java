@@ -27,6 +27,7 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	public SimpleHashMap(Comparator<K> comparator) {
 		this(DEFAULT_CAPACITY, comparator);
 	}
+	
 
 	@Override
 	public void put(K key, V value) {
