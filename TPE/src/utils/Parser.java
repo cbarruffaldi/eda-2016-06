@@ -20,7 +20,7 @@ public class Parser {
         Scanner sc = new Scanner(test);
     }
 
-    
+
     static void parse(Scanner sc) {
         while (sc.hasNext()) {
            parseFunction(sc);
@@ -90,70 +90,68 @@ public class Parser {
     private static boolean parseRoute(Scanner sc) {
     	if(!sc.hasNext())
     		return false;
-    	
+
     	String line = sc.nextLine();
 
     	if(!RegexHelper.validateRoute(line))
     		return false; //Mal formato
-    	
+
     	sc = new Scanner(line);
-    	
+
         String orig,dest, option, days;
-        
+
         sc.skip(" src=");
         orig = sc.next();
-        
+
         sc.skip(" dst=");
         dest = sc.next();
-        
+
         sc.skip(" priority=");
         option = sc.next();
-        
-        
+
+
         if (sc.hasNext()) { // Los weekDays son opcionales
         	sc.skip(" weekdays=");
         	days = sc.next();
         }else{
         	days = "";
         	}
-        
+
         // TODO Llama al metodo de buscar la ruta
         return true;
     }
 
-    
-    
+
+
     private static boolean airportInsert(Scanner sc){
     	if(!sc.hasNext())
     		return false;
-    	
+
     	String line = sc.nextLine();
     	//sc.close(); Me lo cerraría cuando leo de archivo.
 
         if(!RegexHelper.validateAirportInsertion(line, sc.delimiter().toString()))
-        	return false; //Error en el formato        
+        	return false; //Error en el formato
 
         sc = new Scanner(line);
-        String name = sc.next(); 
+        String name = sc.next();
         double lat = new Double(sc.next());
         double lng = new Double(sc.next());
-        
+
         // TODO metodo de insertar aeropuerto
 
         return true;
     }
 
-    
-    
     private static boolean flightInsert(Scanner sc) {
     	if(!sc.hasNext())
     		return false;
-    	
+
     	String line = sc.nextLine();
 
         //  Matchea la expresion regular.
         if(!RegexHelper.validateFlightInsertion(line, sc.delimiter().toString()))
-        	return false; //Salir, algo esta mal escrito 
+        	return false; //Salir, algo esta mal escrito
 
         sc = new Scanner(line); //Tambien podria hacerse un split
 
@@ -168,7 +166,7 @@ public class Parser {
 
         //Procesar las cosas
         boolean[] daysOfDeparture = daysOfDep(days);
-        
+
         return true;
     }
 
@@ -176,7 +174,7 @@ public class Parser {
 	private static boolean[] daysOfDep(String days) {
 		String[] daysArr = days.split("-");
 		boolean[] departs = new boolean[7];
-		
+
 		for(int i = 0 ; i < daysArr.length ; i++){
 			switch(daysArr[i]){
 				case "Lu":
@@ -185,27 +183,27 @@ public class Parser {
 				case "Ma":
 					departs[1] = true;
 				break;
-				
+
 				case "Mi":
 					departs[2] = true;
 				break;
-				
+
 				case "Ju":
 					departs[3] = true;
 				break;
-				
+
 				case "Vi":
 					departs[4] = true;
 				break;
-				
+
 				case "Sa":
 					departs[5] = true;
 				break;
-				
+
 				case "Do":
 					departs[6] = true;
 				break;
-				
+
 			}
 		}
 		return departs;
@@ -216,16 +214,17 @@ public class Parser {
         if (!sc.hasNext()) { return false; }
         switch (sc.next()) {
             case "airport":
-                valid = insertAirportFromFile(sc);
+                valid = insertFromFile(sc, true);
                 break;
             case "flight":
-                valid = insertFlightFromFile(sc);
+                valid = insertFromFile(sc, false);
                 break;
         }
         return valid;
     }
 
-    private static boolean insertAirportFromFile(Scanner sc) {
+    //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
+    private static boolean insertFromFile(Scanner sc, boolean insertAirport) {
         if (!sc.hasNext()) { return false; }
         String pathToFile = sc.next();
 
@@ -235,7 +234,10 @@ public class Parser {
             fileSc.useDelimiter("#");
             // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
             while (valid && fileSc.hasNextLine()) {
-                valid = airportInsert(fileSc);
+            	if (insertAirport)
+            		valid = airportInsert(fileSc);
+            	else
+            		valid = flightInsert(fileSc);
             }
         } catch (FileNotFoundException e) {
             // Error de que no se pudo abrir el archivo
@@ -243,16 +245,10 @@ public class Parser {
         return valid;
     }
 
-    //TODO: IGUAL AL DE AIRPORT PERO CON UN METODO CAMBIADO. VER COMO REUSAR CODIGO.
-    private static boolean insertFlightFromFile(Scanner sc) {
-       return false;
-    }
-
-
     private static boolean airportDelete(Scanner sc) {
     	if(!sc.hasNext())
     		return false; //Error
-    	
+
     	String line = sc.nextLine();
 
     	if(!RegexHelper.validateAirportName(line))
@@ -262,22 +258,24 @@ public class Parser {
     	//TODO metodo borrar aeropuerto.
         return true;
     }
-    
-    
+
+
 
     private static boolean flightDelete(Scanner sc) {
         if(!sc.hasNext())
         	return false;
-        
+
         String line = sc.next();
 
         if(!RegexHelper.validateFlightName(line))
         	return false;
-        
+
         //Todo validado
         sc = new Scanner(line);
-        String airline = sc.next(); 
+        String airline = sc.next();
         int flnumber = new Integer(sc.next());
+
+        //TODO metodo borrar vuelo
 
         return true;
     }

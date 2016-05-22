@@ -13,3 +13,6 @@ hs_err_pid*
 
 *.launch
 *.launch
+
+# Cosas raras de eclipse y Tomi
+.metadata
