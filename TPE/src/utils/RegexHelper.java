@@ -18,7 +18,7 @@ public class RegexHelper {
 	private static String airlineName = "[a-zA-Z]{1," + AIRLINE_NAME_MAX_LENGHT + "}";
 	private static String number = "[0-9]+";
 	private static String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
-	private static String airportName = "[a-zA-Zn�]{" + AIRPORT_NAME_LENGHT + "}";
+	private static String airportName = "[a-zA-Z]{" + AIRPORT_NAME_LENGHT + "}";
 	private static String twentyFourHourFormat = "([01]?[0-9]|2[0-3]):[0-5][0-9]"; //00:00 - 23:59
 	private static String hours = "([0-9]+h)?[0-5][0-9]m"; // [xxh]xxm
 	private static String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
@@ -52,8 +52,8 @@ public class RegexHelper {
     //TODO: Testing
     public static boolean validateRoute(String line) {
     	String routeFormat = "src=" + airportName + spc + "dst=" + airportName 
-    			+ spc + "(priority=(ft|pr|tt))*" + "( weekdays=" + days + ")?";
-    	
+    			+ spc + "priority=(ft|pr|tt)" + "( weekdays=" + days + ")?";
+    
     	return line.matches(routeFormat);
 	}
     
@@ -73,7 +73,6 @@ public class RegexHelper {
         
         String route = "src=BUE dst=LON priority=pr weekdays=Lu-Mi-Vi";
         
-        //System.err.println(Parser.parseRoute(new Scanner(route)));
         
         Scanner sc = new Scanner(flight);
         
