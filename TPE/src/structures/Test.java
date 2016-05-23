@@ -1,5 +1,7 @@
 package structures;
 
+import java.util.Iterator;
+
 public class Test {
 
 	public static void main(String[] args) {
@@ -14,12 +16,27 @@ public class Test {
 		heap.replace(1, 8);
 		heap.replace(800, 1000);
 
-		System.out.println(heap.removeMin());
-		System.out.println(heap.removeMin());
-		System.out.println(heap.removeMin());
-		System.out.println(heap.removeMin());
-		System.out.println(heap.removeMin());
+//		System.out.println(heap.removeMin());
+//		System.out.println(heap.removeMin());
+//		System.out.println(heap.removeMin());
+//		System.out.println(heap.removeMin());
+//		System.out.println(heap.removeMin());
 
-
+		/***********************************************************/
+		
+		AVLSet<Integer> set = new AVLSet<>((a,b)->Integer.compare(a, b));
+		
+		set.add(7);
+		set.add(1);
+		set.add(123);
+		set.add(-2);
+		set.add(1);
+		set.add(29);
+		
+		Iterator<Integer> iter = set.higherIterator(1);
+		
+		while (iter.hasNext())
+			System.out.println(iter.next());
+		
 	}
 }

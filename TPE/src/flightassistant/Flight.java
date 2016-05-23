@@ -5,8 +5,8 @@ public class Flight {
 	private String airline;
 	private int number;
 	private double price;
-	private String departureTime; // No se si lo vamos a hacer string o como
-								// vamos a manejarlo
+	// TODO: horario y día de llegada
+	// TODO: horario y día de partida
 	private Airport origin;
 	private Airport destination;
 	// private List<Day> departureDays; No se que nos conviene tener, si una
@@ -16,9 +16,12 @@ public class Flight {
 			Airport origin, Airport destination) {
 		this.airline = airline;
 		this.price = price;
-		this.departureTime = departureTime;
 		this.origin = origin;
 		this.destination = destination;
+	}
+	
+	public double getPrice() {
+		return price;
 	}
 
 	@Override

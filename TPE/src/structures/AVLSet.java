@@ -157,6 +157,24 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 
 		return a;
 	}
+	
+	/**
+	 * Devuelve un iterador con los elementos mayores o iguales a value en orden ascendente
+	 * @param value
+	 * @return
+	 */
+	public Iterator<T> higherIterator(T value) {
+		InorderIterator<T> iter = higherIterator(value, root);
+		while (iter.hasNext() && cmp.compare(iter.peek(), value) < 0)
+			iter.next();
+		return iter;
+	}
+	
+	private InorderIterator<T> higherIterator(T value, Node<T> n) {
+		if (n == null || cmp.compare(value, n.value) <= 0)
+			return new InorderIterator<T> (n);
+		return higherIterator(value, n.right);
+	}
 
 	private Node<T> rebalance(Node<T> n) {
 		int bf = n.getBF();
@@ -261,10 +279,17 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		private Deque<Node<T>> stack = new LinkedList<>();
 
 		public InorderIterator(Node<T> root) {
-			stack.push(root);
-			Node<T> t;
-			while ((t = stack.peek()).hasLeftChild())
-				stack.push(t.left);
+			if (root != null) {
+				stack.push(root);
+				Node<T> t;
+				while ((t = stack.peek()).hasLeftChild())
+					stack.push(t.left);
+			}
+		}
+		
+		private T peek() {
+			// TODO: excepción si no hay next
+			return stack.peek().value;
 		}
 
 		@Override
