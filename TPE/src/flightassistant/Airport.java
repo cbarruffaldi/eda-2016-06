@@ -6,19 +6,30 @@ public class Airport {
 	private double latitude;
 	private double longitude;
 	//Coleccion de rutas
-	
+
 	public Airport(String id, double latitude, double longitude) {
 		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
-	
-	
+
+	public String getId() {
+		return id;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
-	
+
 	/*
 	 * Determina la igualdad de dos Aeropuertos según su nombre (id)
 	 */
@@ -38,6 +49,4 @@ public class Airport {
 			return false;
 		return true;
 	}
-	
-	
 }
