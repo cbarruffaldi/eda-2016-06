@@ -157,11 +157,11 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 
 		return a;
 	}
-	
+
 	/**
 	 * Devuelve un iterador con los elementos mayores o iguales a value en orden ascendente
-	 * @param value
-	 * @return
+	 * @param value - valor a comparar. No hace falta que exista en el set.
+	 * @return Iterador sobre los elementos mayores o iguales a value
 	 */
 	public Iterator<T> higherIterator(T value) {
 		InorderIterator<T> iter = higherIterator(value, root);
@@ -169,7 +169,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 			iter.next();
 		return iter;
 	}
-	
+
 	private InorderIterator<T> higherIterator(T value, Node<T> n) {
 		if (n == null || cmp.compare(value, n.value) <= 0)
 			return new InorderIterator<T> (n);
@@ -226,13 +226,11 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 	}
 
 	private String toString(Node<T> n) {
-		String str = "";
-		if (n != null) {
-			str = str.concat(toString(n.left));
-			str = str.concat(n.value.toString() + " ");
-			str = str.concat(toString(n.right));
-		}
-		return str;
+		StringBuffer str = new StringBuffer("{");
+		for (T each : this)
+			str.append(each.toString() + " ");
+		str.append("}");
+		return str.toString();
 	}
 
 	private static class Node<T> {
@@ -286,7 +284,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 					stack.push(t.left);
 			}
 		}
-		
+
 		private T peek() {
 			// TODO: excepción si no hay next
 			return stack.peek().value;

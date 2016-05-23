@@ -12,14 +12,14 @@ public class Flight {
 	// private List<Day> departureDays; No se que nos conviene tener, si una
 	// list u otra estructura...
 
-	public Flight(String airline, int number, double price, String departureTime, 
+	public Flight(String airline, int number, double price, String departureTime,
 			Airport origin, Airport destination) {
 		this.airline = airline;
 		this.price = price;
 		this.origin = origin;
 		this.destination = destination;
 	}
-	
+
 	public double getPrice() {
 		return price;
 	}
@@ -41,17 +41,10 @@ public class Flight {
 		if (getClass() != o.getClass())
 			return false;
 		Flight other = (Flight) o;
-		if (airline == null) {
-			if (other.airline != null) {
-				return false;
-			}
-		} else if (!airline.equals(other.airline)) {
-			return false;
-		}
-		if (number != other.number) {
-			return false;
-		}
-		return true;
+
+		if (number == other.number)
+			return airline == null ? other.airline == null : airline.equals(other.airline);
+		return false;
 	}
 
 }

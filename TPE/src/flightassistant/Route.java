@@ -5,10 +5,10 @@ import java.util.Comparator;
 import structures.AVLSet;
 
 public class Route {
-	
+
 	private static class FlightContainer {
 		private static final int DAYS = 7;
-		
+
 		private Flight cheapest;
 		private Flight quickest;
 		private AVLSet<Flight>[] sets; // índice 0 Lunes; índice 6 Domingo
@@ -23,16 +23,17 @@ public class Route {
 					public int compare(Flight o1, Flight o2) {
 						return 0; // TODO: comparar por horario de salida, luego nombre y luego número de vuelo.
 					}
-					
+
 				});
 		}
-		
+
 		private void addFlight(Flight flight) {
 			if (cheapest == null || flight.getPrice() < cheapest.getPrice())
 				cheapest = flight;
 			// TODO: lo mismo con quickest
+			// TODO: agregar al set correspondiente al dia
 		}
-		
+
 		private void removeFlight(Flight flight) {
 			if (flight.equals(cheapest)) {
 				cheapest = null;
@@ -47,10 +48,10 @@ public class Route {
 					if (cheapest == null || flight.getPrice() < cheapest.getPrice())
 						cheapest = flight;
 		}
-		
-		
+
+
 	}
-		
+
 	//Airport 1 y 2 son nombres y no implican ningun orden.
 	private Airport airport1;
 	private Airport airport2;
@@ -67,12 +68,12 @@ public class Route {
 		}
 		this.airport1 = airport1;
 		this.airport2 = airport2;
-		
+
 		this.container1 = new FlightContainer();
 		this.container2 = new FlightContainer();
 
 	}
-	
+
 	public void addFlight(Flight flight, Airport origin) {
 		if (origin.equals(airport1))
 			container1.addFlight(flight);
@@ -81,7 +82,7 @@ public class Route {
 		else
 			throw new IllegalArgumentException("Aeropuerto orígen inválido");
 	}
-	
+
 	public void removeFlight(Flight flight, Airport origin) {
 		if (origin.equals(airport1))
 			container1.removeFlight(flight);
@@ -90,7 +91,7 @@ public class Route {
 		else
 			throw new IllegalArgumentException("Aeropuerto orígen inválido");
 	}
-	
+
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
@@ -107,23 +108,14 @@ public class Route {
 		//Aca se asume que no puede haber una ruta con algun aeropuerto en null,
 		//y que no existe una ruta tal que los dos aeropuertos sean el mismo,
 		//esto esta contemplado en el constructor
-		if(!airport1.equals(other.airport1)) {
-			if(!airport1.equals(other.airport2)) {
-				return false;
-			}
+		if(!airport1.equals(other.airport1) && !airport1.equals(other.airport2)) {
+			return false;
 		}
-		if (!airport2.equals(other.airport1)) {
-			if(!airport2.equals(other.airport2)) {
-				return false;
-			}
+		if (!airport2.equals(other.airport1) && !airport2.equals(other.airport2)) {
+			return false;
 		}
 		return true;
 
 	}
-	
-	
-	
-	
-	
-	
+
 }

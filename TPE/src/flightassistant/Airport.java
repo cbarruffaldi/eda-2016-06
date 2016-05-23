@@ -42,11 +42,6 @@ public class Airport {
 		if (getClass() != o.getClass())
 			return false;
 		Airport other = (Airport) o;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		return id == null ? other.id == null : id.equals(other.id);
 	}
 }
