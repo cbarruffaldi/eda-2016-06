@@ -6,7 +6,6 @@ import java.util.Comparator;
 
 public class Route {
 
-
 	private Airport airport1;
 
 	//Airport 1 y 2 son nombres y no implican ningun orden.
@@ -95,10 +94,11 @@ public class Route {
 		}
 
 		private void addFlight(Flight flight) {
-			if (cheapest == null || flight.getPrice() < cheapest.getPrice())
+			if (cheapest == null || flight.isCheaperThan(cheapest))
 				cheapest = flight;
-			// TODO: lo mismo con quickest
-			// TODO: agregar al set correspondiente al dia
+			if (quickest == null || flight.isQuickerThan(quickest))
+				quickest = flight;
+			// TODO: agregar a los sets que correspondan al dia
 		}
 
 		private void removeFlight(Flight flight) {
@@ -106,17 +106,25 @@ public class Route {
 				cheapest = null;
 				recalculateCheapest();
 			}
-			// TODO: quitar de quickest y del set que corresponda al día
+			if (flight.equals(quickest)) {
+				quickest = null;
+				recalculateQuickest();
+			}
+			// TODO: quitar de los sets que correspondan al día
+		}
+
+		private void recalculateQuickest() {
+			for (AVLSet<Flight> each : sets)
+				for (Flight flight : each)
+					if (quickest == null || flight.isQuickerThan(quickest))
+						quickest = flight;
 		}
 
 		private void recalculateCheapest() {
 			for (AVLSet<Flight> each : sets)
 				for (Flight flight : each)
-					if (cheapest == null || flight.getPrice() < cheapest.getPrice())
+					if (cheapest == null || flight.isCheaperThan(cheapest))
 						cheapest = flight;
 		}
-
-
 	}
-
 }

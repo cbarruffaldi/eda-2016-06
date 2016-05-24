@@ -6,8 +6,7 @@ import utils.Time;
 
 public class Flight {
 
-	private String airline;
-	private int number;
+	private FlightId id;
 	private double price;
 	private Moment departure;
 	private Time duration;
@@ -18,7 +17,7 @@ public class Flight {
 
 	public Flight(String airline, int number, double price, Moment departure, Time duration,
 			Airport origin, Airport destination, Day[] days) {
-		this.airline = airline;
+		this.id = new FlightId(airline, number);
 		this.price = price;
 		this.departure = departure;
 		this.arrival = departure.addTime(duration);
@@ -26,16 +25,30 @@ public class Flight {
 		this.destination = destination;
 		this.days = days;
 	}
-
+	
+	public boolean isCheaperThan(Flight other) {
+		return price < other.price;
+	}
+	
+	public boolean isQuickerThan(Flight other) {
+		return duration.compareTo(other.duration) < 0;
+	}
+	
+	public Time getDuration() {
+		return duration;
+	}
+	
+	public FlightId getId() {
+		return id;
+	}
+	
 	public double getPrice() {
 		return price;
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO: Hay que ver como combinamos el string de la aerolinea con el
-		// numero de vuelo dependiendo de la estructura que vayamos a usar
-		return 1;
+		return id.hashCode();
 	}
 
 	@Override
@@ -46,11 +59,9 @@ public class Flight {
 			return false;
 		if (getClass() != o.getClass())
 			return false;
+		
 		Flight other = (Flight) o;
-
-		if (number == other.number)
-			return airline == null ? other.airline == null : airline.equals(other.airline);
-		return false;
+		return id.equals(other.id);
 	}
 
 }

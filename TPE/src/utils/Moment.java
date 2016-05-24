@@ -109,8 +109,11 @@ public class Moment implements Comparable<Moment> {
 		Moment m8 = new Moment(Day.VI, new Time(12,00));
 
 		System.out.println(m1.howMuchUntil(m2));
+		System.out.println(m5.howMuchUntil(m1));
 		System.out.println(m1.howMuchUntil(m5));
 		System.out.println(m4.howMuchUntil(m5));
+		
+		System.out.println(m4.howMuchUntil(m6));
 
 		System.out.println(m4.addTime(new Time(4, 00)));
 		System.out.println(m4);
