@@ -15,6 +15,11 @@ public class Moment implements Comparable<Moment> {
         this.day = day;
         this.timeOfDay = timeOfDay;
     }
+    
+    
+    public Time getTime() {
+    	return timeOfDay;
+    }
 
     /**Devuelve el tiempo que falta para que sea el d�a que se pasa como par�metro*/
     public Time howMuchUntil(Moment other) {
@@ -73,11 +78,6 @@ public class Moment implements Comparable<Moment> {
         if (o == null || getClass() != o.getClass()) return false;
 
         Moment other = (Moment) o;
-
-        // Creo que no tiene sentido protegerse de las NPE
-
-//        if (day != null ? !day.equals(other.day) : other.day != null) return false;
-//        return !(timeOfDay != null ? !timeOfDay.equals(other.timeOfDay) : other.timeOfDay != null);
 
         return deltaMinutes(other) == 0;
 

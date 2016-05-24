@@ -6,12 +6,13 @@ import java.util.Comparator;
 
 public class Route {
 
-	private Airport airport1;
-
-	//Airport 1 y 2 son nombres y no implican ningun orden.
-	private Airport airport2;
-	private FlightContainer container1; // vualos que salen del 1
-	private FlightContainer container2; // vuelos que salen del 2
+	//Airport A y B son nombres y no implican ningun orden.
+	private Airport airportA;
+	private Airport airportB;
+	
+	private FlightContainer containerA; // vualos que salen del A
+	private FlightContainer containerB; // vuelos que salen del B
+	
 	public Route(Airport airport1, Airport airport2) {
 		if(airport1 == null || airport2 == null) {
 			throw new IllegalArgumentException();
@@ -19,28 +20,28 @@ public class Route {
 		if(airport1.equals(airport2)) {
 			throw new IllegalArgumentException();
 		}
-		this.airport1 = airport1;
-		this.airport2 = airport2;
+		this.airportA = airport1;
+		this.airportB = airport2;
 
-		this.container1 = new FlightContainer();
-		this.container2 = new FlightContainer();
+		this.containerA = new FlightContainer();
+		this.containerB = new FlightContainer();
 
 	}
 
-	public void addFlight(Flight flight, Airport origin) {
-		if (origin.equals(airport1))
-			container1.addFlight(flight);
-		else if (origin.equals(airport2))
-			container2.addFlight(flight);
+	public void addFlight(Flight flight) {
+		if (flight.getOrigin().equals(airportA))
+			containerA.addFlight(flight);
+		else if (flight.getOrigin().equals(airportB))
+			containerB.addFlight(flight);
 		else
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
 
-	public void removeFlight(Flight flight, Airport origin) {
-		if (origin.equals(airport1))
-			container1.removeFlight(flight);
-		else if (origin.equals(airport2))
-			container2.removeFlight(flight);
+	public void removeFlight(Flight flight) {
+		if (flight.getOrigin().equals(airportA))
+			containerA.removeFlight(flight);
+		else if (flight.getOrigin().equals(airportB))
+			containerB.removeFlight(flight);
 		else
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
@@ -61,10 +62,10 @@ public class Route {
 		//Aca se asume que no puede haber una ruta con algun aeropuerto en null,
 		//y que no existe una ruta tal que los dos aeropuertos sean el mismo,
 		//esto esta contemplado en el constructor
-		if(!airport1.equals(other.airport1) && !airport1.equals(other.airport2)) {
+		if(!airportA.equals(other.airportA) && !airportA.equals(other.airportB)) {
 			return false;
 		}
-		if (!airport2.equals(other.airport1) && !airport2.equals(other.airport2)) {
+		if (!airportB.equals(other.airportA) && !airportB.equals(other.airportB)) {
 			return false;
 		}
 		return true;
@@ -84,12 +85,11 @@ public class Route {
 			sets = (AVLSet<Flight>[]) new AVLSet<?>[DAYS];
 			for (int i = 0; i < sets.length; i++)
 				sets[i] = new AVLSet<Flight>(new Comparator<Flight>() {
-
 					@Override
 					public int compare(Flight o1, Flight o2) {
-						return 0; // TODO: comparar por horario de salida, luego nombre y luego número de vuelo.
+						int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
+						return comp == 0 ? o1.getId().compareTo(o2.getId()) : comp;
 					}
-
 				});
 		}
 

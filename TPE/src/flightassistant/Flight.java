@@ -8,22 +8,48 @@ public class Flight {
 
 	private FlightId id;
 	private double price;
-	private Moment departure;
+
+	private Schedule[] schedules;
 	private Time duration;
-	private Moment arrival;
+
 	private Airport origin;
 	private Airport destination;
-	private Day[] days;  // o mapa <Day, boolean>
 
-	public Flight(String airline, int number, double price, Moment departure, Time duration,
-			Airport origin, Airport destination, Day[] days) {
+	private static class Schedule{
+		private Moment departure;
+		private Moment arrival;
+		
+		public Schedule(Moment departure, Moment arrival){
+			this.arrival = arrival;
+			this.departure = departure; 
+		}
+	}
+	
+	public Flight(String airline, int number, double price, Moment[] departures, Time duration,
+			Airport origin, Airport destination) {
 		this.id = new FlightId(airline, number);
 		this.price = price;
-		this.departure = departure;
-		this.arrival = departure.addTime(duration);
+		
+		schedules = new Schedule[departures.length];
+		for(int i = 0; i < departures.length ; i++){
+			Moment m = departures[i];
+			schedules[i] = new Schedule(m, m.addTime(duration));
+		}
+		
 		this.origin = origin;
 		this.destination = destination;
-		this.days = days;
+	}
+	
+	public Airport getOrigin() {
+		return origin;
+	}
+	
+	public Time getDepartureTime() {
+		return schedules[0].departure.getTime();
+	}
+	
+	public Airport getDestination() {
+		return destination;
 	}
 	
 	public boolean isCheaperThan(Flight other) {

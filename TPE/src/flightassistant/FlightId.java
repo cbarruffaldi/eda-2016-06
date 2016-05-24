@@ -1,6 +1,6 @@
 package flightassistant;
 
-public class FlightId {
+public class FlightId implements Comparable<FlightId>{
 	private String airline;
 	private int number;
 	
@@ -36,5 +36,11 @@ public class FlightId {
 	@Override
 	public int hashCode() {
 		return airline.hashCode() + number; // TODO: hacerlo bien
+	}
+
+	@Override
+	public int compareTo(FlightId o) {
+		int strComp = getAirline().compareTo(o.getAirline());
+		return strComp == 0 ? Integer.compare(getNumber(), o.getNumber()) : strComp;
 	}
 }

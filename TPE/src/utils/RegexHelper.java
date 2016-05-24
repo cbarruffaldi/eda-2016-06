@@ -23,8 +23,8 @@ public class RegexHelper {
 	private static String hours = "([0-9]+h)?[0-5][0-9]m"; // [xxh]xxm
 	private static String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
 	
-	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //0.000 - 90.0000
-	private static String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //0.000 - 180.0000
+	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //-90.000 - 90.0000
+	private static String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //-180.000 - 180.0000
 
     
 	

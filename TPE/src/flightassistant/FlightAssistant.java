@@ -36,4 +36,15 @@ public class FlightAssistant {
 		if (!airports.containsKey(id))
 			airports.put(id, new Airport(id, latitude, longitude));
 	}
+	
+	public void insertFlight(String airline ) {
+		//Recibe parametros del flight
+		Flight f = 
+		Airport origin = f.getOrigin();
+		Airport dest = f.getDestination();
+		if( !(airports.containsValue(origin) || airports.containsValue(dest)) )
+				throw new SomeException();
+		
+	}
+	
 }
