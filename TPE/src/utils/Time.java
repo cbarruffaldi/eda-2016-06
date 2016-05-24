@@ -3,6 +3,8 @@ package utils;
 public class Time implements Comparable {
     public static final int MINUTES_PER_HOUR = 60;
     public static final int HOURS_PER_DAY = 24;
+    public static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+
 
     private int minutes;
 
@@ -31,6 +33,8 @@ public class Time implements Comparable {
     public int getMinutes() {
         return minutes;
     }
+    
+    
 
     @Override
     public boolean equals(Object o) {
@@ -49,7 +53,7 @@ public class Time implements Comparable {
 
     @Override
     public String toString() {
-        return minutes / MINUTES_PER_HOUR + "h " + minutes % MINUTES_PER_HOUR + "m";
+        return minutes / MINUTES_PER_DAY + "d " + minutes%MINUTES_PER_DAY / MINUTES_PER_HOUR + "h " + minutes % MINUTES_PER_HOUR + "m";
     }
 
     @Override
