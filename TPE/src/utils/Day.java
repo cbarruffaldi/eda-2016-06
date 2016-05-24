@@ -49,7 +49,7 @@ public class Day {
     }
 
     public int getDaysDifference(Day d1) {
-        return this.daysIndex - d1.daysIndex;
+        return d1.daysIndex - this.daysIndex;
     }
 
     @Override

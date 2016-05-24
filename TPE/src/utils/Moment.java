@@ -6,7 +6,7 @@ public class Moment implements Comparable<Moment> {
     public static final int DAYS_IN_A_WEEK = 7;
     public static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
 
-    
+
     private Day day;
     private Time timeOfDay; // Desde las 00:00 hs
 
@@ -16,17 +16,17 @@ public class Moment implements Comparable<Moment> {
         this.timeOfDay = timeOfDay;
     }
 
-    /**Devuelve el tiempo que falta para que sea el día que se pasa como parámetro*/
+    /**Devuelve el tiempo que falta para que sea el dï¿½a que se pasa como parï¿½metro*/
     public Time howMuchUntil(Moment other) {
-    	int diff = deltaMinutes(other);  
-    
+    	int diff = deltaMinutes(other);
+
         if(diff < 0) //El momento es "antes en la semana", es decir, calculo para la semana que viene
         	diff += DAYS_IN_A_WEEK*MINUTES_PER_DAY;
-        
+
         return new Time(diff);
-        
+
     }
-    
+
     // (minutos desde el lunes hasta other) - (minutos desde el lunes hasta hoy)
     // es decir, si other esta "antes" en la semana, resulta negativo
     private int deltaMinutes(Moment other){
@@ -35,21 +35,20 @@ public class Moment implements Comparable<Moment> {
         return daysDiff*MINUTES_PER_DAY + minuteDiff;
 
     }
-    
+
     //Necesario?
     public Moment nextDay() {
         return new Moment(day.getNextDay(), timeOfDay);
     }
 
     public Moment addTime(Time t) {
-        Day newDay = Day.getDay(day.toString()); //TODO: obviamente Day tiene que ser clonable o algo de eso
+        Day newDay = day;
         int minSum = timeOfDay.getMinutes() + t.getMinutes();
-        if (minSum > MINUTES_PER_DAY) {
+        if (minSum >= MINUTES_PER_DAY) {
             minSum -= MINUTES_PER_DAY;
             newDay = newDay.getNextDay();
         }
-        return new Moment(newDay, new Time(minSum)); // TODO: no estoy seguro de si esta es la manera de hacer este
-                                            // tipo de cosas, devolviendo una instancia nueva.
+        return new Moment(newDay, new Time(minSum));
     }
 
 	@Override
@@ -57,17 +56,17 @@ public class Moment implements Comparable<Moment> {
 		return deltaMinutes(o);
 	}
 
-	/**Devuelve si está antes en la semana*/
+	/**Devuelve si estï¿½ antes en la semana*/
 	public boolean isBefore(Moment other){
 		return compareTo(other) < 0;
 	}
-	
-	/**Devuelve si está después en la semana*/
+
+	/**Devuelve si estï¿½ despuï¿½s en la semana*/
 	public boolean isAfter(Moment other){
 		return compareTo(other) > 0;
 	}
-	
-	
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,10 +75,10 @@ public class Moment implements Comparable<Moment> {
         Moment other = (Moment) o;
 
         // Creo que no tiene sentido protegerse de las NPE
-        
+
 //        if (day != null ? !day.equals(other.day) : other.day != null) return false;
 //        return !(timeOfDay != null ? !timeOfDay.equals(other.timeOfDay) : other.timeOfDay != null);
-        
+
         return deltaMinutes(other) == 0;
 
     }
@@ -90,14 +89,19 @@ public class Moment implements Comparable<Moment> {
         result = 31 * result + (timeOfDay != null ? timeOfDay.hashCode() : 0);
         return result;
     }
-    
-    
+
+    @Override
+    public String toString() {
+    	return day.toString() + " " + timeOfDay.toString();
+    }
+
+
     public static void main(String[] args) {
 		Moment m1 = new Moment(Day.DO, new Time(12, 00));
 		Moment m2 = new Moment(Day.DO, new Time(12, 00));
-		
+
 		System.err.println(m1.equals(m2));
-	
+
 		Moment m4 = new Moment(Day.LU, new Time(12,00));
 		Moment m5 = new Moment(Day.LU, new Time(12,30));
 		Moment m6 = new Moment(Day.MI, new Time(15,00));
@@ -108,7 +112,8 @@ public class Moment implements Comparable<Moment> {
 		System.out.println(m1.howMuchUntil(m5));
 		System.out.println(m4.howMuchUntil(m5));
 
+		System.out.println(m4.addTime(new Time(4, 00)));
+		System.out.println(m4);
     }
 
 }
- 
