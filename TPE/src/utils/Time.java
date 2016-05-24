@@ -14,7 +14,9 @@ public class Time implements Comparable {
         minutes = min;
     }
 
-    public void sumTime(Time t) {
+    public Time getSum(Time t) { return new Time(minutes + t.minutes); }
+
+    public void addTime(Time t) {
         this.minutes += t.minutes;
     }
 

@@ -18,7 +18,7 @@ public class Day {
         daysIndex = index;
     }
 
-    public Day getDay(String day) {
+    public static Day getDay(String day) {
         switch (day) {
             case "Lu":
                 return Day.LU;
@@ -38,7 +38,7 @@ public class Day {
         throw new IllegalArgumentException("Not valid day name");
     }
 
-    public Day nextDay() {
+    public Day getNextDay() {
         int i = (daysIndex + 1) % TOTAL_DAYS;
         return days[i];
     }
@@ -48,8 +48,8 @@ public class Day {
         return days[i];
     }
 
-    public int getDaysDifference(Day d1, Day d2) { //TODO mejor nombre
-        return Math.abs(d2.daysIndex - d1.daysIndex);
+    public int getDaysDifference(Day d1) {
+        return this.daysIndex - d1.daysIndex;
     }
 
     @Override
