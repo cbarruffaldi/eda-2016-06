@@ -17,15 +17,18 @@ public class Moment implements Comparable<Moment> {
     }
 
     /**Devuelve el tiempo que falta para que sea el día que se pasa como parámetro*/
-    public Time getTimeDifference(Moment other) {
-        int diff = deltaMinutes(other);  
-        if(diff < 0) //El momento es "la semana que viene"
+    public Time howMuchUntil(Moment other) {
+    	int diff = deltaMinutes(other);  
+    
+        if(diff < 0) //El momento es "antes en la semana", es decir, calculo para la semana que viene
         	diff += DAYS_IN_A_WEEK*MINUTES_PER_DAY;
         
         return new Time(diff);
         
     }
     
+    // (minutos desde el lunes hasta other) - (minutos desde el lunes hasta hoy)
+    // es decir, si other esta "antes" en la semana, resulta negativo
     private int deltaMinutes(Moment other){
         int daysDiff = this.day.getDaysDifference(other.day);
         int minuteDiff = other.timeOfDay.getMinutes() - this.timeOfDay.getMinutes();
@@ -33,6 +36,7 @@ public class Moment implements Comparable<Moment> {
 
     }
     
+    //Necesario?
     public Moment nextDay() {
         return new Moment(day.getNextDay(), timeOfDay);
     }
@@ -53,6 +57,15 @@ public class Moment implements Comparable<Moment> {
 		return deltaMinutes(o);
 	}
 
+	/**Devuelve si está antes en la semana*/
+	public boolean isBefore(Moment other){
+		return compareTo(other) < 0;
+	}
+	
+	/**Devuelve si está después en la semana*/
+	public boolean isAfter(Moment other){
+		return compareTo(other) > 0;
+	}
 	
 	
     @Override
@@ -60,10 +73,14 @@ public class Moment implements Comparable<Moment> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Moment moment = (Moment) o;
+        Moment other = (Moment) o;
 
-        if (day != null ? !day.equals(moment.day) : moment.day != null) return false;
-        return !(timeOfDay != null ? !timeOfDay.equals(moment.timeOfDay) : moment.timeOfDay != null);
+        // Creo que no tiene sentido protegerse de las NPE
+        
+//        if (day != null ? !day.equals(other.day) : other.day != null) return false;
+//        return !(timeOfDay != null ? !timeOfDay.equals(other.timeOfDay) : other.timeOfDay != null);
+        
+        return deltaMinutes(other) == 0;
 
     }
 
@@ -78,15 +95,18 @@ public class Moment implements Comparable<Moment> {
     public static void main(String[] args) {
 		Moment m1 = new Moment(Day.DO, new Time(12, 00));
 		Moment m2 = new Moment(Day.DO, new Time(12, 00));
+		
+		System.err.println(m1.equals(m2));
 	
 		Moment m4 = new Moment(Day.LU, new Time(12,00));
-		Moment m5 = new Moment(Day.MA, new Time(17,30));
+		Moment m5 = new Moment(Day.LU, new Time(12,30));
 		Moment m6 = new Moment(Day.MI, new Time(15,00));
 		Moment m7 = new Moment(Day.JU, new Time(12,00));
 		Moment m8 = new Moment(Day.VI, new Time(12,00));
 
-		System.out.println(m1.getTimeDifference(m2));
-		System.out.println(m1.getTimeDifference(m5));
+		System.out.println(m1.howMuchUntil(m2));
+		System.out.println(m1.howMuchUntil(m5));
+		System.out.println(m4.howMuchUntil(m5));
 
     }
 
