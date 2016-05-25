@@ -7,9 +7,21 @@ public class BinaryMinHeap<T> {
 	private ArrayList<T> array;
 	private Comparator<T> cmp;
 
+	public BinaryMinHeap() {
+		this.cmp = getNaturalComparator();
+		array = new ArrayList<>();
+	}
+
 	public BinaryMinHeap(Comparator<T> cmp) {
 		this.cmp = cmp;
 		array = new ArrayList<>();
+	}
+
+	public BinaryMinHeap(int initialCapacity) {
+		if (initialCapacity < 1)
+			throw new IllegalArgumentException("Illegal capacity < 1");
+		this.cmp = getNaturalComparator();
+		array = new ArrayList<>(initialCapacity);
 	}
 
 	public BinaryMinHeap(Comparator<T> cmp, int initialCapacity) {
@@ -116,5 +128,15 @@ public class BinaryMinHeap<T> {
 
 	private int getRight(int i) {
 		return i*2+2;
+	}
+
+	private Comparator<T> getNaturalComparator() {
+		return new Comparator<T>(){
+			@SuppressWarnings("unchecked")
+			@Override
+			public int compare(T o1, T o2) {
+				return ((Comparable<T>)o1).compareTo(o2);
+			}
+		};
 	}
 }

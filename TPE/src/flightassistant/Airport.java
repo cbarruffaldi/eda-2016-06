@@ -1,26 +1,27 @@
 package flightassistant;
 
 import structures.SimpleHashMap;
+import structures.SimpleMap;
 
 import java.util.Comparator;
+import java.util.Set;
 
 public class Airport {
 
 	private String id;
 	private double latitude;
 	private double longitude;
-	private SimpleHashMap<String, Route> routes;
+	private SimpleMap<Airport, Route> routes;
 
 	public Airport(String id, double latitude, double longitude) {
 		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
 
-		// Tambien se podría hacer que Airport sea comparable y usar eso en vez de String crudo. (de todas maneras compararía el mismo string)
-		routes = new SimpleHashMap<>(new Comparator<String>() {
+		routes = new SimpleHashMap<>(new Comparator<Airport>() {
 			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
+			public int compare(Airport o1, Airport o2) {
+				return o1.getId().compareTo(o2.getId());
 			}
 		});
 	}
@@ -39,35 +40,35 @@ public class Airport {
 
 	public void addFlight(Flight flight) {
 		Airport destination = flight.getDestination();
-		Route r = routes.get(destination.id);
-		if (r == null) {
-			r = new Route(this, destination);
-			// Agrega la ruta a los dos aeropuertos que conecta.
-			this.addRoute(destination.id, r);
-			destination.addRoute(this.id, r);
-		}
-		r.addFlight(flight);
-	}
-	
-	
-	
-	public void addFlight2(Flight flight) {
-		Airport destination = flight.getDestination();
-		if (! routeExistsTo(destination.id)) { //Un acceso mas, pero queda mas claro
+		if (! routeExistsTo(destination)) { //Un acceso mas, pero queda mas claro
 			throw new IllegalStateException();
 		}
 
-		Route r = routes.get(destination.id);
+		Route r = routes.get(destination);
 		r.addFlight(flight);
 	}
-	
-	
-	public boolean routeExistsTo(String id) {
-		return routes.get(id) != null;
+
+	public boolean routeExistsTo(Airport airport) {
+		return routes.containsKey(airport);
 	}
 
-	public void addRoute(String airportId, Route r) {
-		routes.put(airportId, r);
+	public void addRoute(Airport airport, Route r) {
+		routes.put(airport, r);
+	}
+
+	public void removeFlight(Flight flight) {
+		Route r = routes.get(flight.getDestination());
+		if (r == null)
+			throw new IllegalArgumentException("No existe ruta hacia el destino del vuelo a eliminar");
+		r.removeFlight(flight);
+	}
+
+	public void removeRouteTo(Airport destination) {
+		routes.remove(destination);
+	}
+
+	public Set<Airport> getDestinations() {
+		return routes.keySet();
 	}
 
 	@Override
@@ -89,6 +90,4 @@ public class Airport {
 		Airport other = (Airport) o;
 		return id == null ? other.id == null : id.equals(other.id);
 	}
-
-
 }

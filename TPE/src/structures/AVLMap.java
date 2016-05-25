@@ -2,6 +2,8 @@ package structures;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 public class AVLMap<K, V> implements SimpleMap<K, V> {
@@ -120,14 +122,35 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 
 	@Override
 	public Set<K> keySet() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<K> set = new AVLSet<>(cmp);
+		Queue<Node<K,V>> queue = new LinkedList<>();
+		if (root != null) { // Agrega por nivel así no tiene que balancear
+			queue.offer(root);
+			while (!queue.isEmpty()) {
+				Node<K,V> current = queue.poll();
+				set.add(current.key);
+				if (current.hasLeftChild())
+					queue.offer(current.left);
+				if (current.hasRightChild())
+					queue.offer(current.right);
+			}
+		}
+		return set;
 	}
 
 	@Override
 	public Collection<V> values() {
-		// TODO Auto-generated method stub
+		Collection<V> collection = new LinkedList<>();
+		addValueTo(collection, root);
 		return null;
+	}
+
+	private void addValueTo(Collection<V> collection, Node<K,V> n) {
+		if (n != null) {
+			collection.add(n.value);
+			addValueTo(collection, n.left);
+			addValueTo(collection, n.right);
+		}
 	}
 
 	private Node<K,V> rebalance(Node<K,V> n) {
