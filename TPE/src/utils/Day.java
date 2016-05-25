@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Iterator;
+
 public class Day {
 
     public static final Day LU = new Day(0);
@@ -11,7 +13,9 @@ public class Day {
     public static final Day DO = new Day(6);
 
     private static final Day days[] = {LU, MA, MI, JU, VI, SA, DO};
-    private static final int TOTAL_DAYS = days.length;
+    private static final String daysStr[] = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
+    public static final int TOTAL_DAYS = days.length;
+
     private final int daysIndex;
 
     private Day(int index) {
@@ -19,22 +23,9 @@ public class Day {
     }
 
     public static Day getDay(String day) {
-        switch (day) {
-            case "Lu":
-                return Day.LU;
-            case "Ma":
-                return Day.MA;
-            case "Mi":
-                return Day.MI;
-            case "Ju":
-                return Day.JU;
-            case "Vi":
-                return Day.VI;
-            case "Sa":
-                return Day.SA;
-            case "Do":
-                return Day.DO;
-        }
+    	for (int i = 0; i < TOTAL_DAYS; i++)
+    		if (daysStr[i].equals(day))
+    			return days[i];
         throw new IllegalArgumentException("Not valid day name");
     }
 
@@ -54,23 +45,7 @@ public class Day {
 
     @Override
     public String toString() {
-        switch (daysIndex) {
-            case 0:
-                return "Lu";
-            case 1:
-                return "Ma";
-            case 2:
-                return "Mi";
-            case 3:
-                return "Ju";
-            case 4:
-                return "Vi";
-            case 5:
-                return "Sa";
-            case 6:
-                return "Do";
-        }
-        throw new IllegalStateException();
+    	return daysStr[daysIndex];
     }
 
     @Override
@@ -87,4 +62,45 @@ public class Day {
     public int hashCode() {
         return daysIndex;
     }
-}
+
+    public static <T> WeekArray<T> getWeekArray() {
+    	return new WeekArray<T>();
+    }
+
+    public static class WeekArray<T> implements Iterable<T>{
+    	@SuppressWarnings("unchecked")
+		private T[] array = (T[])new Object[TOTAL_DAYS];
+
+    	public void insert(Day day, T value) {
+    		array[day.daysIndex] = value;
+    	}
+
+    	public T get(Day day) {
+    		return array[day.daysIndex];
+    	}
+
+    	public Iterator<T> iterator() {
+    		return new WeekIterator<T>(array);
+    	}
+    }
+
+    private static class WeekIterator<T> implements Iterator<T> {
+    	private int current = 0;
+    	private T[] array;
+
+    	public WeekIterator(T[] a) {
+    		array = a;
+    	}
+
+		@Override
+		public boolean hasNext() {
+			return current < TOTAL_DAYS;
+		}
+
+		@Override
+		public T next() {
+			return array[current++];
+		}
+    }
+
+ }

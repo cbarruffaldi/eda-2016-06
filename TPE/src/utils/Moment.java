@@ -15,10 +15,13 @@ public class Moment implements Comparable<Moment> {
         this.day = day;
         this.timeOfDay = timeOfDay;
     }
-    
-    
+
     public Time getTime() {
     	return timeOfDay;
+    }
+
+    public Day getDay() {
+    	return day;
     }
 
     /**Devuelve el tiempo que falta para que sea el d�a que se pasa como par�metro*/
@@ -105,14 +108,12 @@ public class Moment implements Comparable<Moment> {
 		Moment m4 = new Moment(Day.LU, new Time(12,00));
 		Moment m5 = new Moment(Day.LU, new Time(12,30));
 		Moment m6 = new Moment(Day.MI, new Time(15,00));
-		Moment m7 = new Moment(Day.JU, new Time(12,00));
-		Moment m8 = new Moment(Day.VI, new Time(12,00));
 
 		System.out.println(m1.howMuchUntil(m2));
 		System.out.println(m5.howMuchUntil(m1));
 		System.out.println(m1.howMuchUntil(m5));
 		System.out.println(m4.howMuchUntil(m5));
-		
+
 		System.out.println(m4.howMuchUntil(m6));
 
 		System.out.println(m4.addTime(new Time(4, 00)));

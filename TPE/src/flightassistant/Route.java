@@ -1,6 +1,9 @@
 package flightassistant;
 
 import structures.AVLSet;
+import utils.Day;
+import utils.Day.WeekArray;
+import utils.Moment;
 
 import java.util.Comparator;
 
@@ -10,7 +13,7 @@ public class Route {
 	private Airport airportA;
 	private Airport airportB;
 
-	private FlightContainer containerA; // vualos que salen del A
+	private FlightContainer containerA; // vuelos que salen del A
 	private FlightContainer containerB; // vuelos que salen del B
 
 	public Route(Airport airport1, Airport airport2) {
@@ -25,7 +28,6 @@ public class Route {
 
 		this.containerA = new FlightContainer();
 		this.containerB = new FlightContainer();
-
 	}
 
 	public void addFlight(Flight flight) {
@@ -74,23 +76,23 @@ public class Route {
 
 	private static class FlightContainer {
 		// Tiene que ser un KDtree que tenga de keys momento de llegada, precio y tiempo de vuelo.
-		private static final int DAYS = 7;
+		private static final Comparator<Flight> flightCmp = new Comparator<Flight>() {
+			@Override
+			public int compare(Flight o1, Flight o2) {
+				int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
+				return comp == 0 ? o1.getId().compareTo(o2.getId()) : comp;
+			}
+		};
 
 		private Flight cheapest;
 		private Flight quickest;
-		private AVLSet<Flight>[] sets; // índice 0 Lunes; índice 6 Domingo
+		private WeekArray<AVLSet<Flight>> weekArray;
 
-		@SuppressWarnings("unchecked")
 		public FlightContainer() {
-			sets = (AVLSet<Flight>[]) new AVLSet<?>[DAYS];
-			for (int i = 0; i < sets.length; i++)
-				sets[i] = new AVLSet<Flight>(new Comparator<Flight>() {
-					@Override
-					public int compare(Flight o1, Flight o2) {
-						int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
-						return comp == 0 ? o1.getId().compareTo(o2.getId()) : comp;
-					}
-				});
+			weekArray = Day.getWeekArray();
+			weekArray.insert(Day.LU, new AVLSet<Flight>(flightCmp));
+			for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
+				weekArray.insert(day, new AVLSet<Flight>(flightCmp));
 		}
 
 		private void addFlight(Flight flight) {
@@ -98,8 +100,8 @@ public class Route {
 				cheapest = flight;
 			if (quickest == null || flight.isQuickerThan(quickest))
 				quickest = flight;
-
-			// TODO: agregar a los sets que correspondan al dia
+			for (Moment departure : flight.getDepartureMoments())
+				weekArray.get(departure.getDay()).add(flight);
 		}
 
 		private void removeFlight(Flight flight) {
@@ -111,18 +113,19 @@ public class Route {
 				quickest = null;
 				recalculateQuickest();
 			}
-			// TODO: quitar de los sets que correspondan al día
+			for (Moment departure : flight.getDepartureMoments())
+				weekArray.get(departure.getDay()).remove(flight);
 		}
 
 		private void recalculateQuickest() {
-			for (AVLSet<Flight> each : sets)
+			for (AVLSet<Flight> each : weekArray)
 				for (Flight flight : each)
 					if (quickest == null || flight.isQuickerThan(quickest))
 						quickest = flight;
 		}
 
 		private void recalculateCheapest() {
-			for (AVLSet<Flight> each : sets)
+			for (AVLSet<Flight> each : weekArray)
 				for (Flight flight : each)
 					if (cheapest == null || flight.isCheaperThan(cheapest))
 						cheapest = flight;
