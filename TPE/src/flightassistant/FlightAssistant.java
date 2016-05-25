@@ -11,9 +11,9 @@ public class FlightAssistant {
 	private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
 
 	// Coleccion de Aeropuertos;
-	private SimpleHashMap<String, Airport> airports;
+	public SimpleHashMap<String, Airport> airports;
 	// Coleccion de vuelos
-	private SimpleHashMap<FlightId, Flight> flights;
+	public SimpleHashMap<FlightId, Flight> flights;
 
 	public FlightAssistant() {
 		airports = new SimpleHashMap<>(AIRPORTS_SIZE, new Comparator<String>() {
