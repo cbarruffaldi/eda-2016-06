@@ -1,8 +1,10 @@
 package flightassistant;
 
-import java.util.Comparator;
-
 import structures.SimpleHashMap;
+import utils.Moment;
+import utils.Time;
+
+import java.util.Comparator;
 
 public class FlightAssistant {
 	private static final int AIRPORTS_SIZE = 20;
@@ -37,14 +39,16 @@ public class FlightAssistant {
 			airports.put(id, new Airport(id, latitude, longitude));
 	}
 	
-	public void insertFlight(String airline ) {
-		//Recibe parametros del flight
-		Flight f = 
-		Airport origin = f.getOrigin();
-		Airport dest = f.getDestination();
-		if( !(airports.containsValue(origin) || airports.containsValue(dest)) )
-				throw new SomeException();
-		
+	public void insertFlight(String airline, int number, double price, Moment[] departures, Time duration,
+							 String origin, String destination) {
+		Airport origAir = airports.get(origin);
+		Airport destAir = airports.get(destination);
+		if (origAir == null || destAir == null) {
+			return; // podría devolver boolean para indicar si se pudo agregar el vuelo o no.
+		}
+		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
+		flights.put(newFlight.getId(), newFlight);
+		origAir.addFlight(newFlight);
 	}
 	
 }

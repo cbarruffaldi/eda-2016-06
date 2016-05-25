@@ -1,16 +1,28 @@
 package flightassistant;
 
+import structures.SimpleHashMap;
+
+import java.util.Comparator;
+
 public class Airport {
 
 	private String id;
 	private double latitude;
 	private double longitude;
-	//Coleccion de rutas
+	private SimpleHashMap<String, Route> routes;
 
 	public Airport(String id, double latitude, double longitude) {
 		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
+
+		// Tambien se podría hacer que Airport sea comparable y usar eso en vez de String crudo. (de todas maneras compararía el mismo string)
+		routes = new SimpleHashMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
 	}
 
 	public String getId() {
@@ -23,6 +35,22 @@ public class Airport {
 
 	public double getLongitude() {
 		return longitude;
+	}
+
+	public void addFlight(Flight flight) {
+		Airport destination = flight.getDestination();
+		Route r = routes.get(destination.id);
+		if (r == null) {
+			r = new Route(this, destination);
+			// Agrega la ruta a los dos aeropuertos que conecta.
+			this.addRoute(destination.id, r);
+			destination.addRoute(this.id, r);
+		}
+		r.addFlight(flight);
+	}
+
+	public void addRoute(String airportId, Route r) {
+		routes.put(airportId, r);
 	}
 
 	@Override
