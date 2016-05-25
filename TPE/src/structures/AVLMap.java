@@ -10,6 +10,16 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 	private Comparator<K> cmp;
 	private int size;
 
+	public AVLMap(){
+		this.cmp = new Comparator<K>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public int compare(K o1, K o2) {
+				return ((Comparable<K>)o1).compareTo(o2);
+			}
+		};
+	}
+
 	public AVLMap(Comparator<K> cmp) {
 		this.cmp = cmp;
 	}

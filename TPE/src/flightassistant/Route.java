@@ -9,10 +9,10 @@ public class Route {
 	//Airport A y B son nombres y no implican ningun orden.
 	private Airport airportA;
 	private Airport airportB;
-	
+
 	private FlightContainer containerA; // vualos que salen del A
 	private FlightContainer containerB; // vuelos que salen del B
-	
+
 	public Route(Airport airport1, Airport airport2) {
 		if(airport1 == null || airport2 == null) {
 			throw new IllegalArgumentException();
@@ -98,6 +98,7 @@ public class Route {
 				cheapest = flight;
 			if (quickest == null || flight.isQuickerThan(quickest))
 				quickest = flight;
+
 			// TODO: agregar a los sets que correspondan al dia
 		}
 

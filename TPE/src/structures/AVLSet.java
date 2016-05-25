@@ -13,6 +13,16 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 	private Comparator<T> cmp;
 	private int size;
 
+	public AVLSet() {
+		cmp = new Comparator<T>(){
+			@SuppressWarnings("unchecked")
+			@Override
+			public int compare(T o1, T o2) {
+				return ((Comparable<T>)o1).compareTo(o2);
+			}
+		};
+	}
+
 	public AVLSet(Comparator<T> c) {
 		cmp = c;
 	}

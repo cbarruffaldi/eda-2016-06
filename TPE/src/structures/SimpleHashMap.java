@@ -13,7 +13,7 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	private int mod;
 
 	@SuppressWarnings("unchecked")
-	public SimpleHashMap(int capacity, Comparator<K> comparator) {
+	private void initiate (int capacity, Comparator<K> comparator) {
 		if (capacity < 1)
 			throw new IllegalArgumentException("Illegal capacity < 1");
 
@@ -24,10 +24,21 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 			buckets[i] = new AVLMap<>(comparator);
 	}
 
-	public SimpleHashMap(Comparator<K> comparator) {
-		this(DEFAULT_CAPACITY, comparator);
+	public SimpleHashMap(int capacity) {
+		initiate(capacity, getNaturalComparator());
 	}
-	
+
+	public SimpleHashMap(int capacity, Comparator<K> comparator) {
+		initiate(capacity, comparator);
+	}
+
+	public SimpleHashMap(Comparator<K> comparator) {
+		initiate(DEFAULT_CAPACITY, comparator);
+	}
+
+	public SimpleHashMap() {
+		initiate(DEFAULT_CAPACITY,getNaturalComparator());
+	}
 
 	@Override
 	public void put(K key, V value) {
@@ -103,5 +114,15 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	private int hash(Object key) {
 		int i = key.hashCode() % mod;
 		return i > 0 ? i : -i;
+	}
+
+	private Comparator<K> getNaturalComparator() {
+		return new Comparator<K>(){
+			@SuppressWarnings("unchecked")
+			@Override
+			public int compare(K o1, K o2) {
+				return ((Comparable<K>)o1).compareTo(o2);
+			}
+		};
 	}
 }

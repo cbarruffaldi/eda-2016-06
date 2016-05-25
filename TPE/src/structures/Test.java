@@ -24,7 +24,7 @@ public class Test {
 
 		/***********************************************************/
 
-		AVLSet<Integer> set = new AVLSet<>((a,b)->Integer.compare(a, b));
+		AVLSet<Integer> set = new AVLSet<>();
 
 		set.add(7);
 		set.add(1);
@@ -40,5 +40,6 @@ public class Test {
 		while (iter.hasNext())
 			System.out.println(iter.next());
 
+		/************************************************************/
 	}
 }
