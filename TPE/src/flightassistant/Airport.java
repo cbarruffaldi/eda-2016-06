@@ -48,6 +48,23 @@ public class Airport {
 		}
 		r.addFlight(flight);
 	}
+	
+	
+	
+	public void addFlight2(Flight flight) {
+		Airport destination = flight.getDestination();
+		if (! routeExistsTo(destination.id)) { //Un acceso mas, pero queda mas claro
+			throw new IllegalStateException();
+		}
+
+		Route r = routes.get(destination.id);
+		r.addFlight(flight);
+	}
+	
+	
+	public boolean routeExistsTo(String id) {
+		return routes.get(id) != null;
+	}
 
 	public void addRoute(String airportId, Route r) {
 		routes.put(airportId, r);
@@ -72,4 +89,6 @@ public class Airport {
 		Airport other = (Airport) o;
 		return id == null ? other.id == null : id.equals(other.id);
 	}
+
+
 }

@@ -48,7 +48,36 @@ public class FlightAssistant {
 		}
 		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
 		flights.put(newFlight.getId(), newFlight);
+		
 		origAir.addFlight(newFlight);
 	}
+	
+	
+	//Controla todo lo de las rutas aca de los dos aeropuerto. Queda un pcoo mas largo
+	//pero para no delegar control de un aeropuerto en otro
+	public void insertFlight2(String airline, int number, double price, Moment[] departures, Time duration,
+			 String origin, String destination) {
+		
+		Airport origAir = airports.get(origin);
+		Airport destAir = airports.get(destination);
+		if (origAir == null || destAir == null) {
+			return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
+		}
+		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
+		flights.put(newFlight.getId(), newFlight);
+
+		if (! origAir.routeExistsTo(destAir.getId())) {
+			Route r = new Route(origAir, destAir);
+			origAir.addRoute(destAir.getId(), r);
+			destAir.addRoute(origAir.getId(), r);
+		} else{
+			origAir.addFlight2(newFlight);
+			destAir.addFlight2(newFlight);
+		}
+		
+		
+
+}
+
 	
 }
