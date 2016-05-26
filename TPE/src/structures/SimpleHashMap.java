@@ -3,6 +3,7 @@ package structures;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
@@ -129,5 +130,46 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 				return ((Comparable<K>)o1).compareTo(o2);
 			}
 		};
+	}
+
+	@Override
+	public Iterator<K> keyIterator() {
+		return new KeyIterator<K,V>(buckets);
+	}
+
+	private static class KeyIterator<K,V> implements Iterator<K> {
+		private AVLMap<K,V>[] buckets;
+		private int i;
+		private Iterator<K> iter;
+
+		/**
+		 * Avanza el índice i y a partir de ahí busca el siguiente iterador
+		 */
+		private Iterator<K> getNextIterator() {
+			i += 1;
+			while (i < buckets.length && buckets[i].isEmpty())
+				i++;
+			if (i < buckets.length)
+				return buckets[i].keyIterator();
+			return null;
+		}
+
+		public KeyIterator(AVLMap<K,V>[] buckets) {
+			this.buckets = buckets;
+			i = -1;
+			iter = getNextIterator();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return i < buckets.length;
+		}
+		@Override
+		public K next() {
+			K key = iter.next();
+			if (!iter.hasNext())
+				iter = getNextIterator();
+			return key;
+		}
 	}
 }

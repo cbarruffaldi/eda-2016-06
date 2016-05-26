@@ -1,6 +1,7 @@
 package structures;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
 public interface SimpleMap<K, V> {
@@ -52,7 +53,12 @@ public interface SimpleMap<K, V> {
 	public boolean isEmpty();
 
 	/**
-	 * Vacía el mapa
+	 * Vacía el mapa.
 	 */
 	public void clear();
+
+	/**
+	 * Retorna un Iterador sobre las keys del mapa.
+	 */
+	public Iterator<K> keyIterator();
 }

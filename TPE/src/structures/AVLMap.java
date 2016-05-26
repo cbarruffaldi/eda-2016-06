@@ -2,6 +2,8 @@ package structures;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -248,5 +250,43 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 		if (n.value.equals(value))
 			return true;
 		return containsValue(value, n.left) || containsValue(value, n.right);
+	}
+
+	@Override
+	public Iterator<K> keyIterator() {
+		return new InorderIterator<K,V>(root);
+	}
+
+	private static class InorderIterator<K, V> implements Iterator<K> {
+		// arriba del stack está siempre el nodo cuyo valor devolver
+		private Deque<Node<K,V>> stack = new LinkedList<>();
+
+		public InorderIterator(Node<K,V> root) {
+			if (root != null) {
+				stack.push(root);
+				Node<K,V> t;
+				while ((t = stack.peek()).hasLeftChild())
+					stack.push(t.left);
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public K next() {
+			Node<K,V> t = stack.pop();
+			K key = t.key;
+
+			if (t.hasRightChild()) {
+				stack.push(t.right);
+				while ((t = stack.peek()).hasLeftChild())
+					stack.push(t.left);
+			}
+
+			return key;
+		}
 	}
 }

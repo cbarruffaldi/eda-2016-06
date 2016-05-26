@@ -1,5 +1,7 @@
 package flightassistant;
 
+import java.util.Iterator;
+
 import structures.SimpleHashMap;
 import utils.Moment;
 import utils.Time;
@@ -65,7 +67,8 @@ public class FlightAssistant {
 	}
 
 	private void removeRoutesTo(Airport airport) {
-		for (Airport each : airport.getDestinations())
-			each.removeRouteTo(airport);
+		Iterator<Airport> iter = airport.getDestinationsIterator();
+		while (iter.hasNext())
+			iter.next().removeRouteTo(airport);
 	}
 }

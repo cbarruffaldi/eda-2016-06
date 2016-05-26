@@ -4,6 +4,7 @@ import structures.SimpleHashMap;
 import structures.SimpleMap;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Airport {
@@ -69,6 +70,10 @@ public class Airport {
 
 	public Set<Airport> getDestinations() {
 		return routes.keySet();
+	}
+
+	public Iterator<Airport> getDestinationsIterator() {
+		return routes.keyIterator();
 	}
 
 	@Override

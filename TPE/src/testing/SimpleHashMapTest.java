@@ -3,6 +3,9 @@ package testing;
 import static org.junit.Assert.*;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
@@ -70,6 +73,14 @@ public class SimpleHashMapTest {
 	    		intMap.put(storedIntKeys[i], storedInts[i]);
 	    	}
 
+	    	Iterator<Integer> iter = intMap.keyIterator();
+	    	List<Integer> iterList = new LinkedList<Integer>();
+
+	    	while (iter.hasNext())
+	    		iterList.add(iter.next());
+
+	    	for(int i = 0; i < CAPACITY; i++)
+	    		assertTrue(iterList.contains(storedIntKeys[i]));
 
 	    	assertTrue(intMap.size() == CAPACITY);
 	    	for(int i = 0; i < CAPACITY ; i++){

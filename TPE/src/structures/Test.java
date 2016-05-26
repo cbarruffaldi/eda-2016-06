@@ -1,5 +1,6 @@
 package structures;
 
+import java.util.Iterator;
 
 public class Test {
 
@@ -47,5 +48,20 @@ public class Test {
 		System.out.println(set2.merge(set));
 
 		/************************************************************/
+
+		SimpleMap<Integer, Integer> map = new AVLMap<>();
+
+		map.put(1, 1);
+		map.put(2, 1);
+		map.put(3, 1);
+		map.put(4, 1);
+		map.put(5, 1);
+		map.put(6, 1);
+		map.put(7, 1);
+
+		Iterator<Integer> iter = map.keyIterator();
+
+		while (iter.hasNext())
+			System.out.println(iter.next());
 	}
 }

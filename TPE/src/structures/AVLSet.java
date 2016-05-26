@@ -78,7 +78,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		return root == null;
 	}
 
-	public Iterator<T> iterator() {
+	public InorderIterator<T> iterator() {
 		return new InorderIterator<T>(root);
 	}
 
@@ -161,15 +161,11 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		return a;
 	}
 
-	@SuppressWarnings("unchecked")
 	public AVLSet<T> merge(AVLSet<T> other) {
 		if (other == null)
-			throw new IllegalArgumentException("Illegal set: null");
+			throw new IllegalArgumentException("Illegal merge: other set null");
 
-		T[] array = (T[]) toArray();
-		T[] otherArray = (T[]) other.toArray();
-
-		List<T> merged = merge(array, otherArray);
+		List<T> merged = merge(iterator(), other.iterator(), size() + other.size());
 
 		return buildFromList(merged);
 	}
@@ -193,28 +189,28 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		return n;
 	}
 
-	private List<T> merge(T[] arr1, T[] arr2) {
-		List<T> merged = new ArrayList<T>(arr1.length + arr2.length);
-		int i = 0, j = 0, k = 0;
+	private List<T> merge(InorderIterator<T> iter1, InorderIterator<T> iter2, int maxSize) {
+		List<T> merged = new ArrayList<T>(maxSize);
+		int k = 0;
 		int comp;
 
-		while (i < arr1.length && j < arr2.length) {
-			comp = cmp.compare(arr1[i], arr2[j]);
+		while (iter1.hasNext() && iter2.hasNext()) {
+			comp = cmp.compare(iter1.peek(), iter2.peek());
 			if (comp < 0)
-				merged.add(k++, arr1[i++]);
+				merged.add(k++, iter1.next());
 			else if (comp > 0)
-				merged.add(k++, arr2[j++]);
+				merged.add(k++, iter2.next());
 			else {
-				merged.add(k++, arr1[i++]);
-				j++;
+				merged.add(k++, iter1.next());
+				iter2.next();
 			}
 		}
 
-		while (i < arr1.length)
-			merged.add(k++, arr1[i++]);
+		while (iter1.hasNext())
+			merged.add(k++, iter1.next());
 
-		while (j < arr2.length)
-			merged.add(k++, arr2[j++]);
+		while (iter2.hasNext())
+			merged.add(k++, iter2.next());
 
 		return merged;
 	}
