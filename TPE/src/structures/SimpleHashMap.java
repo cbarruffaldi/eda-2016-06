@@ -3,7 +3,7 @@ package structures;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
+import java.util.LinkedList;
 
 public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	private static final int DEFAULT_CAPACITY = 20;
@@ -11,12 +11,15 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	private int size;
 	private AVLMap<K,V>[] buckets;
 	private int mod;
+	private Comparator<K> cmp;
 
 	@SuppressWarnings("unchecked")
 	private void initiate (int capacity, Comparator<K> comparator) {
+		if (comparator == null)
+			throw new IllegalArgumentException("Illegal comparator: null");
 		if (capacity < 1)
 			throw new IllegalArgumentException("Illegal capacity < 1");
-
+		cmp = comparator;
 		mod = capacity;
 		buckets = (AVLMap[]) Array.newInstance(AVLMap.class, capacity);
 
@@ -71,18 +74,20 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	}
 
 	@Override
-	public Set<K> keySet() {
-		Set<K> set = buckets[0].keySet();
-		for (int i = 1; i < buckets.length; i++)
-			set.addAll(buckets[i].keySet());
+	public AVLSet<K> keySet() {
+		AVLSet<K> set = new AVLSet<K>(cmp);
+		for (int i = 0; i < buckets.length; i++)
+				if (!buckets[i].isEmpty())
+					set = set.merge(buckets[i].keySet());
 		return set;
 	}
 
 	@Override
 	public Collection<V> values() {
-		Collection<V> collection = buckets[0].values();
-		for (int i = 1; i < buckets.length; i++)
-			collection.addAll(buckets[i].values());
+		Collection<V> collection = new LinkedList<V>();
+		for (int i = 0; i < buckets.length; i++)
+			if (!buckets[i].isEmpty())
+				collection.addAll(buckets[i].values());
 		return collection;
 	}
 

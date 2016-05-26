@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
 
 public class AVLMap<K, V> implements SimpleMap<K, V> {
 
@@ -121,8 +120,8 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 	}
 
 	@Override
-	public Set<K> keySet() {
-		Set<K> set = new AVLSet<>(cmp);
+	public AVLSet<K> keySet() {
+		AVLSet<K> set = new AVLSet<>(cmp);
 		Queue<Node<K,V>> queue = new LinkedList<>();
 		if (root != null) { // Agrega por nivel así no tiene que balancear
 			queue.offer(root);

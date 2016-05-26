@@ -1,11 +1,13 @@
 package structures;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class AVLSet<T> implements Iterable<T>, Set<T>{
@@ -52,15 +54,6 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		for (T each : c)
 			changed = add(each) || changed;
 		return changed;
-	}
-
-	public void clear() {
-		root = null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public boolean contains(Object value) {
-		return contains((T) value, root);
 	}
 
 	private boolean contains(T value, Node<T> t) {
@@ -166,6 +159,73 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 			a[i++] = (E) each;
 
 		return a;
+	}
+
+	@SuppressWarnings("unchecked")
+	public AVLSet<T> merge(AVLSet<T> other) {
+		if (other == null)
+			throw new IllegalArgumentException("Illegal set: null");
+
+		T[] array = (T[]) toArray();
+		T[] otherArray = (T[]) other.toArray();
+
+		List<T> merged = merge(array, otherArray);
+
+		return buildFromList(merged);
+	}
+
+	private AVLSet<T> buildFromList(List<T> merged) {
+		AVLSet<T> set = new AVLSet<T>(cmp);
+		int height = (int) (Math.log10(merged.size()) / Math.log10(2));
+		set.size = merged.size();
+		set.root = buildFromList(merged, 0, merged.size()-1, height);
+		return set;
+	}
+
+	private Node<T> buildFromList(List<T> merged, int low, int high, int height) {
+		if (low > high)
+			return null;
+		int mid = (low + high) / 2;
+		Node<T> n = new Node<T>(merged.get(mid));
+		n.height = height;
+		n.left = buildFromList(merged, low, mid-1, height-1);
+		n.right = buildFromList(merged, mid+1, high, height-1);
+		return n;
+	}
+
+	private List<T> merge(T[] arr1, T[] arr2) {
+		List<T> merged = new ArrayList<T>(arr1.length + arr2.length);
+		int i = 0, j = 0, k = 0;
+		int comp;
+
+		while (i < arr1.length && j < arr2.length) {
+			comp = cmp.compare(arr1[i], arr2[j]);
+			if (comp < 0)
+				merged.add(k++, arr1[i++]);
+			else if (comp > 0)
+				merged.add(k++, arr2[j++]);
+			else {
+				merged.add(k++, arr1[i++]);
+				j++;
+			}
+		}
+
+		while (i < arr1.length)
+			merged.add(k++, arr1[i++]);
+
+		while (j < arr2.length)
+			merged.add(k++, arr2[j++]);
+
+		return merged;
+	}
+
+	public void clear() {
+		root = null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean contains(Object value) {
+		return contains((T) value, root);
 	}
 
 	/**

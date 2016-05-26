@@ -1,6 +1,5 @@
 package structures;
 
-import java.util.Iterator;
 
 public class Test {
 
@@ -25,6 +24,7 @@ public class Test {
 		/***********************************************************/
 
 		AVLSet<Integer> set = new AVLSet<>();
+		AVLSet<Integer> set2 = new AVLSet<>();
 
 		set.add(7);
 		set.add(1);
@@ -33,12 +33,18 @@ public class Test {
 		set.add(1);
 		set.add(29);
 
-		Iterator<Integer> iter = set.higherIterator(2);
+		set2.add(20);
+		set2.add(-40);
+		set2.add(100);
+		set2.add(-2);
+		set2.add(1);
+		set2.add(29);
 
 		System.out.println(set);
+		System.out.println(set2);
 
-		while (iter.hasNext())
-			System.out.println(iter.next());
+		System.out.println(set.merge(set2));
+		System.out.println(set2.merge(set));
 
 		/************************************************************/
 	}
