@@ -47,7 +47,24 @@ public class Route {
 		else
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
+	
+	
 
+	public Flight getCheapest(Airport from){
+		FlightContainer fc;
+		if(from.equals(airportA))
+			fc = containerA;
+		else if(from.equals(airportB))
+			fc = containerB;
+		else
+			throw new IllegalArgumentException();
+		
+		return fc.cheapest;
+	}
+	
+
+	
+	
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
