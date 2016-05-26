@@ -5,9 +5,10 @@ import structures.SimpleMap;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-public class Airport {
+public class Airport implements GraphNode<Flight, Airport>{
 
 	private String id;
 	private double latitude;
@@ -94,5 +95,26 @@ public class Airport {
 			return false;
 		Airport other = (Airport) o;
 		return id == null ? other.id == null : id.equals(other.id);
+	}
+
+	
+	private boolean checked;
+	@Override
+	public boolean visited() {
+		return checked;
+	}
+
+	public void check(){
+		checked = true;
+	}
+	
+	public void uncheck(){
+		checked = false;
+	}
+	
+	@Override
+	public List<GraphArc<Flight, Airport>> getNeighbors() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

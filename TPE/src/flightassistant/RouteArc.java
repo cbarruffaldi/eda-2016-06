@@ -19,12 +19,12 @@ public class RouteArc implements GraphArc<Flight, Airport>{
 	}
 	
 	@Override
-	public int getWeight() {
-		weighter.getMinumum(route, origin)
+	public double getWeight() {
+		return weighter.minWeight(route, origin);
 	}
 	
 	public Flight getArc(){
-		
+		return weighter.getMinumum(route, origin);
 	}
 	
 	public RouteArc(Airport origin, Airport dest){
