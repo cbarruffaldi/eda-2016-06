@@ -88,8 +88,8 @@ public class DijkstraDraft {
 
 		Node curr = node;
 		while(curr.predecessor != null){
-			list.offerFirst(node.airport);
-			curr = node.predecessor;
+			list.offerFirst(curr.airport);
+			curr = curr.predecessor;
 		}
 		return list;
 	}

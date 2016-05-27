@@ -5,10 +5,9 @@ import structures.SimpleMap;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-public class Airport implements GraphNode<Flight, Airport>{
+public class Airport implements GraphNode<Airport> {
 
 	private String id;
 	private double latitude;
@@ -97,24 +96,56 @@ public class Airport implements GraphNode<Flight, Airport>{
 		return id == null ? other.id == null : id.equals(other.id);
 	}
 
-	
+
 	private boolean checked;
-	@Override
-	public boolean visited() {
-		return checked;
-	}
 
 	public void check(){
 		checked = true;
 	}
-	
+
 	public void uncheck(){
 		checked = false;
 	}
-	
+
 	@Override
-	public List<GraphArc<Flight, Airport>> getNeighbors() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean checked() {
+		return checked;
+	}
+
+	@Override
+	public Iterator<GraphNode<Airport>> getNeighbors() {
+		return new GraphNodeIterator(routes.keyIterator());
+	}
+
+	// Por razones solo conocidas por los creadores de Java, devolver un Iterator<Airport>
+	// no es lo mismo que un Iterator<GraphNode<Airport>> a pesar de que Airport implemente
+	// la interface GraphNode<Airport>; son tan diferentes que ni se puede castear, porque
+	// no compila. Saludos.
+	private static class GraphNodeIterator implements Iterator<GraphNode<Airport>> {
+
+		private Iterator<Airport> iterator;
+
+		public GraphNodeIterator(Iterator<Airport> keyIterator) {
+			iterator = keyIterator;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return iterator.hasNext();
+		}
+
+		@Override
+		public GraphNode<Airport> next() {
+			return iterator.next();
+		}
+	}
+
+	@Override
+	public Airport getValue() {
+		return this;
+	}
+
+	public Flight getCheapestTo(Airport destination) {
+		return routes.get(destination).getCheapestFrom(this);
 	}
 }

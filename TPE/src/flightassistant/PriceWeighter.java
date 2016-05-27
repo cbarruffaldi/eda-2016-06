@@ -1,15 +1,15 @@
 package flightassistant;
 
-public class PriceWeighter implements Weighter{
+public class PriceWeighter implements Weighter<Flight, Airport>{
 
 	@Override
-	public double minWeight(Route r, Airport origin) {
-		return r.getCheapest(origin).getPrice();
+	public GraphArc<Flight, Airport> minArc(GraphNode<Airport> from, GraphNode<Airport> to) {
+		Airport origin = from.getValue();
+		Airport destination = to.getValue();
+		Flight cheapest = origin.getCheapestTo(destination);
+		return new FlightArc(cheapest, cheapest.getPrice());
 	}
 
-	@Override
-	public Flight getMinumum(Route r, Airport origin) {
-		return r.getCheapest(origin);
-	}
-	
+
+
 }

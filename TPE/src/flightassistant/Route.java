@@ -47,10 +47,8 @@ public class Route {
 		else
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
-	
-	
 
-	public Flight getCheapest(Airport from){
+	public Flight getCheapestFrom(Airport from){
 		FlightContainer fc;
 		if(from.equals(airportA))
 			fc = containerA;
@@ -58,13 +56,10 @@ public class Route {
 			fc = containerB;
 		else
 			throw new IllegalArgumentException();
-		
+
 		return fc.cheapest;
 	}
-	
 
-	
-	
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
