@@ -1,6 +1,11 @@
 package flightassistant;
 
-public class FlightId implements Comparable<FlightId>{
+import java.io.Serializable;
+
+public class FlightId implements Comparable<FlightId>, Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	private String airline;
 	private int number;
 	

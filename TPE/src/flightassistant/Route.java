@@ -5,10 +5,13 @@ import utils.Day;
 import utils.Day.WeekArray;
 import utils.Moment;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class Route {
+public class Route implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	//Airport A y B son nombres y no implican ningun orden.
 	private Airport airportA;
 	private Airport airportB;

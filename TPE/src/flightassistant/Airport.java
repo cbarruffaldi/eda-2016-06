@@ -3,12 +3,15 @@ package flightassistant;
 import structures.SimpleHashMap;
 import structures.SimpleMap;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Airport implements GraphNode<Airport> {
+public class Airport implements GraphNode<Airport>, Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String id;
 	private double latitude;
 	private double longitude;

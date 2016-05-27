@@ -1,10 +1,14 @@
 package flightassistant;
 
+import java.io.Serializable;
+
 import utils.Moment;
 import utils.Time;
 
-public class Flight {
+public class Flight implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	private FlightId id;
 	private double price;
 

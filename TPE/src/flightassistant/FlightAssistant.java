@@ -1,12 +1,16 @@
 package flightassistant;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import structures.SimpleHashMap;
 import utils.Moment;
 import utils.Time;
 
-public class FlightAssistant {
+public class FlightAssistant implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	private static final int AIRPORTS_SIZE = 20;
 	private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
 
