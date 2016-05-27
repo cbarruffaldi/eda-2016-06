@@ -1,5 +1,5 @@
 package flightassistant;
 
-public interface Weighter<E,T> {
-	public GraphArc<E,T> minArc(GraphNode<T> from, GraphNode<T> to);
+public interface Weighter {
+	public WeightedFlight minFlight(Airport from, Airport to);
 }

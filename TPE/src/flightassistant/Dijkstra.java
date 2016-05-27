@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+@Deprecated
 public class Dijkstra {
 
 	private static class LinkedArc<E,T> implements Comparable<LinkedArc<E,T>>{

@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Airport implements GraphNode<Airport>, Serializable {
+public class Airport implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -100,53 +100,6 @@ public class Airport implements GraphNode<Airport>, Serializable {
 	}
 
 
-	private boolean checked;
-
-	public void check(){
-		checked = true;
-	}
-
-	public void uncheck(){
-		checked = false;
-	}
-
-	@Override
-	public boolean checked() {
-		return checked;
-	}
-
-	@Override
-	public Iterator<GraphNode<Airport>> getNeighbors() {
-		return new GraphNodeIterator(routes.keyIterator());
-	}
-
-	// Por razones solo conocidas por los creadores de Java, devolver un Iterator<Airport>
-	// no es lo mismo que un Iterator<GraphNode<Airport>> a pesar de que Airport implemente
-	// la interface GraphNode<Airport>; son tan diferentes que ni se puede castear, porque
-	// no compila. Saludos.
-	private static class GraphNodeIterator implements Iterator<GraphNode<Airport>>{
-
-		private Iterator<Airport> iterator;
-
-		public GraphNodeIterator(Iterator<Airport> keyIterator) {
-			iterator = keyIterator;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return iterator.hasNext();
-		}
-
-		@Override
-		public GraphNode<Airport> next() {
-			return iterator.next();
-		}
-	}
-
-	@Override
-	public Airport getValue() {
-		return this;
-	}
 
 	public Flight getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
@@ -156,4 +109,42 @@ public class Airport implements GraphNode<Airport>, Serializable {
 		return routes.get(destination).getQuickestFrom(this);
 	}
 
+	
+	//Cosas de Dijkstrksja
+	
+	private boolean visited;
+	
+	private double weight;
+	
+	public void visit(){
+		visited = true;
+	}
+	
+	public void unvisit(){
+		visited = false;
+	}
+	
+	public boolean visited() {
+		return visited;
+	}	
+	
+	
+	private Flight incident;
+	
+	public Flight getIncident(){
+		return incident;
+	}
+	
+	public void setIncident(Flight f){
+		incident = f;
+	}
+
+	public double weight(){
+		return weight;
+	}
+	
+	public void setWeight(double w){
+		weight = w;
+	}
+	
 }
