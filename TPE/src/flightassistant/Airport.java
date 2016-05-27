@@ -121,7 +121,7 @@ public class Airport implements GraphNode<Airport> {
 	// no es lo mismo que un Iterator<GraphNode<Airport>> a pesar de que Airport implemente
 	// la interface GraphNode<Airport>; son tan diferentes que ni se puede castear, porque
 	// no compila. Saludos.
-	private static class GraphNodeIterator implements Iterator<GraphNode<Airport>> {
+	private static class GraphNodeIterator implements Iterator<GraphNode<Airport>>{
 
 		private Iterator<Airport> iterator;
 
@@ -148,4 +148,9 @@ public class Airport implements GraphNode<Airport> {
 	public Flight getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
 	}
+	
+	public Flight getQuickestTo(Airport destination) {
+		return routes.get(destination).getQuickestFrom(this);
+	}
+
 }

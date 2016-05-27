@@ -5,6 +5,7 @@ import utils.Day;
 import utils.Day.WeekArray;
 import utils.Moment;
 
+import java.awt.Container;
 import java.util.Comparator;
 
 public class Route {
@@ -48,18 +49,29 @@ public class Route {
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
 
-	public Flight getCheapestFrom(Airport from){
-		FlightContainer fc;
-		if(from.equals(airportA))
-			fc = containerA;
-		else if(from.equals(airportB))
-			fc = containerB;
+	
+	
+	private FlightContainer selectContainer(Airport base){
+		if(base.equals(airportA))
+			return containerA;
+		else if(base.equals(airportB))
+			return containerB;
 		else
 			throw new IllegalArgumentException();
-
-		return fc.cheapest;
+	}
+	
+	
+	public Flight getCheapestFrom(Airport airport){
+		return selectContainer(airport).cheapest;
 	}
 
+	
+	public Flight getQuickestFrom(Airport airport) {
+		return selectContainer(airport).quickest;
+	}
+
+	
+	
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
@@ -143,4 +155,5 @@ public class Route {
 						cheapest = flight;
 		}
 	}
+
 }
