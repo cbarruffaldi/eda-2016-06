@@ -42,6 +42,11 @@ public class FlightId implements Comparable<FlightId>, Serializable{
 	public int hashCode() {
 		return airline.hashCode() + number; // TODO: hacerlo bien
 	}
+	
+	
+	public String toString(){
+		return airline + number;
+	}
 
 	@Override
 	public int compareTo(FlightId o) {

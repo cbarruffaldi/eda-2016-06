@@ -57,13 +57,14 @@ public class DijsktraForReal {
 		});
 		
 		pq.add(origin);
-		origin.visit();
+		origin.setWeight(0);
 		
 		while(!pq.isEmpty()){
 			Airport airport = pq.remove();
 			if(airport.equals(dest)){
 				return buildList(dest);
 			}
+			
 			if(!airport.visited()){
 				airport.visit();
 				Iterator<Airport> iter = airport.getDestinationsIterator();
@@ -72,7 +73,6 @@ public class DijsktraForReal {
 					if(!next.visited()){
 						WeightedFlight wflight = weighter.minFlight(airport, next);
 						double acumWeight = airport.weight() + wflight.weight();
-
 						if(acumWeight < next.weight()){
 							next.setWeight(acumWeight);
 							next.setIncident(wflight.flight());

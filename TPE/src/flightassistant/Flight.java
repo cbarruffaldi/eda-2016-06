@@ -32,6 +32,7 @@ public class Flight implements Serializable{
 			Airport origin, Airport destination) {
 		this.id = new FlightId(airline, number);
 		this.price = price;
+		this.duration = duration;
 
 		schedules = new Schedule[departures.length];
 		for(int i = 0; i < departures.length ; i++){
@@ -87,6 +88,11 @@ public class Flight implements Serializable{
 		return id.hashCode();
 	}
 
+	public String toString(){
+		return "Flight: " + id.toString();
+	}
+	
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
