@@ -111,7 +111,7 @@ public class DijsktraTest {
 	@Test
 	public void dijkstraAD2(){
 		//AB2 -> BD 1
-		List<Flight >list = DijsktraForReal.minPath(A,D,new AirtimeWeighter());
+		List<Flight> list = DijsktraForReal.minPath(A,D,new AirtimeWeighter());
 
 		assertNotNull(list);
 		assertTrue(list.size() == 2);

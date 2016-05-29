@@ -71,11 +71,11 @@ public class Airport implements Serializable {
 		routes.remove(destination);
 	}
 
-	public Set<Airport> getDestinations() {
+	public Set<Airport> getConnectedAirports() {
 		return routes.keySet();
 	}
 
-	public Iterator<Airport> getDestinationsIterator() {
+	public Iterator<Airport> connectedAirportsIterator() {
 		return routes.keyIterator();
 	}
 	
@@ -108,10 +108,7 @@ public class Airport implements Serializable {
 
 
 	public boolean flightExistsTo(Airport next) {
-		if(!routeExistsTo(next))
-			return false;
-		
-		return routes.get(next).FlightExistsFrom(this);
+		return	routeExistsTo(next) && routes.get(next).FlightExistsFrom(this);
 	}
 	
 	public Flight getCheapestTo(Airport destination) {

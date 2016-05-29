@@ -67,7 +67,7 @@ public class DijsktraForReal {
 			
 			if(!airport.visited()){
 				airport.visit();
-				Iterator<Airport> iter = airport.getDestinationsIterator();
+				Iterator<Airport> iter = airport.connectedAirportsIterator();
 				while(iter.hasNext()){
 					Airport next = iter.next();
 					if(!next.visited() && airport.flightExistsTo(next)){

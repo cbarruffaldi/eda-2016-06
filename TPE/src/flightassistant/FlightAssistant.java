@@ -71,7 +71,7 @@ public class FlightAssistant implements Serializable{
 	}
 
 	private void removeRoutesTo(Airport airport) {
-		Iterator<Airport> iter = airport.getDestinationsIterator();
+		Iterator<Airport> iter = airport.connectedAirportsIterator();
 		while (iter.hasNext())
 			iter.next().removeRouteTo(airport);
 	}
