@@ -73,14 +73,20 @@ public class SimpleHashMapTest {
 	    		intMap.put(storedIntKeys[i], storedInts[i]);
 	    	}
 
-	    	Iterator<Integer> iter = intMap.keyIterator();
-	    	List<Integer> iterList = new LinkedList<Integer>();
+	    	Iterator<Integer> keyIter = intMap.keyIterator();
+	    	Iterator<Integer> valueIter = intMap.valueIterator();
+	    	List<Integer> keyIterList = new LinkedList<Integer>();
+	    	List<Integer> valueIterList = new LinkedList<Integer>();
 
-	    	while (iter.hasNext())
-	    		iterList.add(iter.next());
-
+	    	while (keyIter.hasNext())
+	    		keyIterList.add(keyIter.next());
 	    	for(int i = 0; i < CAPACITY; i++)
-	    		assertTrue(iterList.contains(storedIntKeys[i]));
+	    		assertTrue(keyIterList.contains(storedIntKeys[i]));
+
+	    	while (valueIter.hasNext())
+	    		valueIterList.add(valueIter.next());
+	    	for(int i = 0; i < CAPACITY; i++)
+	    		assertTrue(valueIterList.contains(storedInts[i]));
 
 	    	assertTrue(intMap.size() == CAPACITY);
 	    	for(int i = 0; i < CAPACITY ; i++){

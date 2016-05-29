@@ -45,6 +45,8 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 			n.right = add(value, n.right);
 		else if (comp < 0)
 			n.left = add(value, n.left);
+		else
+			n.value = value;  // se pisa el valor; de esta forma un AVLMap puede estar compuesto por un AVLSet
 		n.updateHeight();
 		return rebalance(n);
 	}
@@ -54,17 +56,6 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		for (T each : c)
 			changed = add(each) || changed;
 		return changed;
-	}
-
-	private boolean contains(T value, Node<T> t) {
-		if (t == null)
-			return false;
-		int comp = cmp.compare(value, t.value);
-		if (comp > 0)
-			return contains(value, t.right);
-		else if (comp < 0)
-			return contains(value, t.left);
-		return true;
 	}
 
 	public boolean containsAll(Collection<?> c) {
@@ -78,7 +69,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		return root == null;
 	}
 
-	public InorderIterator<T> iterator() {
+	public Iterator<T> iterator() {
 		return new InorderIterator<T>(root);
 	}
 
@@ -165,7 +156,10 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		if (other == null)
 			throw new IllegalArgumentException("Illegal merge: other set null");
 
-		List<T> merged = merge(iterator(), other.iterator(), size() + other.size());
+		InorderIterator<T> iter1 = new InorderIterator<>(root);
+		InorderIterator<T> iter2 = new InorderIterator<>(other.root);
+
+		List<T> merged = merge(iter1, iter2, size() + other.size());
 
 		return buildFromList(merged);
 	}
@@ -221,7 +215,27 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 
 	@SuppressWarnings("unchecked")
 	public boolean contains(Object value) {
-		return contains((T) value, root);
+		return find((T) value, root) != null;
+	}
+
+	private T find(T value, Node<T> t) {
+		if (t == null)
+			return null;
+		int comp = cmp.compare(value, t.value);
+		if (comp > 0)
+			return find(value, t.right);
+		else if (comp < 0)
+			return find(value, t.left);
+		return t.value;
+	}
+
+	/**
+	 * Devuelve el valor del nodo que contenga como valor a value. De esta manera un AVLMap puede
+	 * estar compuesto por un AVLSet; con este método puede buscar el nodo que contenga una Key
+	 * específica y devolver el valor asociado a la key, contenido en el nodo.
+	 */
+	public T find (T value) {
+		return find(value, root);
 	}
 
 	/**

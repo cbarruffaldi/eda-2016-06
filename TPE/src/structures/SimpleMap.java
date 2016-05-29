@@ -27,23 +27,22 @@ public interface SimpleMap<K, V> {
 	public boolean containsValue(V value);
 
 	/**
+	 * Retorna todas las claves insertadas en el mapa.
+	 */
+	public Set<K> keySet();
+
+	/**
+	 * Retorna todos los valores insertados en el mapa.
+	 */
+	public Collection<V> values();
+
+	/**
 	 * Elimina un par clave/valor de la tabla. Si la clave no existe no hace nada.
 	 */
 	public void remove(K key);
 
 	/**
-	 * Retorna todas las claves insertadas en la tabla.
-	 */
-	public Set<K> keySet();
-
-	/**
-	 * Retorna todos los valores insertados en la tabla.
-	 */
-	public Collection<V> values();
-
-
-	/**
-	 * Obtiene la cantidad de pares clave/valor insertados en la tabla.
+	 * Obtiene la cantidad de pares clave/valor insertados en el mapa.
 	 */
 	public int size();
 
@@ -61,4 +60,9 @@ public interface SimpleMap<K, V> {
 	 * Retorna un Iterador sobre las keys del mapa.
 	 */
 	public Iterator<K> keyIterator();
+
+	/**
+	 * Retorna un Iterador sobre los valores del mapa.
+	 */
+	public Iterator<V> valueIterator();
 }

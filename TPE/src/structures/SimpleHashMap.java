@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	private static final int DEFAULT_CAPACITY = 20;
@@ -75,24 +76,6 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 	}
 
 	@Override
-	public AVLSet<K> keySet() {
-		AVLSet<K> set = new AVLSet<K>(cmp);
-		for (int i = 0; i < buckets.length; i++)
-				if (!buckets[i].isEmpty())
-					set = set.merge(buckets[i].keySet());
-		return set;
-	}
-
-	@Override
-	public Collection<V> values() {
-		Collection<V> collection = new LinkedList<V>();
-		for (int i = 0; i < buckets.length; i++)
-			if (!buckets[i].isEmpty())
-				collection.addAll(buckets[i].values());
-		return collection;
-	}
-
-	@Override
 	public int size() {
 		return size;
 	}
@@ -134,30 +117,51 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 
 	@Override
 	public Iterator<K> keyIterator() {
-		return new KeyIterator<K,V>(buckets);
+		IteratorGetter<K> keyIter = new IteratorGetter<K>() {
+			@Override
+			public Iterator<K> getIterator(SimpleMap<K,V> map) {
+				return map.keyIterator();
+			}
+		};
+		return new MapIterator<K>(buckets, keyIter);
 	}
 
-	private static class KeyIterator<K,V> implements Iterator<K> {
+	@Override
+	public Iterator<V> valueIterator() {
+		IteratorGetter<V> valueIter = new IteratorGetter<V>() {
+			@Override
+			public Iterator<V> getIterator(SimpleMap<K,V> map) {
+				return map.valueIterator();
+			}
+		};
+		return new MapIterator<V>(buckets, valueIter);
+
+	}
+
+	private class MapIterator<T> implements Iterator<T> {
 		private AVLMap<K,V>[] buckets;
 		private int i;
-		private Iterator<K> iter;
+		private IteratorGetter<T> iterGetter;
+		private Iterator<T> iter;
+
+		public MapIterator(AVLMap<K,V>[] buckets, IteratorGetter<T> iterGetter) {
+			this.iterGetter = iterGetter;
+			this.buckets = buckets;
+			i = -1;
+			iter = getNextIterator();
+		}
 
 		/**
 		 * Avanza el índice i y a partir de ahí busca el siguiente iterador
+		 * correspondiente a un bucket no vacío.
 		 */
-		private Iterator<K> getNextIterator() {
+		private Iterator<T> getNextIterator() {
 			i += 1;
 			while (i < buckets.length && buckets[i].isEmpty())
 				i++;
 			if (i < buckets.length)
-				return buckets[i].keyIterator();
+				return iterGetter.getIterator(buckets[i]);
 			return null;
-		}
-
-		public KeyIterator(AVLMap<K,V>[] buckets) {
-			this.buckets = buckets;
-			i = -1;
-			iter = getNextIterator();
 		}
 
 		@Override
@@ -165,11 +169,33 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 			return i < buckets.length;
 		}
 		@Override
-		public K next() {
-			K key = iter.next();
+		public T next() {
+			T key = iter.next();
 			if (!iter.hasNext())
 				iter = getNextIterator();
 			return key;
 		}
+	}
+
+	private abstract class IteratorGetter<T> {
+		public abstract Iterator<T> getIterator(SimpleMap<K,V> map);
+	}
+
+	@Override
+	public Set<K> keySet() {
+		AVLSet<K> set = new AVLSet<K>(cmp);
+		for (int i = 0; i < buckets.length; i++)
+			if (!buckets[i].isEmpty())
+				set = set.merge(buckets[i].keySet());
+		return set;
+	}
+
+	@Override
+	public Collection<V> values() {
+		Collection<V> collection = new LinkedList<V>();
+		for (int i = 0; i < buckets.length; i++)
+			if (!buckets[i].isEmpty())
+				collection.addAll(buckets[i].values());
+		return collection;
 	}
 }
