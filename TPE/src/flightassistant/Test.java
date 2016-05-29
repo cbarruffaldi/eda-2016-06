@@ -63,6 +63,8 @@ public class Test {
 		F.setWeight(Double.MAX_VALUE);
 
 		
+		System.err.println(B.getDestinations().contains(A));
+		
 	//	System.out.println(A.getQuickestTo(B));
 //		System.out.println(A.getCheapestTo(B));
 //
@@ -71,7 +73,7 @@ public class Test {
 //		System.out.println(A.routeExistsTo(D));
 //		System.out.println(E.routeExistsTo(F));
 		
-		List<Flight> list = DijsktraForReal.minPath(A,B,new PriceWeighter());
+		List<Flight> list = DijsktraForReal.minPath(A,F,new AirtimeWeighter());
 
 		if(list == null)
 			System.out.println("null");

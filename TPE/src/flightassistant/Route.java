@@ -156,4 +156,8 @@ public class Route {
 		}
 	}
 
+	public boolean FlightExistsFrom(Airport airport) {
+		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
+	}
+
 }

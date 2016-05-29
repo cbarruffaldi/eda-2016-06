@@ -78,12 +78,19 @@ public class Airport implements Serializable {
 	public Iterator<Airport> getDestinationsIterator() {
 		return routes.keyIterator();
 	}
+	
+	
+	
+	public String toString(){
+		return "Airport: " + id;
+	}
 
 	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
 
+	
 	/*
 	 * Determina la igualdad de dos Aeropuertos según su nombre (id)
 	 */
@@ -100,7 +107,10 @@ public class Airport implements Serializable {
 	}
 
 
-
+	public boolean flightExistTo(Airport next) {
+		return routes.get(next).getCheapestFrom(this) != null;
+	}
+	
 	public Flight getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
 	}
@@ -146,5 +156,5 @@ public class Airport implements Serializable {
 	public void setWeight(double w){
 		weight = w;
 	}
-	
+
 }
