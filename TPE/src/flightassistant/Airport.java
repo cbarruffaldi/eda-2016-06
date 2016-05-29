@@ -107,8 +107,11 @@ public class Airport implements Serializable {
 	}
 
 
-	public boolean flightExistTo(Airport next) {
-		return routes.get(next).getCheapestFrom(this) != null;
+	public boolean flightExistsTo(Airport next) {
+		if(!routeExistsTo(next))
+			return false;
+		
+		return routes.get(next).FlightExistsFrom(this);
 	}
 	
 	public Flight getCheapestTo(Airport destination) {

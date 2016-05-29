@@ -70,7 +70,7 @@ public class DijsktraForReal {
 				Iterator<Airport> iter = airport.getDestinationsIterator();
 				while(iter.hasNext()){
 					Airport next = iter.next();
-					if(!next.visited() && airport.flightExistTo(next)){
+					if(!next.visited() && airport.flightExistsTo(next)){
 						WeightedFlight wflight = weighter.minFlight(airport, next);
 						double acumWeight = airport.weight() + wflight.weight();
 						if(acumWeight < next.weight()){
