@@ -122,10 +122,16 @@ public class Airport implements Serializable {
 	
 	//Cosas de Dijkstrksja
 	
+	public void nodeRefresh(){
+		visited = false;
+		incident = null;
+		weight = Double.POSITIVE_INFINITY; //TODO: Weight?
+	}
+	
 	private boolean visited;
 	
 	private double weight;
-	
+
 	public void visit(){
 		visited = true;
 	}

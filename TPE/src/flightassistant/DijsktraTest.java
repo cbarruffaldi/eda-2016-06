@@ -59,26 +59,29 @@ public class DijsktraTest {
 
 	@Before
 	public void setUp() throws Exception {
-		A.unvisit();
-		B.unvisit();
-		C.unvisit();
-		D.unvisit();
-		E.unvisit();
-		F.unvisit();
+//		A.unvisit();
+//		B.unvisit();
+//		C.unvisit();
+//		D.unvisit();
+//		E.unvisit();
+//		F.unvisit();
+//		
+//		A.setIncident(null);
+//		B.setIncident(null);
+//		C.setIncident(null);
+//		D.setIncident(null);
+//		E.setIncident(null);
+//		F.setIncident(null);
+//		
+//		A.setWeight(Double.MAX_VALUE);
+//		B.setWeight(Double.MAX_VALUE);
+//		C.setWeight(Double.MAX_VALUE);
+//		D.setWeight(Double.MAX_VALUE);
+//		E.setWeight(Double.MAX_VALUE);
+//		F.setWeight(Double.MAX_VALUE);
 		
-		A.setIncident(null);
-		B.setIncident(null);
-		C.setIncident(null);
-		D.setIncident(null);
-		E.setIncident(null);
-		F.setIncident(null);
+		fa.refreshAirportsNodeProperties();
 		
-		A.setWeight(Double.MAX_VALUE);
-		B.setWeight(Double.MAX_VALUE);
-		C.setWeight(Double.MAX_VALUE);
-		D.setWeight(Double.MAX_VALUE);
-		E.setWeight(Double.MAX_VALUE);
-		F.setWeight(Double.MAX_VALUE);
 	}
 
 	@Test

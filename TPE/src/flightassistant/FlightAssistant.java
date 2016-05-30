@@ -75,4 +75,12 @@ public class FlightAssistant implements Serializable{
 		while (iter.hasNext())
 			iter.next().removeRouteTo(airport);
 	}
+	
+	
+	void refreshAirportsNodeProperties(){
+			Iterator<Airport> airportsIter = airports.valueIterator();
+			while(airportsIter.hasNext()){
+				airportsIter.next().nodeRefresh();
+			}
+	}
 }
