@@ -1,142 +1,144 @@
 package structures;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.lang.reflect.Array;
+import java.util.NoSuchElementException;
 
-public class BinaryMinHeap<T> {
-	private ArrayList<T> array;
-	private Comparator<T> cmp;
+public class BinaryMinHeap<T> implements PriorityQueue<T>{
 
-	public BinaryMinHeap() {
-		this.cmp = getNaturalComparator();
-		array = new ArrayList<>();
+	private final static int HASH_CAPACITY_FACTOR = 3;
+
+	private PQNode<T>[] array;
+	private SimpleMap<T,Integer> indexMap;
+
+	@SuppressWarnings("unchecked")
+	public BinaryMinHeap (int capacity) {
+		array = (PQNode<T>[]) Array.newInstance(PQNode.class, capacity);
+		indexMap = new ClosedHash<T,Integer>(HASH_CAPACITY_FACTOR * capacity);
 	}
 
-	public BinaryMinHeap(Comparator<T> cmp) {
-		this.cmp = cmp;
-		array = new ArrayList<>();
+	@Override
+	public void enqueue(T elem, double priority) {
+		PQNode<T> node = new PQNode<T>(elem, priority);
+		int index = size();
+
+		insert(node, index);
+		moveUp(index);
 	}
 
-	public BinaryMinHeap(int initialCapacity) {
-		if (initialCapacity < 1)
-			throw new IllegalArgumentException("Illegal capacity < 1");
-		this.cmp = getNaturalComparator();
-		array = new ArrayList<>(initialCapacity);
-	}
+	@Override
+	public T dequeue() {
+		if (isEmpty())
+			throw new NoSuchElementException("Cola vacía");
+		T elem = array[0].value;
+		int size = size();
 
-	public BinaryMinHeap(Comparator<T> cmp, int initialCapacity) {
-		if (initialCapacity < 1)
-			throw new IllegalArgumentException("Illegal capacity < 1");
-		this.cmp = cmp;
-		array = new ArrayList<>(initialCapacity);
-	}
+		if (size == 1)
+			array[0] = null;
+		else {
+			int lastIndex = size - 1;
 
-	public void add(T elem) {
-		int i = array.size();
-		array.add(i, elem);
-		moveUp(i);
-	}
+			indexMap.remove(elem);
+			insert(array[lastIndex], 0); // se sube el último elemento
+			array[lastIndex] = null;
 
-	public T removeMin() {
-		T min = array.get(0);
-		remove(0);
-		return min;
-	}
-
-	public void replace(T current, T newElem) {
-		int i = search(current);
-		if (i != -1) {
-			array.set(i, newElem);
-			if(cmp.compare(newElem, array.get(getParent(i))) < 0)
-				moveUp(i);
-			else
-				moveDown(i);
+			moveDown(0);  // se baja
 		}
+
+		return elem;
 	}
 
-	public void remove(T elem) {
-		int i = search(elem);
-		if (i != -1)
-			remove(i);
+	@Override
+	public double getPriority(T elem) {
+		Integer index = indexMap.get(elem);
+		if (index == null)
+			throw new IllegalArgumentException("No existe el elemento");
+		return array[index].priority;
 	}
 
-	private int search(T elem) {
-		return search(elem, 0);
+	@Override
+	public void decreasePriority(T elem, double priority) {
+		Integer index = indexMap.get(elem);
+		if (index == null)
+			throw new IllegalArgumentException("No existe el elemento");
+		if (array[index].priority <= priority)
+			throw new IllegalArgumentException("Nueva prioridad mayor o igual a la existente");
+		array[index].priority = priority;
+		moveUp(index);
 	}
 
-	private int search(T elem, int index) {
-		int comp;
-
-		if (index >= array.size() || (comp = cmp.compare(elem, array.get(index))) < 0)
-			return -1;
-		if (comp == 0)
-			return index;
-
-		int searchLeft = search(elem, getLeft(index));
-		return searchLeft != -1 ? searchLeft : search(elem, getRight(index));
+	@Override
+	public boolean isEmpty() {
+		return indexMap.isEmpty();
 	}
 
-	private void remove(int index) {
-		int last = array.size()-1;
-		array.set(index, array.get(last)); // pisa nodo a borrar el último nodo
-		array.remove(last); // O(1), pues borra el ultimo elemento; no hay nada q shiftear
-		if (array.size() > 0)
-			moveDown(index);  // baja el nodo
+	@Override
+	public int size() {
+		return indexMap.size();
+	}
+
+	private void insert(PQNode<T> pqNode, int index) {
+		array[index] = pqNode;
+		indexMap.put(pqNode.value, index);
 	}
 
 	private void moveUp(int i) {
-		int parent = getParent(i);
-		T elem = array.get(i);
-		while (i != 0 && cmp.compare(elem, array.get(parent)) < 0) {
-			array.set(i, array.get(parent));
+		int parent = getParentIndex(i);
+		PQNode<T> node = array[i];
+		while (i != 0 && node.compareTo(array[parent]) < 0) {
+			insert(array[parent], i);
 			i = parent;
-			parent = getParent(i);
+			parent = getParentIndex(i);
 		}
-		array.set(i, elem);
+		insert(node, i);
 	}
 
 	private void moveDown(int i) {
-		int min = getMinChild(i);
+		int min = getMinChildIndex(i);
 		if (min == -1)
 			return;
-		T elem = array.get(i);
-		while (min != -1 && cmp.compare(elem, array.get(min)) > 0) {
-			array.set(i, array.get(min));
+		PQNode<T> node = array[i];
+		while (min != -1 && node.compareTo(array[min]) > 0) { // tiene hijos y es mayor a alguno
+			insert(array[min], i); // subo el hijo
 			i = min;
-			min = getMinChild(i);
+			min = getMinChildIndex(i);
 		}
-		array.set(i, elem);
+		insert(node, i);
 	}
 
-	private int getMinChild(int i) {
-		int leftChild = getLeft(i);
-		int rightChild = getRight(i);
-		if (leftChild >= array.size()) // array[i] es hoja
+	private int getMinChildIndex(int i) {
+		int leftChild = getLeftIndex(i);
+		int rightChild = getRightIndex(i);
+		if (leftChild >= size()) // array[i] es hoja
 			return -1;
-		if (rightChild == array.size()) // solo tiene hijo izquierdo
+		if (rightChild >= size()) // solo tiene hijo izquierdo
 			return leftChild;
-		return cmp.compare(array.get(leftChild), array.get(rightChild)) < 0 ? leftChild : rightChild;
+		return array[leftChild].compareTo(array[rightChild]) < 0 ? leftChild : rightChild;
 	}
 
-	private int getParent(int i) {
+	private int getParentIndex(int i) {
 		return (i-1)/2;
 	}
 
-	private int getLeft(int i) {
+	private int getLeftIndex(int i) {
 		return i*2+1;
 	}
 
-	private int getRight(int i) {
+	private int getRightIndex(int i) {
 		return i*2+2;
 	}
 
-	private Comparator<T> getNaturalComparator() {
-		return new Comparator<T>(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public int compare(T o1, T o2) {
-				return ((Comparable<T>)o1).compareTo(o2);
-			}
-		};
+	private static class PQNode<T> implements Comparable<PQNode<T>> {
+		private T value;
+		private double priority;
+
+		public PQNode(T value, double priority) {
+			this.value = value;
+			this.priority = priority;
+		}
+
+		@Override
+		public int compareTo(PQNode<T> o) {
+			return Double.compare(priority, o.priority);
+		}
 	}
 }

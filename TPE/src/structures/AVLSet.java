@@ -211,6 +211,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 
 	public void clear() {
 		root = null;
+		size = 0;
 	}
 
 	@SuppressWarnings("unchecked")
