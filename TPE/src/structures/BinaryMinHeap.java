@@ -28,16 +28,17 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 	@Override
 	public T dequeue() {
 		if (isEmpty())
-			throw new NoSuchElementException("Cola vacía");
+			throw new NoSuchElementException("Cola vacia");
 		T elem = array[0].value;
 		int size = size();
+		
+		indexMap.remove(elem);
 
 		if (size == 1)
 			array[0] = null;
 		else {
 			int lastIndex = size - 1;
 
-			indexMap.remove(elem);
 			insert(array[lastIndex], 0); // se sube el último elemento
 			array[lastIndex] = null;
 
