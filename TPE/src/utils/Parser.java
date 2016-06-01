@@ -10,6 +10,7 @@ public class Parser {
     public static final int AIRLINE_NAME_MAX_LENGHT = 3;
     public static final double MAX_LATITUDE = 90.0;
     public static final double MAX_LONGITUDE = 180.0;
+    public static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
 
     public  static void main(String[] args) {
         String ej1 = "insert airport BUE -34.602535 -58.368731";
@@ -20,16 +21,10 @@ public class Parser {
         Scanner sc = new Scanner(test);
     }
 
-
     static void parse(Scanner sc) {
         while (sc.hasNext()) {
            parseFunction(sc);
         }
-    }
-
-    // Provisorio, se tendria que encargar un "outputmanager"
-    static void errorMsg() {
-        System.err.println("Entrada incorrecta");
     }
 
     private static void parseFunction(Scanner sc) {
@@ -45,12 +40,17 @@ public class Parser {
             case "findRoute":
                 valid = parseRoute(sc);
                 break;
+            case "outputFormat":
+                valid = parseOutputFormat(sc);
+                break;
+            case "output":
+                valid = parseOutputType(sc); // TODO: Type??
+                break;
         }
         sc.close();
 
         if (!valid) {
-            errorMsg(); // llamaría al outputmanager para que mande mensaje de error
-            // podría poner un mensajito de exito si fue valid
+            OutputManager.invalidCommand();
         }
     }
 
@@ -121,7 +121,39 @@ public class Parser {
         return true;
     }
 
+    private static boolean parseOutputFormat(Scanner sc) {
+        if (!sc.hasNext()) { return false; }
+        String format = sc.nextLine();
 
+        switch (format) {
+            case "text":
+                OutputManager.setToTextFormat();
+                break;
+            case "KML":
+                OutputManager.setToKMLFormat();
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    private static boolean parseOutputType(Scanner sc) {
+        if (!sc.hasNext()) { return false; }
+        String type = sc.nextLine();
+
+        switch (type) {
+            case "stdout":
+                // Que el assistant se guarde esta preferencia
+                break;
+            case "KML":
+                // idem
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
 
     private static boolean airportInsert(Scanner sc){
     	if(!sc.hasNext())
@@ -166,7 +198,7 @@ public class Parser {
 
         //Procesar las cosas
         boolean[] daysOfDeparture = daysOfDep(days);
-
+        // TODO metodo de insertar vuelo
         return true;
     }
 
@@ -175,36 +207,12 @@ public class Parser {
 		String[] daysArr = days.split("-");
 		boolean[] departs = new boolean[7];
 
-		for(int i = 0 ; i < daysArr.length ; i++){
-			switch(daysArr[i]){
-				case "Lu":
-					departs[0] = true;
-				break;
-				case "Ma":
-					departs[1] = true;
-				break;
-
-				case "Mi":
-					departs[2] = true;
-				break;
-
-				case "Ju":
-					departs[3] = true;
-				break;
-
-				case "Vi":
-					departs[4] = true;
-				break;
-
-				case "Sa":
-					departs[5] = true;
-				break;
-
-				case "Do":
-					departs[6] = true;
-				break;
-
-			}
+		for(int i = 0 ; i < daysArr.length ; i++) {
+            for (int j = 0; j < daysOfWeek.length; j++) {
+                if (daysArr[i].equals(daysOfWeek[j])) {
+                    departs[j] = true;
+                }
+            }
 		}
 		return departs;
 	}
@@ -232,6 +240,7 @@ public class Parser {
         try {
             Scanner fileSc = new Scanner(new File(pathToFile));
             fileSc.useDelimiter("#");
+
             // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
             while (valid && fileSc.hasNextLine()) {
             	if (insertAirport)
@@ -240,7 +249,7 @@ public class Parser {
             		valid = flightInsert(fileSc);
             }
         } catch (FileNotFoundException e) {
-            // Error de que no se pudo abrir el archivo
+            OutputManager.fileOpenErrorMsg();
         }
         return valid;
     }
