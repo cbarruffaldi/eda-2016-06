@@ -25,7 +25,7 @@ public class MinHeapTest {
 	public void testCorrectQueuing() {
 		String[] strs = new String[]{ "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"};
 
-		
+		//Se encolan con prioridad segun el orden que tienen en el array, pero en desorden
 		heap.enqueue(strs[7], 1122);
 		heap.enqueue(strs[2], 2.0);
 		heap.enqueue(strs[9], 149499);
@@ -105,8 +105,6 @@ public class MinHeapTest {
 		heap.enqueue("A", 10);
 		heap.enqueue("B", 20);
 		heap.enqueue("C", 30);
-		heap.enqueue("D", 40);
-		heap.enqueue("E", 50);
 
 		//Debe ser menor o igual
 		heap.decreasePriority("A", 25);

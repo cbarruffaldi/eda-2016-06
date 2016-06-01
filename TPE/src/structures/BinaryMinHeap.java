@@ -142,4 +142,11 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 			return Double.compare(priority, o.priority);
 		}
 	}
+
+	public Double minWeight() {
+		if(isEmpty()){
+			throw new IllegalStateException("Empty queue");
+		}
+		return array[0].priority;
+	}
 }

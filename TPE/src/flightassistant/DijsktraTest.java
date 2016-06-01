@@ -114,7 +114,7 @@ public class DijsktraTest {
 	@Test
 	public void dijkstraADAirtime(){
 		//AB2 -> BD 1
-		List<Flight> list = DijsktraForReal.minPath(A, D, FlightTimeWeighter.WEIGHTER);
+		List<Flight> list = DijsktraForReal.minPath(A, D, AirtimeWeighter.WEIGHTER);
 
 		assertNotNull(list);
 		assertTrue(list.size() == 2);
@@ -125,7 +125,7 @@ public class DijsktraTest {
 	@Test
 	public void dijkstraAFAirtime(){
 		//AB2 -> BD 1 -> DE 1 -> EF 2
-		List<Flight> list = DijsktraForReal.minPath(A,F,FlightTimeWeighter.WEIGHTER);
+		List<Flight> list = DijsktraForReal.minPath(A,F,AirtimeWeighter.WEIGHTER);
 
 		assertNotNull(list);
 		assertTrue(list.size() == 4);
