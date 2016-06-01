@@ -1,9 +1,6 @@
 package utils;
 
-public class Time implements Comparable<Time> {
-    public static final int MINUTES_PER_HOUR = 60;
-    public static final int HOURS_PER_DAY = 24;
-    public static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+public class Time implements Comparable<Time>, TimeConstants {
 
     private int minutes;
 
@@ -20,6 +17,8 @@ public class Time implements Comparable<Time> {
     public void addTime(Time t) {
         this.minutes += t.minutes;
     }
+
+    public void addMinutes(int minutes) { this.minutes += minutes; }
 
     public void sumADay() {
         this.minutes += HOURS_PER_DAY * MINUTES_PER_HOUR;

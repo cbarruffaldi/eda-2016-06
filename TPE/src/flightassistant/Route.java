@@ -3,9 +3,7 @@ package flightassistant;
 import structures.AVLSet;
 import utils.Day;
 import utils.Day.WeekArray;
-import utils.Moment;
 
-import java.awt.Container;
 import java.util.Comparator;
 
 public class Route {
@@ -98,6 +96,10 @@ public class Route {
 
 	}
 
+	public boolean FlightExistsFrom(Airport airport) {
+		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
+	}
+
 	private static class FlightContainer {
 		// Tiene que ser un KDtree que tenga de keys momento de llegada, precio y tiempo de vuelo.
 		private static final Comparator<Flight> flightCmp = new Comparator<Flight>() {
@@ -113,7 +115,7 @@ public class Route {
 		private WeekArray<AVLSet<Flight>> weekArray;
 
 		public FlightContainer() {
-			weekArray = Day.getWeekArray();
+			weekArray = Day.newWeekArray();
 			weekArray.insert(Day.LU, new AVLSet<Flight>(flightCmp));
 			for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
 				weekArray.insert(day, new AVLSet<Flight>(flightCmp));
@@ -124,8 +126,9 @@ public class Route {
 				cheapest = flight;
 			if (quickest == null || flight.isQuickerThan(quickest))
 				quickest = flight;
-			for (Moment departure : flight.getDepartureMoments())
-				weekArray.get(departure.getDay()).add(flight);
+			weekArray.get(flight.getDeparture().getDay()).add(flight);
+//			for (Moment departure : flight.getDepartureMoments())
+//				weekArray.get(departure.getDay()).add(flight);
 		}
 
 		private void removeFlight(Flight flight) {
@@ -137,8 +140,12 @@ public class Route {
 				quickest = null;
 				recalculateQuickest();
 			}
-			for (Moment departure : flight.getDepartureMoments())
-				weekArray.get(departure.getDay()).remove(flight);
+
+			for (AVLSet<Flight> dayFlights: weekArray) {
+				dayFlights.remove(flight);
+			}
+//			for (Moment departure : flight.getDepartureMoments())
+//				weekArray.get(departure.getDay()).remove(flight);
 		}
 
 		private void recalculateQuickest() {
@@ -154,10 +161,6 @@ public class Route {
 					if (cheapest == null || flight.isCheaperThan(cheapest))
 						cheapest = flight;
 		}
-	}
-
-	public boolean FlightExistsFrom(Airport airport) {
-		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
 	}
 
 }

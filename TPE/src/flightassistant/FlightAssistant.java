@@ -1,11 +1,11 @@
 package flightassistant;
 
-import java.io.Serializable;
-import java.util.Iterator;
-
 import structures.SimpleHashMap;
 import utils.Moment;
 import utils.Time;
+
+import java.io.Serializable;
+import java.util.Iterator;
 
 public class FlightAssistant implements Serializable{
 	
@@ -40,16 +40,20 @@ public class FlightAssistant implements Serializable{
 		if (origAir == null || destAir == null) {
 			return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
 		}
-		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
-		flights.put(newFlight.getId(), newFlight); // Preguntar por inserción de vuelo existente
-
-		if (! origAir.routeExistsTo(destAir)) {
+		// Crea la ruta en caso de que todavía no exista
+		if (!origAir.routeExistsTo(destAir)) {
 			Route r = new Route(origAir, destAir);
 			origAir.addRoute(destAir, r);
 			destAir.addRoute(origAir, r);
 		}
+		Flight newFlight = new Flight(airline, number, price, departures[0], duration, origAir, destAir);
+		// En este mapa se guardan sin tener en cuenta el día de partida.
+		flights.put(newFlight.getId(), newFlight);
 
-		origAir.addFlight(newFlight);
+		for (Moment departMoment: departures) {
+			Flight auxFl = new Flight(airline, number, price, departMoment, duration, origAir, destAir);
+			origAir.addFlight(auxFl);
+		}
 	}
 
 	public void removeFlight(String airline, int number) {

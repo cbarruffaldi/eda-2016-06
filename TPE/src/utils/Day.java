@@ -13,9 +13,8 @@ public class Day {
     public static final Day DO = new Day(6);
 
     private static final Day days[] = {LU, MA, MI, JU, VI, SA, DO};
-    private static final String daysStr[] = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     public static final int TOTAL_DAYS = days.length;
-
+    private static final String daysStr[] = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     private final int daysIndex;
 
     private Day(int index) {
@@ -27,6 +26,10 @@ public class Day {
     		if (daysStr[i].equals(day))
     			return days[i];
         throw new IllegalArgumentException("Not valid day name");
+    }
+
+    public static <T> WeekArray<T> newWeekArray() {
+    	return new WeekArray<T>();
     }
 
     public Day getNextDay() {
@@ -61,10 +64,6 @@ public class Day {
     @Override
     public int hashCode() {
         return daysIndex;
-    }
-
-    public static <T> WeekArray<T> getWeekArray() {
-    	return new WeekArray<T>();
     }
 
     public static class WeekArray<T> implements Iterable<T>{

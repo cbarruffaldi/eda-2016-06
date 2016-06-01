@@ -80,13 +80,31 @@ public class OutputManager {
         private Time fltime;
         private Time totalTime;
 
+        // TODO medio choto lo de pedirle el segundo aeropuerto, que pasa si hay uno solo?
         public RouteData(List<Airport> airports) {
+            int weeks = 0; boolean moreThanADay = false;
+            Day firstDay = airports.get(1).getIncident().getDeparture().getDay();
+            Day prevDay = firstDay;
             for (int i = 1; i < airports.size(); i++) {
                 Flight flight = airports.get(i).getIncident();
                 price += flight.getPrice();
                 fltime.addTime(flight.getDuration());
-                // totalTime = calculateTotalTime();
+                if (!prevDay.equals(flight.getDeparture().getDay())) {
+                    moreThanADay = true;
+                } else if (moreThanADay == true && flight.getDeparture().getDay().equals(firstDay)) {
+                        weeks++; // Paso una semana.
+                }
             }
+            // Recorre de nuevo la lista, pero es un poco menos engorroso en el código.
+            totalTime = calculateTotalTime(weeks, airports.get(1).getIncident(), airports.get(airports.size()-1).getIncident());
+        }
+
+        // TODO testear esto y lo de contar las semanas
+        private Time calculateTotalTime(int weeks, Flight first, Flight last) {
+            Time timeSum = first.getDeparture().howMuchUntil(last.getDeparture().addTime(last.getDuration()));
+            timeSum.addMinutes(TimeConstants.MINUTES_PER_WEEK * weeks);
+            return timeSum;
         }
     }
+
 }
