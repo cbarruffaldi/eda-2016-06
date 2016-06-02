@@ -58,7 +58,7 @@ public class DobleDijkstraTest {
 			} while(air2.equals(air1));
 			
 			
-			double price = random.nextInt(15500) + 1000 + random.nextDouble(); //entre 1000 y 15500
+			double price = random.nextInt(15500) + 1000; //entre 1000 y 15500
 			Time duration = new Time(random.nextInt(1000));
 			int hour = random.nextInt(24);
 			int minutes = random.nextInt(60);
@@ -82,7 +82,9 @@ public class DobleDijkstraTest {
 	public void AirTimeTest() {
 		
 		int i = 0;
-		while(i < 10000){
+		int j = 0;
+		
+		while(i < 100){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -90,6 +92,8 @@ public class DobleDijkstraTest {
 		fa.refreshAirportsNodeProperties();
 
 		List<Flight> l1 = DijsktraForReal.minPath(air1, air2, AirtimeWeighter.WEIGHTER);
+		
+		
 		fa.refreshAirportsNodeProperties();
 
 		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, AirtimeWeighter.WEIGHTER);
@@ -102,29 +106,41 @@ public class DobleDijkstraTest {
 		for(Flight f: l1){
 			time1 += f.getDuration().getMinutes();
 		}
+		
 		int time2 = 0;
 		for(Flight f: l2){
 			time2 += f.getDuration().getMinutes();
 		}
-		
-		//System.out.println(time1);
-	//	System.out.println(time2);
+				
 		if(time2 < time1){
+			System.out.println("========");
 			System.out.println("Mejor el 2");
+			System.out.println(time1);
+			System.out.println(time2);
+			System.out.println("========");
+
+			j += 1;
 		}
 		if(time1 < time2){
+			System.out.println("========");
 			System.out.println("Mejor el 1");
+			System.out.println(time1);
+			System.out.println(time2);
+			System.out.println("========");
+
+			j += 1;
+		}		
+				
 		}
-		//assertTrue(time1 == time2);
-		
-		}
+		System.out.println(j);
+
 	}
 	
 	@Test
 	public void priceTest() {
 		
 		int i = 0;
-		while(i < 1000){
+		while(i < 1000000){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -140,7 +156,16 @@ public class DobleDijkstraTest {
 			assertTrue(l2  == null);
 		}
 		
-		assertEquals(l1,l2);
+		double price1 = 0;
+		for(Flight f: l1){
+			price1 += f.getPrice();
+		}
+		int price2 = 0;
+		for(Flight f: l2){
+			price2 += f.getPrice();
+		}
+		
+		assertTrue(price1 == price2);
 		
 		}
 
