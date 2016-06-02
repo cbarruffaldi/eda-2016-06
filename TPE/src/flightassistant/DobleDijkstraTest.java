@@ -18,12 +18,6 @@ import utils.Time;
 
 public class DobleDijkstraTest {
 	static FlightAssistant fa;
-	static Airport A;
-	static Airport B;
-	static Airport C;
-	static Airport D;
-	static Airport E;
-	static Airport F;
 	
 	static String[] airports;
 	static Random random;
@@ -34,15 +28,14 @@ public class DobleDijkstraTest {
 
 		airports = new String[]{"AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", 
 										"JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP", "QQQ", "RRR",
-										"SSS", "TTT", "UUU", "VVV", "WWW", "XXX", "YYY", "ZZZ"};
-		
+										"SSS", "TTT", "UUU", "VVV", "WWW", "XXX", "YYY", "ABC"};
+				
 		int i = 0;
 		
 		for(String s: airports){
-			i+=1;
 			fa.insertAirport(s, i, i);
 		}
-		
+				
 		random = new Random(System.currentTimeMillis());
 		
 		i = 0;
@@ -74,7 +67,7 @@ public class DobleDijkstraTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		fa.refreshAirportsNodeProperties();
+		//fa.refreshAirportsNodeProperties();
 		
 	}
 
@@ -84,7 +77,7 @@ public class DobleDijkstraTest {
 		int i = 0;
 		int j = 0;
 		
-		while(i < 100){
+		while(i < 1){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -140,7 +133,7 @@ public class DobleDijkstraTest {
 	public void priceTest() {
 		
 		int i = 0;
-		while(i < 1000000){
+		while(i < 1){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -148,6 +141,7 @@ public class DobleDijkstraTest {
 		fa.refreshAirportsNodeProperties();
 
 		List<Flight> l1 = DijsktraForReal.minPath(air1, air2, PriceWeighter.WEIGHTER);
+		
 		fa.refreshAirportsNodeProperties();
 
 		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, PriceWeighter.WEIGHTER);
@@ -172,5 +166,4 @@ public class DobleDijkstraTest {
 	}
 
 
-	
 }

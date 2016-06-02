@@ -58,6 +58,7 @@ public class InfinityDijkstra {
 		BinaryMinHeap<Airport> heap = new BinaryMinHeap<Airport>(size);
 		
 		Iterator<Airport> iter = fa.airports.valueIterator();
+	
 		while(iter.hasNext()){
 			heap.enqueue(iter.next(), Double.POSITIVE_INFINITY);		
 		}
