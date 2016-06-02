@@ -23,7 +23,7 @@ public class SimpleHashMapTest {
 
 		public static Random rand;
 
-		public static final int CAPACITY = 10;
+		public static final int CAPACITY = 200;
 		public static int[] storedInts = new int[CAPACITY];
 		public static int[] storedIntKeys = new int[CAPACITY];
 
@@ -48,7 +48,7 @@ public class SimpleHashMapTest {
 
 	        rand = new Random(System.currentTimeMillis());
 
-	        }
+	    }
 
 
 
@@ -67,8 +67,8 @@ public class SimpleHashMapTest {
 	    public void testIntMap(){
 
 	    	for(int i=0 ; i < CAPACITY ; i++){
-	    		storedInts[i] = 1000*i + rand.nextInt()%1000;		//Asi son todos valores distintos
-	    		storedIntKeys[i] = 100*i + rand.nextInt()%100; 		//Lo mismo
+	    		storedInts[i] = 1000*i + Math.abs(rand.nextInt())%1000;		//Asi son todos valores distintos
+	    		storedIntKeys[i] = 100*i + Math.abs(rand.nextInt())%100; 		//Lo mismo
 
 	    		intMap.put(storedIntKeys[i], storedInts[i]);
 	    	}

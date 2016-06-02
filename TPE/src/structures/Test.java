@@ -31,17 +31,17 @@ public class Test {
 
 		/************************************************************/
 
-		SimpleMap<Integer, Integer> map = new AVLMap<>();
+		SimpleMap<String, Integer> map = new ClosedHash<>(50);
 
-		map.put(1, 1);
-		map.put(2, 1);
-		map.put(3, 1);
-		map.put(4, 1);
-		map.put(5, 1);
-		map.put(6, 1);
-		map.put(7, 1);
+		map.put("AAA", 1);
+		map.put("ABC", 1);
+		map.put("ASD", 1);
+		map.put("CBV", 1);
+		map.put("BUE", 1);
+		map.put("BBB", 1);
+		map.put("BBB", 2);
 
-		Iterator<Integer> iter = map.keyIterator();
+		Iterator<String> iter = map.keyIterator();
 
 		while (iter.hasNext())
 			System.out.println(iter.next());

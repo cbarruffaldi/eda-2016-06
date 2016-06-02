@@ -91,7 +91,7 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 				return n.key;
 			}
 		};
-		return new MapIterator<K>(set.iterator(), getter);
+		return new AVLMapIterator<K>(set.iterator(), getter);
 	}
 
 	@Override
@@ -102,14 +102,14 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 				return n.value;
 			}
 		};
-		return new MapIterator<V>(set.iterator(), getter);
+		return new AVLMapIterator<V>(set.iterator(), getter);
 	}
 
-	private class MapIterator<T> implements Iterator<T> {
+	private class AVLMapIterator<T> implements Iterator<T> {
 		private Iterator<Node<K,V>> iter;
 		private ValueGetter<T> valueGetter;
 
-		public MapIterator(Iterator<Node<K,V>> iter, ValueGetter<T> valueGetter) {
+		public AVLMapIterator(Iterator<Node<K,V>> iter, ValueGetter<T> valueGetter) {
 			this.iter = iter;
 			this.valueGetter = valueGetter;
 		}

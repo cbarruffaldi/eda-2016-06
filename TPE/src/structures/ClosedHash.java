@@ -98,6 +98,55 @@ public class ClosedHash<K,V> implements SimpleMap<K,V> {
 		return size;
 	}
 
+	@Override
+	public boolean containsKey(K key) {
+		return get(key) != null;
+	}
+
+	@Override
+	public boolean containsValue(V value) {
+		Iterator<V> valueIterator = valueIterator();
+		while (valueIterator.hasNext()) {
+			V v = valueIterator.next(); // ojo con valores null
+			if ((v == null && value == null) || (v != null && v.equals(value)))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return size == 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void clear() {
+		array = (Data<K,V>[]) Array.newInstance(Data.class, array.length);
+		size = 0;
+	}
+
+	public Iterator<K> keyIterator() {
+		ValueGetter<K> getter = new ValueGetter<K>() {
+			@Override
+			public K getValue(Data<K,V> n) {
+				return n.key;
+			}
+		};
+		return new MapIterator<K>(array, getter);
+	}
+
+	@Override
+	public Iterator<V> valueIterator() {
+		ValueGetter<V> getter = new ValueGetter<V>() {
+			@Override
+			public V getValue(Data<K,V> n) {
+				return n.value;
+			}
+		};
+		return new MapIterator<V>(array, getter);
+	}
+
 	private int nextIndex(int index) {
 		return index + 1 == array.length ? 0 : index + 1;
 	}
@@ -129,40 +178,37 @@ public class ClosedHash<K,V> implements SimpleMap<K,V> {
 		return (array[index] != null && !array[index].isDeleted()) ? index : -1;
 	}
 
-	@Override
-	public boolean containsKey(K key) {
-		return get(key) != null;
+
+	private class MapIterator<T> implements Iterator<T> {
+		private Data<K,V>[] array;
+		private ValueGetter<T> valueGetter;
+		private int i;
+
+		public MapIterator(Data<K,V>[] array, ValueGetter<T> valueGetter) {
+			this.array = array;
+			this.valueGetter = valueGetter;
+			findNext();
+		}
+
+		private void findNext() {
+			while(i < array.length && (array[i] == null || array[i].isDeleted()))
+				i++;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return i < array.length;
+		}
+
+		@Override
+		public T next() {
+			T value = valueGetter.getValue(array[i++]);
+			findNext();
+			return value;
+		}
 	}
 
-	@Override
-	public boolean containsValue(V value) {
-		for (int i = 0; i < array.length; i++)
-			if (array[i] != null && array[i].value.equals(value))
-				return true;
-		return false;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return size == 0;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void clear() {
-		array = (Data<K,V>[]) Array.newInstance(Data.class, array.length);
-		size = 0;
-	}
-
-	@Override
-	public Iterator<K> keyIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterator<V> valueIterator() {
-		// TODO Auto-generated method stub
-		return null;
+	private abstract class ValueGetter<T> {
+		public abstract T getValue(Data<K,V> n);
 	}
 }
