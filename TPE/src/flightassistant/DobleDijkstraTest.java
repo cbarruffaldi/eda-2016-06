@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +40,7 @@ public class DobleDijkstraTest {
 		random = new Random(System.currentTimeMillis());
 		
 		i = 0;
-		while(i < 1000){
+		while(i < 500){
 			i++;
 			
 			String air1 = airports[random.nextInt(airports.length)];
@@ -51,8 +52,8 @@ public class DobleDijkstraTest {
 			} while(air2.equals(air1));
 			
 			
-			double price = random.nextInt(15500) + 1000; //entre 1000 y 15500
-			Time duration = new Time(random.nextInt(1000));
+			double price = random.nextInt(15500); //entre 1000 y 15500
+			Time duration = new Time(1 + random.nextInt(1000));
 			int hour = random.nextInt(24);
 			int minutes = random.nextInt(60);
 			
@@ -102,11 +103,7 @@ public class DobleDijkstraTest {
 		}
 		
 		
-		System.out.print(air1 + "  ->");
-		System.out.println(air2);
-		System.out.println(l1);
-		System.out.println(l2);
-		
+		if(l1 != null && l2 != null){
 		int time1 = 0;
 		for(Flight f: l1){
 			time1 += f.getDuration().getMinutes();
@@ -116,15 +113,37 @@ public class DobleDijkstraTest {
 		for(Flight f: l2){
 			time2 += f.getDuration().getMinutes();
 		}
-				
+		
+		
 		if(time2 < time1){
 			System.out.println("========");
 			System.out.println("Mejor el 2");
 			System.out.println(time1);
 			System.out.println(time2);
 			System.out.println("========");
+		
+				System.out.print(air1 + "  ->");
+				System.out.println(air2);
+				
+				System.out.println(l1);
+				for(Flight f: l1){
+					if(f.getDuration().getMinutes() <= 0)
+						System.err.println("ZERO!L2");
+				}				
+				for(Flight f: l2){
+					if(f.getDuration().getMinutes() <= 0)
+						System.err.println("ZERO! L2");
+				}
 
-			j += 1;
+				System.out.println(l2);
+				
+				
+				Iterator<Flight> iter = fa.flights.valueIterator();
+				while(iter.hasNext())
+					System.out.println(iter.next());
+			
+
+
 		}
 		if(time1 < time2){
 			System.out.println("========");
@@ -132,13 +151,18 @@ public class DobleDijkstraTest {
 			System.out.println(time1);
 			System.out.println(time2);
 			System.out.println("========");
+		
+				System.out.print(air1 + "  ->");
+				System.out.println(air2);
+				System.out.println(l1);
+				System.out.println(l2);
 
 			j += 1;
 		}		
-
-		System.out.println(j);
+		
+		
 		assertTrue(time1 == time2);
-
+		}
 		}
 
 	}
@@ -164,6 +188,7 @@ public class DobleDijkstraTest {
 			assertTrue(l2  == null);
 		}
 		
+		if(l1 != null && l2 != null){
 		double price1 = 0;
 		for(Flight f: l1){
 			price1 += f.getPrice();
@@ -172,8 +197,15 @@ public class DobleDijkstraTest {
 		for(Flight f: l2){
 			price2 += f.getPrice();
 		}
-		
+		if(price1 != price2){
+			System.out.println("Price diff " + price1 + " " + price2);
+			
+			Iterator<Flight> iter = fa.flights.valueIterator();
+			while(iter.hasNext())
+				System.out.println(iter.next());
+		}
 		assertTrue(price1 == price2);
+		}
 		
 		}
 

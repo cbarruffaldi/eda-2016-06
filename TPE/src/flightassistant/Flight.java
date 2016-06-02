@@ -92,7 +92,7 @@ public class Flight implements Serializable{
 	}
 
 	public String toString(){
-		return "Flight: " + id.toString();
+		return "Flight: " + id.toString() + " Time: " + getDuration().getMinutes();
 	}
 	
 	

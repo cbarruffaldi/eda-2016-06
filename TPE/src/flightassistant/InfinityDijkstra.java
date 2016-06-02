@@ -38,8 +38,8 @@ public class InfinityDijkstra {
 						double nextCurrWeight = pq.getPriority(next);
 						double acumWeight = minWeight + wflight.weight();
 						if(acumWeight < nextCurrWeight){
-							pq.decreasePriority(next, acumWeight);
 							next.setIncident(wflight.flight());
+							pq.decreasePriority(next, acumWeight);
 						} //end if 									
 					} // end if
 				} // end while
