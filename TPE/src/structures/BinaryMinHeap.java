@@ -10,6 +10,9 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 	private PQNode<T>[] array;
 	private SimpleMap<T,Integer> indexMap;
 
+	private int size;
+	
+	
 	@SuppressWarnings("unchecked")
 	public BinaryMinHeap (int capacity) {
 		array = (PQNode<T>[]) Array.newInstance(PQNode.class, capacity);
@@ -20,31 +23,32 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 	public void enqueue(T elem, double priority) {
 		PQNode<T> node = new PQNode<T>(elem, priority);
 		int index = size();
-
+		size++;
 		insert(node, index);
 		moveUp(index);
+
 	}
 
 	@Override
 	public T dequeue() {
 		if (isEmpty())
 			throw new NoSuchElementException("Cola vacia");
+		
 		T elem = array[0].value;
 		int size = size();
-		
 		indexMap.remove(elem);
+		this.size--; 
 
 		if (size == 1)
 			array[0] = null;
 		else {
 			int lastIndex = size - 1;
-
-			insert(array[lastIndex], 0); // se sube el último elemento
+			PQNode<T> last = array[lastIndex];
+			insert(last, 0); // se sube el último elemento
 			array[lastIndex] = null;
-
 			moveDown(0);  // se baja
 		}
-
+	
 		return elem;
 	}
 
@@ -74,7 +78,8 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 
 	@Override
 	public int size() {
-		return indexMap.size();
+		return size;
+		//return indexMap.size();
 	}
 
 	private void insert(PQNode<T> pqNode, int index) {
