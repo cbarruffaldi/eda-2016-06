@@ -40,7 +40,7 @@ public class Moment implements Comparable<Moment>, TimeConstants {
     	return day;
     }
 
-    /**Devuelve el tiempo que falta para que sea el d�a que se pasa como par�metro*/
+    /**Devuelve el tiempo que falta para que sea el momento que se pasa como par�metro*/
     public Time howMuchUntil(Moment other) {
     	int diff = deltaMinutes(other);
 

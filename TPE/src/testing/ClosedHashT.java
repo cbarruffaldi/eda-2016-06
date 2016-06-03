@@ -7,7 +7,7 @@ import structures.ClosedHash;
 public class ClosedHashT {
 	public static void main(String[] args) {
 		ClosedHash<String, Integer> hash = new ClosedHash<>(100);
-		String[] airports = new String[]{"AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", 
+		String[] airports = new String[]{"ABC", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III",
 				"JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP", "QQQ", "RRR",
 				"SSS", "TTT", "UUU", "VVV", "WWW", "XXX", "YYY", "ZQB"};
 
@@ -15,6 +15,10 @@ public class ClosedHashT {
 		for(String s: airports){
 			hash.put(s, ++i);
 		}
+
+		System.out.println(i == hash.size());
+
+		hash.remove("ABC");
 
 		hash.remove("WWW");
 		hash.remove("ZQB");
@@ -25,5 +29,7 @@ public class ClosedHashT {
 		if(!hash.containsKey(s))
 			System.out.println("ERR " + s);
 		}
+
+		System.out.println(i-5 == hash.size());
 	}
 }

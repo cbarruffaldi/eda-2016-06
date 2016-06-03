@@ -49,8 +49,8 @@ public class Route {
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
 
-	
-	
+
+
 	private FlightContainer selectContainer(Airport base){
 		if(base.equals(airportA))
 			return containerA;
@@ -60,18 +60,18 @@ public class Route {
 			throw new IllegalArgumentException("This route does not connect" + base);
 	}
 
-	public HigherIterator<Flight> iteratorOfHigherFlightsFrom(Airport from, Moment startTime) {
+	public HigherIterator iteratorOfHigherFlightsFrom(Airport from, Moment startTime) {
 		if (!flightExistsFrom(from))
-			throw new IllegalArgumentException("This route does not connect" + from);
+			throw new IllegalArgumentException("This route does not connect " + from);
 		FlightContainer container = selectContainer(from);
 		return container.iteratorOfHigherFlights(startTime);
 	}
-	
+
 	public Flight getCheapestFrom(Airport airport){
 		return selectContainer(airport).cheapest;
 	}
 
-	
+
 	public Flight getQuickestFrom(Airport airport) {
 		return selectContainer(airport).quickest;
 	}
@@ -168,8 +168,8 @@ public class Route {
 						cheapest = flight;
 		}
 
-		private HigherIterator<Flight> iteratorOfHigherFlights(Moment startTime) {
-			return new HigherIterator<>(startTime, weekArray);
+		private HigherIterator iteratorOfHigherFlights(Moment startTime) {
+			return new HigherIterator(startTime, weekArray);
 		}
 
 	}

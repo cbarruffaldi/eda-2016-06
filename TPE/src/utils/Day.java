@@ -88,6 +88,7 @@ public class Day {
     }
 
     private static class WeekIterator<T> implements Iterator<T> {
+    	private int dayCount = 0;
     	private int current = 0;
     	private T[] array;
 
@@ -103,12 +104,15 @@ public class Day {
 
 		@Override
 		public boolean hasNext() {
-			return current < TOTAL_DAYS;
+			return dayCount < TOTAL_DAYS;
 		}
 
 		@Override
 		public T next() {
-			return array[current++];
+			T elem = array[current % TOTAL_DAYS];
+			current++;
+			dayCount++;
+			return elem;
 		}
     }
 

@@ -12,13 +12,13 @@ import java.util.Set;
 public class Airport implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String id;
 	private double latitude;
 	private double longitude;
 	private SimpleMap<Airport, Route> routes;
 	private boolean visited;
-	private double weight;
+	private double weight;  //TODO: Sacar weight cuando no sea necesario DijkstraForReal
 	private Flight incident;
 
 	public Airport(String id, double latitude, double longitude) {
@@ -74,8 +74,8 @@ public class Airport implements Serializable {
 	public void removeRouteTo(Airport destination) {
 		routes.remove(destination);
 	}
-	
-	public HigherIterator<Flight> iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
+
+	public HigherIterator iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
 		Route route = routes.get(to);
 		if (route == null)
 			return null;
@@ -94,12 +94,12 @@ public class Airport implements Serializable {
 	public String toString(){
 		return "Airport: " + id;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
-	
+
 	/*
 	 * Determina la igualdad de dos Aeropuertos según su nombre (id)
 	 */
@@ -115,17 +115,17 @@ public class Airport implements Serializable {
 		return id == null ? other.id == null : id.equals(other.id);
 	}
 
-	
+
 	//Cosas de Dijkstrksja
-	
+
 	public boolean flightExistsTo(Airport next) {
 		return	routeExistsTo(next) && routes.get(next).flightExistsFrom(this);
 	}
-	
+
 	public Flight getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
 	}
-	
+
 	public Flight getQuickestTo(Airport destination) {
 		return routes.get(destination).getQuickestFrom(this);
 	}
@@ -133,25 +133,25 @@ public class Airport implements Serializable {
 	public void nodeRefresh(){
 		visited = false;
 		incident = null;
-		weight = Double.POSITIVE_INFINITY; //TODO: Weight?
+		weight = Double.POSITIVE_INFINITY;
 	}
-	
+
 	public void visit(){
 		visited = true;
 	}
-	
+
 	public void unvisit(){
 		visited = false;
 	}
-	
+
 	public boolean visited() {
 		return visited;
 	}
-	
+
 	public Flight getIncident(){
 		return incident;
 	}
-	
+
 	public void setIncident(Flight f){
 		incident = f;
 	}
@@ -159,7 +159,7 @@ public class Airport implements Serializable {
 	public double weight(){
 		return weight;
 	}
-	
+
 	public void setWeight(double w){
 		weight = w;
 	}

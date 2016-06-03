@@ -15,9 +15,9 @@ public class TotalTimeWeighter implements Weighter {
 //        if (previous == null) {
 //            // El tema del primer aeropuerto que no anda con djiasakjst normal
 //        }
-        Moment startMoment = previous.getDeparture().addTime(previous.getDuration());
+        Moment startMoment = previous.getArrival();
 
-        HigherIterator<Flight> flightsIter = from.iteratorOfHigherFlightsTo(to, startMoment);
+        HigherIterator flightsIter = from.iteratorOfHigherFlightsTo(to, startMoment);
 
         if (!flightsIter.hasNext())
             return null;
@@ -26,6 +26,15 @@ public class TotalTimeWeighter implements Weighter {
         Time shortestTime = totalTime(startMoment, min);
         while (flightsIter.hasNext()) {
             Flight flight = flightsIter.next();
+            Time waitTime = startMoment.howMuchUntil(flight.getDeparture());
+
+            // Dado que los vuelos se iteran se forma ordenada por momento de salida,
+            // los waitTime son crecientes. Si un waitTime es mayor a el
+            // menor total time ya puedo cortar y retornar; todos los siguientes
+            // vuelos tendrán mayor waitTime y por ende mayor total time.
+            if (waitTime.compareTo(shortestTime) >= 0)
+            	return new WeightedFlight(min, shortestTime.getMinutes());
+
             Time aux = totalTime(startMoment, flight);
             if (aux.compareTo(shortestTime) < 0) {
                 min = flight;
@@ -33,7 +42,7 @@ public class TotalTimeWeighter implements Weighter {
             }
         }
 
-        return new WeightedFlight(min, min.getDuration().getMinutes());
+        return new WeightedFlight(min, shortestTime.getMinutes());
     }
 
     private Time totalTime(Moment start, Flight flight) {

@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Flight implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private FlightId id;
 	private double price;
 
@@ -37,7 +37,13 @@ public class Flight implements Serializable{
 		return departure.getTime();
 	}
 
-	public Moment getDeparture() { return departure; }
+	public Moment getDeparture() {
+		return departure;
+	}
+
+	public Moment getArrival() {
+		return departure.addTime(getDuration());
+	}
 
 	public Airport getDestination() {
 		return destination;
@@ -71,8 +77,7 @@ public class Flight implements Serializable{
 	public String toString(){
 		return "Flight: " + id.toString() + " Time: " + getDuration().getMinutes();
 	}
-	
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
