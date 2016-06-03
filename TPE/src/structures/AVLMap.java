@@ -27,7 +27,7 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 	}
 
 	private void initiateSet() {
-		set = new AVLSet<Node<K,V>>(new Comparator<Node<K,V>>() {
+		set = new AVLSet<>(new Comparator<Node<K,V>>() {
 			@Override
 			public int compare(Node<K, V> o1, Node<K, V> o2) {
 				return cmp.compare(o1.key, o2.key);
@@ -105,6 +105,34 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 		return new AVLMapIterator<V>(set.iterator(), getter);
 	}
 
+	@Override
+	public AVLSet<K> keySet() {
+		Iterator<K> iter = keyIterator();
+		AVLSet<K> set = new AVLSet<K>(cmp);
+		while (iter.hasNext())
+			set.add(iter.next());
+		return set;
+	}
+
+	@Override
+	public Collection<V> values() {
+		Iterator<V> iter = valueIterator();
+		Collection<V> collection = new ArrayList<V>(size());
+		while (iter.hasNext())
+			collection.add(iter.next());
+		return collection;
+	}
+
+	private static class Node<K,V> {
+		private K key;
+		private V value;
+
+		public Node(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
+	}
+
 	private class AVLMapIterator<T> implements Iterator<T> {
 		private Iterator<Node<K,V>> iter;
 		private ValueGetter<T> valueGetter;
@@ -127,33 +155,5 @@ public class AVLMap<K, V> implements SimpleMap<K, V> {
 
 	private abstract class ValueGetter<T> {
 		public abstract T getValue(Node<K,V> n);
-	}
-
-	private static class Node<K,V> {
-		private K key;
-		private V value;
-
-		public Node(K key, V value) {
-			this.key = key;
-			this.value = value;
-		}
-	}
-
-	@Override
-	public AVLSet<K> keySet() {
-		Iterator<K> iter = keyIterator();
-		AVLSet<K> set = new AVLSet<K>(cmp);
-		while (iter.hasNext())
-			set.add(iter.next());
-		return set;
-	}
-
-	@Override
-	public Collection<V> values() {
-		Iterator<V> iter = valueIterator();
-		Collection<V> collection = new ArrayList<V>(size());
-		while (iter.hasNext())
-			collection.add(iter.next());
-		return collection;
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class Parser{
     private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     private static FlightAssistant flightAssistant;
-
+    private static boolean hasEnded = false;
     // TEST
 //    public  static void main(String[] args) {
 //        String ej1 = "insert airport BUE -34.602535 -58.368731";
@@ -21,15 +21,15 @@ public class Parser{
 //        Scanner sc = new Scanner(test);
 //    }
 
-    public static void parseShell(Scanner sc, FlightAssistant fa) {
+    public static boolean parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;
         if (flightAssistant == null) {
             throw new IllegalStateException("No FlightAssistant to execute commands on");
         }
-        while (sc.hasNext()) {
-           parseFunction(sc);
-        }
+        if (sc.hasNext())
+            parseFunction(sc);
         flightAssistant = null;
+        return hasEnded; // hasEnded se pone en true si se llamo a exitAndClose ?
     }
 
     private static void parseFunction(Scanner sc) {
@@ -52,7 +52,7 @@ public class Parser{
                 valid = parseOutputType(sc);
                 break;
         }
-        sc.close();
+        //sc.close();
 
         if (!valid) {
             OutputManager.invalidCommand();
@@ -96,6 +96,7 @@ public class Parser{
     	if(!sc.hasNext())
     		return false;
 
+        sc.skip(" ");
     	String line = sc.nextLine();
 
     	if(!RegexHelper.validateRoute(line))
@@ -129,6 +130,7 @@ public class Parser{
 
     private static boolean parseOutputFormat(Scanner sc) {
         if (!sc.hasNext()) { return false; }
+        sc.skip(" ");
         String format = sc.nextLine();
 
         switch (format) {
@@ -146,6 +148,7 @@ public class Parser{
 
     private static boolean parseOutputType(Scanner sc) {
         if (!sc.hasNext()) { return false; }
+        sc.skip(" ");
         String type = sc.nextLine();
 
         switch (type) {
@@ -161,15 +164,16 @@ public class Parser{
         return true;
     }
 
-    private static boolean airportInsert(Scanner sc){
-    	if(!sc.hasNext())
-    		return false;
+    private static boolean airportInsert(Scanner sc) {
+        if (!sc.hasNext())
+            return false;
 
-    	String line = sc.nextLine();
-    	//sc.close(); Me lo cerraría cuando leo de archivo.
+        sc.skip(" ");
+        String line = sc.nextLine();
 
-        if(!RegexHelper.validateAirportInsertion(line, sc.delimiter().toString()))
-        	return false; //Error en el formato
+        if (!RegexHelper.validateAirportInsertion(line, " ")) {
+            return false; //Error en el formato
+        }
 
         sc = new Scanner(line);
         String name = sc.next();
@@ -184,6 +188,7 @@ public class Parser{
     	if(!sc.hasNext())
     		return false;
 
+        sc.skip(" ");
     	String line = sc.nextLine();
 
         //  Matchea la expresion regular.
@@ -215,6 +220,7 @@ public class Parser{
         if (durationStr.contains("h")) {
             auxSc.useDelimiter("h");
             hour = auxSc.nextInt();
+            auxSc.skip("h");
         }
         auxSc.useDelimiter("m");
         min = auxSc.nextInt();
@@ -274,6 +280,7 @@ public class Parser{
     	if(!sc.hasNext())
     		return false; //Error
 
+        sc.skip(" ");
     	String name = sc.nextLine();
 
     	if(!RegexHelper.validateAirportName(name))

@@ -18,23 +18,29 @@ public class RegexHelper implements InputConstraints {
 	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //-90.000 - 90.0000
 	private static String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //-180.000 - 180.0000
 
-    private static String flightValidationFromText = createFlightRegexp(spc);
-	private static String flightValidationFromFile = createFlightRegexp("#");
-    //Static para no armarla cada vez
+    private static String flightFromTextFormat = createFlightFormat(spc);
+	private static String flightFromFileFormat = createFlightFormat("#");
+
+	private static String airportFromTextFormat = createAirportFormat(spc);
+	private static String airportFromFileFormat = createAirportFormat("#");
+
     private static String flightNameFormat = airlineName + spc + number;
-    //Static para no armarla cada vez
     private static String routeFormat = "src=" + airportName + spc + "dst=" + airportName
 			+ spc + "priority=(ft|pr|tt)" + "( weekdays=" + days + ")?";
 
-	private static String createFlightRegexp(String separator) {
+	private static String createFlightFormat(String separator) {
 		return airlineName + separator + number + separator + days + separator + airportName + separator + airportName +
 				separator + twentyFourHourFormat + separator + hours + separator + realPositiveNum;
+	}
+
+	private static String createAirportFormat(String separator) {
+		return airportName + separator + latitude + separator + longitude;
 	}
     
 	// Se usa de igual manera para leer de linea de comandos o de archivo, con la unica diferencia
 	//que en los archivos se separan las palabras por medio de "#".
     public static boolean validateFlightInsertion(String line, String separator) {
-		String flightFormat = (separator.equals(spc)) ? flightValidationFromText : flightValidationFromFile;
+		String flightFormat = flightFromTextFormat; //TODO : flightFromFileFormat;
 		return line.matches(flightFormat);
 	}
 
@@ -43,8 +49,8 @@ public class RegexHelper implements InputConstraints {
 	}
 
     public static boolean validateAirportInsertion(String line, String separator) {
-    	String airportFormat = airportName + separator + latitude + separator + longitude;
-    	return line.matches(airportFormat);
+		String airportFormat = airportFromTextFormat;// TODO : airportFromFileFormat;
+		return line.matches(airportFormat);
 	}
     
     public static boolean validateRoute(String line) {
