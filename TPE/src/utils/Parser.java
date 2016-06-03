@@ -10,16 +10,10 @@ import java.util.Scanner;
 public class Parser{
     private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     private static FlightAssistant flightAssistant;
-    private static boolean hasEnded = false;
-    // TEST
-//    public  static void main(String[] args) {
-//        String ej1 = "insert airport BUE -34.602535 -58.368731";
-//        String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
-//     //   parse(new Scanner(ej2));
-//
-//        String test = "123 LU BUE";
-//        Scanner sc = new Scanner(test);
-//    }
+    private static boolean hasEnded = false; // Dice si usaron el comando exitAndClose. Pensar mejor solución.
+    private static boolean stdOut = true; // Por defecto a salida estandar
+
+    // ARGUMENTOS SHELL
 
     public static boolean parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;
@@ -29,8 +23,9 @@ public class Parser{
         if (sc.hasNext())
             parseFunction(sc);
         flightAssistant = null;
-        return hasEnded; // hasEnded se pone en true si se llamo a exitAndClose ?
+        return hasEnded;
     }
+
 
     private static void parseFunction(Scanner sc) {
         String str = sc.next();
@@ -49,10 +44,13 @@ public class Parser{
                 valid = parseOutputFormat(sc);
                 break;
             case "output":
-                valid = parseOutputType(sc);
+                valid = parseOutputTarget(sc);
+                break;
+            case "exitAndClose":
+                valid = true;
+                hasEnded = true;
                 break;
         }
-        //sc.close();
 
         if (!valid) {
             OutputManager.invalidCommand();
@@ -75,7 +73,6 @@ public class Parser{
         return valid;
     }
 
-    //repito el switch del insert pero llamando metodos de delete
     private static boolean parseDelete(Scanner sc) {
         boolean valid = false;
         switch(sc.next()) {
@@ -97,16 +94,16 @@ public class Parser{
     		return false;
 
         sc.skip(" ");
-    	String line = sc.nextLine();
+        String line = sc.nextLine();
 
     	if(!RegexHelper.validateRoute(line))
     		return false; //Mal formato
 
     	sc = new Scanner(line);
 
-        String orig,dest, option, days;
+        String orig, dest, option;
 
-        sc.skip(" src=");
+        sc.skip("src=");
         orig = sc.next();
 
         sc.skip(" dst=");
@@ -115,23 +112,22 @@ public class Parser{
         sc.skip(" priority=");
         option = sc.next();
 
-
+        LinkedList<Day> days;
         if (sc.hasNext()) { // Los weekDays son opcionales
-        	sc.skip(" weekdays=");
-        	days = sc.next();
-        }else{
-        	days = "";
-        	}
+            sc.skip(" weekdays=");
+            days = getDaysFromStr(sc.next());
+            // Si no hay weekDays "days" queda en null.
+        }
 
-        //flightAssistant.findRoute
         // TODO Llama al metodo de buscar la ruta
+        // Se supone que le devuelve una lista con los aeropuertos y eso se lo manda al outputmanager a que lo imprima
+        // OutputManager.printBestRoute(airports);
         return true;
     }
 
     private static boolean parseOutputFormat(Scanner sc) {
         if (!sc.hasNext()) { return false; }
-        sc.skip(" ");
-        String format = sc.nextLine();
+        String format = sc.next();
 
         switch (format) {
             case "text":
@@ -146,22 +142,38 @@ public class Parser{
         return true;
     }
 
-    private static boolean parseOutputType(Scanner sc) {
+    private static boolean parseOutputTarget(Scanner sc) {
         if (!sc.hasNext()) { return false; }
-        sc.skip(" ");
-        String type = sc.nextLine();
-
+        String type = sc.next();
         switch (type) {
             case "stdout":
-                // Que el assistant se guarde esta preferencia
+                OutputManager.setToStdOutput();
                 break;
-            case "KML":
-                // idem
+            case "file":
+                if (!sc.hasNext()) {
+                    return false;
+                } else {
+                    OutputManager.setToFileOutput(sc.next());
+                }
                 break;
             default:
                 return false;
         }
         return true;
+    }
+
+    private static boolean fileInsert(Scanner sc) {
+        boolean valid = false;
+        if (!sc.hasNext()) { return false; }
+        switch (sc.next()) {
+            case "airport":
+                valid = insertFromFile(sc, true);
+                break;
+            case "flight":
+                valid = insertFromFile(sc, false);
+                break;
+        }
+        return valid;
     }
 
     private static boolean airportInsert(Scanner sc) {
@@ -171,7 +183,7 @@ public class Parser{
         sc.skip(" ");
         String line = sc.nextLine();
 
-        if (!RegexHelper.validateAirportInsertion(line, " ")) {
+        if (!RegexHelper.validateAirportInsertion(line, sc.delimiter().toString())) {
             return false; //Error en el formato
         }
 
@@ -195,7 +207,7 @@ public class Parser{
         if(!RegexHelper.validateFlightInsertion(line, sc.delimiter().toString()))
         	return false; //Salir, algo esta mal escrito
 
-        sc = new Scanner(line); //Tambien podria hacerse un split
+        sc = new Scanner(line);
 
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
@@ -214,68 +226,6 @@ public class Parser{
         return true;
     }
 
-    private static int getDuration(String durationStr) {
-        Scanner auxSc = new Scanner(durationStr);
-        int hour = 0, min = 0;
-        if (durationStr.contains("h")) {
-            auxSc.useDelimiter("h");
-            hour = auxSc.nextInt();
-            auxSc.skip("h");
-        }
-        auxSc.useDelimiter("m");
-        min = auxSc.nextInt();
-        auxSc.close();
-        return hour * TimeConstants.MINUTES_PER_HOUR + min;
-    }
-
-	private static LinkedList<Moment> departures(String days, Time timeOfDep) {
-		String[] daysArr = days.split("-");
-		LinkedList<Moment> departs = new LinkedList<>();
-
-        for (String s : daysArr) {
-            Day dayOfDep = Day.getDay(s);
-            departs.add(new Moment(dayOfDep, timeOfDep));
-        }
-		return departs;
-	}
-
-    private static boolean fileInsert(Scanner sc) {
-        boolean valid = false;
-        if (!sc.hasNext()) { return false; }
-        switch (sc.next()) {
-            case "airport":
-                valid = insertFromFile(sc, true);
-                break;
-            case "flight":
-                valid = insertFromFile(sc, false);
-                break;
-        }
-        return valid;
-    }
-
-    //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
-    private static boolean insertFromFile(Scanner sc, boolean insertAirport) {
-        if (!sc.hasNext()) { return false; }
-        String pathToFile = sc.next();
-
-        boolean valid = true;
-        try {
-            Scanner fileSc = new Scanner(new File(pathToFile));
-            fileSc.useDelimiter("#");
-
-            // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
-            while (valid && fileSc.hasNextLine()) {
-            	if (insertAirport)
-            		valid = airportInsert(fileSc);
-            	else
-            		valid = flightInsert(fileSc);
-            }
-        } catch (FileNotFoundException e) {
-            OutputManager.fileOpenErrorMsg();
-        }
-        return valid;
-    }
-
     private static boolean airportDelete(Scanner sc) {
     	if(!sc.hasNext())
     		return false; //Error
@@ -289,8 +239,6 @@ public class Parser{
         flightAssistant.removeAirport(name);
         return true;
     }
-
-
 
     private static boolean flightDelete(Scanner sc) {
         if(!sc.hasNext())
@@ -325,5 +273,122 @@ public class Parser{
                 break;
         }
         return valid;
+    }
+
+    private static int getDuration(String durationStr) {
+        Scanner auxSc = new Scanner(durationStr);
+        int hour = 0, min = 0;
+        if (durationStr.contains("h")) {
+            auxSc.useDelimiter("h");
+            hour = auxSc.nextInt();
+            auxSc.skip("h");
+        }
+        auxSc.useDelimiter("m");
+        min = auxSc.nextInt();
+        auxSc.close();
+        return hour * TimeConstants.MINUTES_PER_HOUR + min;
+    }
+
+    private static LinkedList<Day> getDaysFromStr(String str) {
+        String[] daysArr = str.split("-");
+        LinkedList<Day> ans = new LinkedList<>();
+        for (String s : daysArr) {
+            ans.add(Day.getDay(s));
+        }
+        return ans;
+    }
+
+	private static LinkedList<Moment> departures(String days, Time timeOfDep) {
+		LinkedList<Moment> departs = new LinkedList<>();
+        for (Day dayOfDep: getDaysFromStr(days)) {
+            departs.add(new Moment(dayOfDep, timeOfDep));
+        }
+		return departs;
+	}
+
+    //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
+    private static boolean insertFromFile(Scanner sc, boolean insertAirport) {
+        if (!sc.hasNext()) { return false; }
+        String pathToFile = sc.next();
+
+        boolean valid = true;
+        try {
+            Scanner fileSc = new Scanner(new File(pathToFile));
+            fileSc.useDelimiter("#");
+
+            // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
+            while (valid && fileSc.hasNextLine()) {
+            	if (insertAirport)
+            		valid = airportInsert(fileSc);
+            	else
+            		valid = flightInsert(fileSc);
+            }
+        } catch (FileNotFoundException e) {
+            OutputManager.fileOpenErrorMsg();
+        }
+        return valid;
+    }
+
+    // ARGUMENTOS POR LINEA DE COMANDOS.
+
+    public static void parseArguments(String[] cmd, FlightAssistant fa) {
+        boolean valid = false;
+        flightAssistant = fa;
+        switch (cmd[0]) {
+            case "--airport-file":
+                valid = parseAirportArgument(cmd);
+                break;
+            case "--flight-file":
+                valid = parseFlightArgument(cmd);
+                break;
+            case "--delete-airports":
+                if (valid = (cmd.length == 1))
+                    flightAssistant.removeAllAirports();
+                break;
+            case "--delete-flights":
+                if (valid = (cmd.length == 1))
+                    flightAssistant.removeAllFlights();
+                break;
+        }
+        if (!valid) {
+            OutputManager.invalidCommand();
+        }
+    }
+
+    // TODO Ver como no repetir codigo entre esta y la misma pero de los vuelos
+    private static boolean parseAirportArgument(String[] cmd) {
+        if (cmd.length != 3) return false;
+        Scanner filePathSc = new Scanner(cmd[1]);
+        boolean ans = false;
+        switch (cmd[2]) {
+            case "--append-airports":
+                insertFromFile(filePathSc, true);
+                ans = true;
+                break;
+            case "--replace-airports":
+                flightAssistant.removeAllAirports(); // Borro antes de insertar
+                insertFromFile(filePathSc, true);
+                ans = true;
+                break;
+        }
+        return ans;
+    }
+
+    private static boolean parseFlightArgument(String[] cmd) {
+        if (cmd.length != 3) return false;
+        Scanner filePathSc = new Scanner(cmd[1]);
+        boolean ans = false;
+        switch (cmd[2]) {
+            case "--append-flights":
+                insertFromFile(filePathSc, false);
+                ans = true;
+                break;
+            case "--replace-flights":
+                flightAssistant.removeAllFlights(); // Borro antes de insertar
+                insertFromFile(filePathSc, false);
+                ans = true;
+                break;
+        }
+        return ans;
     }
 }

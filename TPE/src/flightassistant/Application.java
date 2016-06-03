@@ -1,24 +1,50 @@
 package flightassistant;
 
+import utils.FileManager;
+import utils.OutputManager;
 import utils.Parser;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Application {
     private static FlightAssistant flightAssistant;
 
     public static void main(String[] args) {
-        flightAssistant = new FlightAssistant();
         if (calledWithArgument(args)) {
-            // Parser para argumentos
+            flightAssistant = load();
+            Parser.parseArguments(args, flightAssistant);
         } else {
+            flightAssistant = new FlightAssistant();
             Scanner sc = new Scanner(System.in);
-            boolean ended;
-            do {
-                ended = Parser.parseShell(sc, flightAssistant);
-            } while (!ended);
-            sc.close();
+
+            while (!Parser.parseShell(sc, flightAssistant));
+            // el parser devuelve si se usó el comando para terminar el programa o no
+
+            sc.close(); // Solo lo puedo cerrar cuando termino de leer de entrada estandar.
+            exit();
         }
+    }
+
+    private static void exit() {
+        try {
+            FileManager.save(flightAssistant);
+        } catch (IOException e) {
+            OutputManager.exitErrorMsg();
+        }
+    }
+
+    private static FlightAssistant load() {
+        FlightAssistant fa;
+        try {
+            return FileManager.load();
+            // TODO que carajo imprimir en caso de error
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // No se cargo el flightAssistant
     }
 
     private static boolean calledWithArgument(String[] args) {

@@ -13,7 +13,11 @@ import java.util.List;
  */
 public class OutputManager {
 
-    private static boolean textFormat = true;   // Por defecto modo texto. Sino lo podemos hacer con enums o de alguna otra forma
+    private static boolean textFormat = true;   // Por defecto modo texto.
+
+    private static boolean stdOut = true; // Por defecto va a salida estandar.
+
+    private static String fileName;
 
     public static void invalidCommand() {
         System.err.println("Invalid Command");
@@ -27,11 +31,21 @@ public class OutputManager {
         System.err.println("Could not open/read file");
     }
 
+    public static void exitErrorMsg() { System.err.print("Could not save program files"); }
+
+    public static void printBestRoute(List<Airport> airports) {
+        if (stdOut) {
+            printToStdout(airports);
+        } else {
+            printToFile(airports);
+        }
+    }
+
     public static void printToStdout(List<Airport> airports) {
         print(airports, System.out);
     }
 
-    public static void printToFile(List<Airport> airports, String fileName) {
+    public static void printToFile(List<Airport> airports) {
         try {
             print(airports, new PrintStream(new FileOutputStream(fileName)));
         } catch (FileNotFoundException e) {
@@ -72,6 +86,15 @@ public class OutputManager {
 
     public static void setToTextFormat() {
         textFormat = true;
+    }
+
+    public static void setToStdOutput() {
+        stdOut = true;
+    }
+
+    public static void setToFileOutput(String file) {
+        stdOut = false;
+        fileName = file;
     }
 
     // Tambien podria almacenar el caminito con los vuelos, y cosas para el KML
