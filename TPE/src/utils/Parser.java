@@ -12,14 +12,14 @@ public class Parser{
     private static FlightAssistant flightAssistant;
 
     // TEST
-    public  static void main(String[] args) {
-        String ej1 = "insert airport BUE -34.602535 -58.368731";
-        String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
-     //   parse(new Scanner(ej2));
-
-        String test = "123 LU BUE";
-        Scanner sc = new Scanner(test);
-    }
+//    public  static void main(String[] args) {
+//        String ej1 = "insert airport BUE -34.602535 -58.368731";
+//        String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
+//     //   parse(new Scanner(ej2));
+//
+//        String test = "123 LU BUE";
+//        Scanner sc = new Scanner(test);
+//    }
 
     public static void parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;

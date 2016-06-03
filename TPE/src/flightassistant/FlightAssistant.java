@@ -57,6 +57,31 @@ public class FlightAssistant implements Serializable {
 		}
 	}
 
+	// PROVISORIO PARA TESTS
+	public void insertFlight(String airline, int number, double price, Moment[] departures, Time duration,
+							 String origin, String destination) {
+
+		Airport origAir = airports.get(origin);
+		Airport destAir = airports.get(destination);
+		if (origAir == null || destAir == null) {
+			return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
+		}
+		// Crea la ruta en caso de que todavía no exista
+		if (!origAir.routeExistsTo(destAir)) {
+			Route r = new Route(origAir, destAir);
+			origAir.addRoute(destAir, r);
+			destAir.addRoute(origAir, r);
+		}
+		Flight newFlight = new Flight(airline, number, price, departures[0], duration, origAir, destAir);
+		// En este mapa se guardan sin tener en cuenta el día de partida.
+		flights.put(newFlight.getId(), newFlight);
+
+		for (Moment departMoment: departures) {
+			Flight auxFl = new Flight(airline, number, price, departMoment, duration, origAir, destAir);
+			origAir.addFlight(auxFl);
+		}
+	}
+
 	public void removeFlight(String airline, int number) {
 		FlightId flightId = new FlightId(airline, number);
 		Flight flight = flights.get(flightId);
