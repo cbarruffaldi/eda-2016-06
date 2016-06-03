@@ -81,6 +81,10 @@ public class Day {
     	public Iterator<T> iterator() {
     		return new WeekIterator<T>(array);
     	}
+
+        public Iterator<T> iteratorFrom(Day day) {
+            return new WeekIterator<T>(array, day.daysIndex);
+        }
     }
 
     private static class WeekIterator<T> implements Iterator<T> {
@@ -90,6 +94,12 @@ public class Day {
     	public WeekIterator(T[] a) {
     		array = a;
     	}
+
+        public WeekIterator(T[] a, int from) {
+            if (from >= TOTAL_DAYS) throw new IllegalArgumentException("Out of bounds");
+            array = a;
+            current = from;
+        }
 
 		@Override
 		public boolean hasNext() {

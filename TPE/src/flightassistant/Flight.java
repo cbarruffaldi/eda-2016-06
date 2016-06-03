@@ -19,28 +19,11 @@ public class Flight implements Serializable{
 	private Airport origin;
 	private Airport destination;
 
-//	private static class Schedule{
-//		private Moment departure;
-//		private Moment arrival;
-//
-//		public Schedule(Moment departure, Moment arrival){
-//			this.arrival = arrival;
-//			this.departure = departure;
-//		}
-//	}
-
 	public Flight(String airline, int number, double price, Moment departure, Time duration,
 			Airport origin, Airport destination) {
 		this.id = new FlightId(airline, number);
 		this.price = price;
 		this.duration = duration;
-
-//		schedules = new Schedule[departures.length];
-//		for(int i = 0; i < departures.length ; i++){
-//			Moment m = departures[i];
-//			schedules[i] = new Schedule(m, m.addTime(duration));
-//		}
-
 		this.departure = departure;
 		this.origin = origin;
 		this.destination = destination;
@@ -55,12 +38,6 @@ public class Flight implements Serializable{
 	}
 
 	public Moment getDeparture() { return departure; }
-//	public Moment[] getDepartureMoments() {
-//		Moment[] departures = new Moment[schedules.length];
-//		for(int i = 0; i < departures.length; i++)
-//			departures[i] = schedules[i].departure;
-//		return departures;
-//	}
 
 	public Airport getDestination() {
 		return destination;

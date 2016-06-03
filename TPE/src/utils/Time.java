@@ -14,14 +14,19 @@ public class Time implements Comparable<Time>, TimeConstants {
 
     public Time getSum(Time t) { return new Time(minutes + t.minutes); }
 
-    public void addTime(Time t) {
+    public Time addTime(Time t) {
         this.minutes += t.minutes;
+        return this;
     }
 
-    public void addMinutes(int minutes) { this.minutes += minutes; }
+    public Time addMinutes(int minutes) {
+        this.minutes += minutes;
+        return this;
+    }
 
-    public void sumADay() {
+    public Time sumADay() {
         this.minutes += HOURS_PER_DAY * MINUTES_PER_HOUR;
+        return this;
     }
 
     public int minutesDifference(Time t) {
