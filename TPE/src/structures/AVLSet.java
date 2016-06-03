@@ -80,7 +80,7 @@ public class AVLSet<T> implements Iterable<T>, Set<T>{
 		return prevSize != size();
 	}
 
-	public Node<T> remove(T value, Node<T> t) {
+	private Node<T> remove(T value, Node<T> t) {
 		if (t == null)
 			return t;
 

@@ -15,6 +15,8 @@ public class InfinityDijkstra {
 		
 		
 		pq.decreasePriority(origin, 0);
+	
+		
 		
 		while(!pq.isEmpty()){
 			Double minWeight = pq.minWeight();

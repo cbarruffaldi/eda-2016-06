@@ -2,6 +2,7 @@ package flightassistant;
 
 import structures.SimpleHashMap;
 import structures.SimpleMap;
+import utils.Day;
 import utils.Moment;
 
 import java.io.Serializable;
@@ -168,6 +169,16 @@ public class Airport implements Serializable {
 
 	public void setWeight(double w){
 		weight = w;
+	}
+
+	public Flight getCheapestTo(Airport to, Day day) {
+		Route route = routes.get(to);
+		return route.getCheapestFrom(this, day);
+	}
+
+	public Flight getQuickestTo(Airport to, Day day) {
+		Route route = routes.get(to);
+		return route.getQuickestFrom(this, day);
 	}
 
 }
