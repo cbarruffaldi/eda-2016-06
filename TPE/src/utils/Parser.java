@@ -1,17 +1,17 @@
 package utils;
 
+import flightassistant.FlightAssistant;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 import java.util.Scanner;
 
-// TODO statics??
-public class Parser {
-    public static final int AIRPORT_NAME_LENGHT = 3;
-    public static final int AIRLINE_NAME_MAX_LENGHT = 3;
-    public static final double MAX_LATITUDE = 90.0;
-    public static final double MAX_LONGITUDE = 180.0;
-    public static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
+public class Parser{
+    private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
+    private static FlightAssistant flightAssistant;
 
+    // TEST
     public  static void main(String[] args) {
         String ej1 = "insert airport BUE -34.602535 -58.368731";
         String ej2 = "insert flight AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h45m 1850.23";
@@ -21,10 +21,15 @@ public class Parser {
         Scanner sc = new Scanner(test);
     }
 
-    static void parse(Scanner sc) {
+    public static void parseShell(Scanner sc, FlightAssistant fa) {
+        flightAssistant = fa;
+        if (flightAssistant == null) {
+            throw new IllegalStateException("No FlightAssistant to execute commands on");
+        }
         while (sc.hasNext()) {
            parseFunction(sc);
         }
+        flightAssistant = null;
     }
 
     private static void parseFunction(Scanner sc) {
@@ -44,7 +49,7 @@ public class Parser {
                 valid = parseOutputFormat(sc);
                 break;
             case "output":
-                valid = parseOutputType(sc); // TODO: Type??
+                valid = parseOutputType(sc);
                 break;
         }
         sc.close();
@@ -117,6 +122,7 @@ public class Parser {
         	days = "";
         	}
 
+        //flightAssistant.findRoute
         // TODO Llama al metodo de buscar la ruta
         return true;
     }
@@ -170,8 +176,7 @@ public class Parser {
         double lat = new Double(sc.next());
         double lng = new Double(sc.next());
 
-        // TODO metodo de insertar aeropuerto
-
+        flightAssistant.insertAirport(name, lat, lng);
         return true;
     }
 
@@ -193,27 +198,38 @@ public class Parser {
         String orig = sc.next();
         String dest = sc.next();
         String timeOfDeparture = sc.next();
-        String durationOfFlight = sc.next();
+        String durationOfFlightStr = sc.next();
         double price = new Double(sc.next());
 
-        //Procesar las cosas
-        boolean[] daysOfDeparture = daysOfDep(days);
-        // TODO metodo de insertar vuelo
+        Time depTime = Time.getTimeFromString(timeOfDeparture);
+        LinkedList<Moment> departures = departures(days, depTime);
+        int duration = getDuration(durationOfFlightStr);
+
+        flightAssistant.insertFlight(airline, flnumber, price, departures, new Time(duration), orig, dest);
         return true;
     }
 
+    private static int getDuration(String durationStr) {
+        Scanner auxSc = new Scanner(durationStr);
+        int hour = 0, min = 0;
+        if (durationStr.contains("h")) {
+            auxSc.useDelimiter("h");
+            hour = auxSc.nextInt();
+        }
+        auxSc.useDelimiter("m");
+        min = auxSc.nextInt();
+        auxSc.close();
+        return hour * TimeConstants.MINUTES_PER_HOUR + min;
+    }
 
-	private static boolean[] daysOfDep(String days) {
+	private static LinkedList<Moment> departures(String days, Time timeOfDep) {
 		String[] daysArr = days.split("-");
-		boolean[] departs = new boolean[7];
+		LinkedList<Moment> departs = new LinkedList<>();
 
-		for(int i = 0 ; i < daysArr.length ; i++) {
-            for (int j = 0; j < daysOfWeek.length; j++) {
-                if (daysArr[i].equals(daysOfWeek[j])) {
-                    departs[j] = true;
-                }
-            }
-		}
+        for (String s : daysArr) {
+            Day dayOfDep = Day.getDay(s);
+            departs.add(new Moment(dayOfDep, timeOfDep));
+        }
 		return departs;
 	}
 
@@ -258,13 +274,12 @@ public class Parser {
     	if(!sc.hasNext())
     		return false; //Error
 
-    	String line = sc.nextLine();
+    	String name = sc.nextLine();
 
-    	if(!RegexHelper.validateAirportName(line))
+    	if(!RegexHelper.validateAirportName(name))
     		return false;
 
-    	//Else en line quedo el nombre bien
-    	//TODO metodo borrar aeropuerto.
+        flightAssistant.removeAirport(name);
         return true;
     }
 
@@ -279,13 +294,12 @@ public class Parser {
         if(!RegexHelper.validateFlightName(line))
         	return false;
 
-        //Todo validado
+        //validado
         sc = new Scanner(line);
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
 
-        //TODO metodo borrar vuelo
-
+        flightAssistant.removeFlight(airline, flnumber);
         return true;
     }
 
@@ -294,10 +308,10 @@ public class Parser {
         if (!sc.hasNext()) { return false; }
         switch (sc.next()) {
             case "airport":
-                //TODO metodo de borrar todos los aeropuertos
+                flightAssistant.removeAllAirports();
                 break;
             case "flight":
-                //TODO metodo de borrar todos los vuelos
+                flightAssistant.removeAllFlights();
                 break;
             default:
                 valid = false;

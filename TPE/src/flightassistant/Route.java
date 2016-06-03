@@ -49,7 +49,9 @@ public class Route {
 			throw new IllegalArgumentException("Aeropuerto origen inválido");
 	}
 
-
+	public boolean hasFlights() {
+		return containerA.hasFlights() || containerB.hasFlights();
+	}
 
 	private FlightContainer selectContainer(Airport base){
 		if(base.equals(airportA))
@@ -108,9 +110,6 @@ public class Route {
 
 	private static class FlightContainer {
 
-		//private static Flight dummyFlight = new Flight("DMY", 1, 0, null, null, null, null);
-
-		// TODO capaz es mejor ordenarlos por momento de salida + tiempo de vuelo
 		// Vuelos en el container ordenados por momento de salida.
 		private static final Comparator<Flight> flightCmp = new Comparator<Flight>() {
 			@Override
@@ -129,6 +128,10 @@ public class Route {
 			weekArray.insert(Day.LU, new AVLSet<Flight>(flightCmp));
 			for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
 				weekArray.insert(day, new AVLSet<Flight>(flightCmp));
+		}
+
+		private boolean hasFlights() {
+			return cheapest != null;
 		}
 
 		private void addFlight(Flight flight) {

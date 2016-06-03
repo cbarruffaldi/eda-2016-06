@@ -6,8 +6,9 @@ import utils.Time;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.LinkedList;
 
-public class FlightAssistant implements Serializable{
+public class FlightAssistant implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,8 +33,8 @@ public class FlightAssistant implements Serializable{
 
 	//Controla todo lo de las rutas aca de los dos aeropuerto. Queda un pcoo mas largo
 	//pero para no delegar control de un aeropuerto en otro
-	public void insertFlight(String airline, int number, double price, Moment[] departures, Time duration,
-			 String origin, String destination) {
+	public void insertFlight(String airline, int number, double price, LinkedList<Moment> departures, Time duration,
+							 String origin, String destination) {
 
 		Airport origAir = airports.get(origin);
 		Airport destAir = airports.get(destination);
@@ -46,7 +47,7 @@ public class FlightAssistant implements Serializable{
 			origAir.addRoute(destAir, r);
 			destAir.addRoute(origAir, r);
 		}
-		Flight newFlight = new Flight(airline, number, price, departures[0], duration, origAir, destAir);
+		Flight newFlight = new Flight(airline, number, price, departures.get(0), duration, origAir, destAir);
 		// En este mapa se guardan sin tener en cuenta el día de partida.
 		flights.put(newFlight.getId(), newFlight);
 
@@ -61,8 +62,16 @@ public class FlightAssistant implements Serializable{
 		Flight flight = flights.get(flightId);
 		if (flight != null) {
 			Airport origAir = flight.getOrigin();
+			Airport destAir = flight.getDestination();
 			origAir.removeFlight(flight);
 			flights.remove(flightId);
+
+			// Borra la ruta entre los aeropuertos si no quedan mas vuelos entre ellos.
+			Route flightRoute = origAir.getRouteTo(destAir);
+			if (!flightRoute.hasFlights()) {
+				origAir.removeRouteTo(destAir);
+				destAir.removeRouteTo(origAir);
+			}
 		}
 	}
 
@@ -71,6 +80,20 @@ public class FlightAssistant implements Serializable{
 		if (airport != null) {
 			removeRoutesTo(airport);
 			airports.remove(id);
+		}
+	}
+
+	public void removeAllAirports() {
+		airports.clear();
+		flights.clear();
+	}
+
+	public void removeAllFlights() {
+		flights.clear();
+		Iterator<Airport> iter = airports.valueIterator();
+		while (iter.hasNext()) {
+			Airport airport = iter.next();
+			airport.removeAllRoutes();
 		}
 	}
 

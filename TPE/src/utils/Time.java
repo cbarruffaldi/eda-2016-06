@@ -12,6 +12,13 @@ public class Time implements Comparable<Time>, TimeConstants {
         minutes = min;
     }
 
+    public static Time getTimeFromString(String str) {
+        String[] timeStr = str.split(":");
+        Time t = new Time(Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR);
+        t.addMinutes(Integer.parseUnsignedInt(timeStr[1]));
+        return t;
+    }
+
     public Time getSum(Time t) { return new Time(minutes + t.minutes); }
 
     public Time addTime(Time t) {
@@ -36,8 +43,6 @@ public class Time implements Comparable<Time>, TimeConstants {
     public int getMinutes() {
         return minutes;
     }
-
-
 
     @Override
     public boolean equals(Object o) {

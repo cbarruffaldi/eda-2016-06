@@ -56,6 +56,10 @@ public class Airport implements Serializable {
 		r.addFlight(flight);
 	}
 
+	public Route getRouteTo(Airport airport) {
+		return routes.get(airport);
+	}
+
 	public boolean routeExistsTo(Airport airport) {
 		return routes.containsKey(airport);
 	}
@@ -74,6 +78,8 @@ public class Airport implements Serializable {
 	public void removeRouteTo(Airport destination) {
 		routes.remove(destination);
 	}
+
+	public void removeAllRoutes() { routes.clear(); }
 
 	public HigherIterator iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
 		Route route = routes.get(to);
