@@ -69,15 +69,25 @@ public class Route {
 		return container.iteratorOfHigherFlights(startTime);
 	}
 
-	public Flight getCheapestFrom(Airport airport){
-		return selectContainer(airport).cheapest;
+	public Flight getCheapestFrom(Airport airport) {
+		return selectContainer(airport).getCheapest();
 	}
 
 
 	public Flight getQuickestFrom(Airport airport) {
-		return selectContainer(airport).quickest;
+		return selectContainer(airport).getQuickest();
 	}
 
+	public Flight getCheapestFrom(Airport airport, Day day) {
+		FlightContainer container = selectContainer(airport);
+		return container.getCheapest(day);
+	}
+	
+	public Flight getQuickestFrom(Airport airport, Day day) {
+		FlightContainer container = selectContainer(airport);
+		return container.getQuickest(day);
+	}
+	
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
@@ -107,7 +117,7 @@ public class Route {
 	public boolean flightExistsFrom(Airport airport) {
 		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
 	}
-
+	
 	private static class FlightContainer {
 
 		// Vuelos en el container ordenados por momento de salida.
@@ -119,11 +129,13 @@ public class Route {
 			}
 		};
 
-		private Flight cheapest;
-		private Flight quickest;
+		private WeekArray<Flight> cheapest;
+		private WeekArray<Flight> quickest;
 		private WeekArray<AVLSet<Flight>> weekArray;
 
 		public FlightContainer() {
+			cheapest = Day.newWeekArray();
+			quickest = Day.newWeekArray();
 			weekArray = Day.newWeekArray();
 			weekArray.insert(Day.LU, new AVLSet<Flight>(flightCmp));
 			for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
@@ -131,48 +143,74 @@ public class Route {
 		}
 
 		private boolean hasFlights() {
-			return cheapest != null;
+			for (Flight f : cheapest)
+				if (f != null)
+					return true;
+			return false;
 		}
 
 		private void addFlight(Flight flight) {
-			if (cheapest == null || flight.isCheaperThan(cheapest))
-				cheapest = flight;
-			if (quickest == null || flight.isQuickerThan(quickest))
-				quickest = flight;
+			Day departureDay = flight.getArrival().getDay();
+			if (cheapest.get(departureDay) == null || flight.isCheaperThan(cheapest.get(departureDay)))
+				cheapest.insert(departureDay, flight);
+			if (quickest.get(departureDay) == null || flight.isQuickerThan(quickest.get(departureDay)))
+				quickest.insert(departureDay, flight);
 			weekArray.get(flight.getDeparture().getDay()).add(flight);
 		}
 
 		private void removeFlight(Flight flight) {
-			if (flight.equals(cheapest)) {
-				cheapest = null;
-				recalculateCheapest();
+			Day departureDay = flight.getArrival().getDay();
+			
+			weekArray.get(departureDay).remove(flight);
+			
+			if (flight.equals(cheapest.get(departureDay))) {
+				cheapest.insert(departureDay, null);
+				recalculateCheapest(departureDay);
 			}
-			if (flight.equals(quickest)) {
-				quickest = null;
-				recalculateQuickest();
-			}
-
-			for (AVLSet<Flight> dayFlights: weekArray) {
-				dayFlights.remove(flight);
+			if (flight.equals(quickest.get(departureDay))) {
+				quickest.insert(departureDay, null);
+				recalculateQuickest(departureDay);
 			}
 		}
 
-		private void recalculateQuickest() {
-			for (AVLSet<Flight> each : weekArray)
-				for (Flight flight : each)
-					if (quickest == null || flight.isQuickerThan(quickest))
-						quickest = flight;
+		private void recalculateQuickest(Day day) {
+			for (Flight flight : weekArray.get(day))
+				if (quickest.get(day) == null || flight.isQuickerThan(quickest.get(day)))
+					quickest.insert(day, flight);
 		}
 
-		private void recalculateCheapest() {
-			for (AVLSet<Flight> each : weekArray)
-				for (Flight flight : each)
-					if (cheapest == null || flight.isCheaperThan(cheapest))
-						cheapest = flight;
+		private void recalculateCheapest(Day day) {
+			for (Flight flight : weekArray.get(day))
+				if (cheapest.get(day) == null || flight.isCheaperThan(cheapest.get(day)))
+					cheapest.insert(day, flight);
 		}
 
 		private HigherIterator iteratorOfHigherFlights(Moment startTime) {
 			return new HigherIterator(startTime, weekArray);
+		}
+		
+		public Flight getCheapest(Day day) {
+			return cheapest.get(day);
+		}
+		
+		public Flight getQuickest(Day day) {
+			return quickest.get(day);
+		}
+		
+		public Flight getQuickest() {
+			Flight quickestFlight = null;
+			for (Flight flight : quickest)
+				if (quickestFlight == null || flight.isCheaperThan(quickestFlight))
+					quickestFlight = flight;
+			return quickestFlight;
+		}
+		
+		public Flight getCheapest() {
+			Flight cheapestFlight = null;
+			for (Flight flight : cheapest)
+				if (cheapestFlight == null || flight.isCheaperThan(cheapestFlight))
+					cheapestFlight = flight;
+			return cheapestFlight;
 		}
 
 	}
