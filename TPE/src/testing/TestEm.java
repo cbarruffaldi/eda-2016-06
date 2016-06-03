@@ -1,35 +1,32 @@
-package flightassistant;
+package testing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import flightassistant.Airport;
+import flightassistant.AirtimeWeighter;
+import flightassistant.DijsktraForReal;
+import flightassistant.Flight;
+import flightassistant.FlightAssistant;
+import flightassistant.InfinityDijkstra;
+import flightassistant.PriceWeighter;
 import utils.Day;
 import utils.Moment;
 import utils.Time;
 
-public class DobleDijkstraTest {
+public class TestEm {
 	static FlightAssistant fa;
 	
 	static String[] airports;
 	static Random random;
 
-	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		fa = new FlightAssistant();
 
 		airports = new String[]{"AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", 
-								"JJJ", "KKK", "LAL", "MIM", "NNN", "OOO", "PAL", "QNM", "RRR",
-								"SSS", "TTT", "UTD", "VVV", "WWW", "XXX", "YYY", "ZQB"};
+										"JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP", "QQQ", "RRR",
+										"SSS", "TTT", "UUU", "VVV", "WWW", "XXX", "YYY", "ABC"};
 				
 		int i = 0;
 		
@@ -40,7 +37,7 @@ public class DobleDijkstraTest {
 		random = new Random(System.currentTimeMillis());
 		
 		i = 0;
-		while(i < 500){
+		while(i < 1000){
 			i++;
 			
 			String air1 = airports[random.nextInt(airports.length)];
@@ -52,39 +49,31 @@ public class DobleDijkstraTest {
 			} while(air2.equals(air1));
 			
 			
-			double price = random.nextInt(15500); //entre 1000 y 15500
-			Time duration = new Time(1 + random.nextInt(1000));
+			double price = random.nextInt(15500) + 1000; //entre 1000 y 15500
+			Time duration = new Time(random.nextInt(1000));
 			int hour = random.nextInt(24);
 			int minutes = random.nextInt(60);
 			
 			Moment[] departures = new Moment[]{ new Moment(Day.LU, new Time(hour, minutes)) };
 			
-			Character c1 = air1.toCharArray()[0];
-			Character c2 = air2.toCharArray()[0];
-			
-			String s = "";
-			s = s + c1 + c2 + i;
-		
-			fa.insertFlight(s, i, price, departures, duration, air1, air2);
+			fa.insertFlight("UAI", i, price, departures, duration, air1, air2);
 		}
 		
 		
 	}
 
-	@Before
 	public void setUp() throws Exception {
 		
 		//fa.refreshAirportsNodeProperties();
 		
 	}
 
-	@Test
-	public void AirTimeTest() {
+	static public void AirTimeTest() {
 		
 		int i = 0;
 		int j = 0;
-	
-		while(i < 10000){
+		
+		while(i < 1){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -99,11 +88,10 @@ public class DobleDijkstraTest {
 		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, AirtimeWeighter.WEIGHTER);
 		
 		if(l1 == null){
-			assertTrue(l2  == null);
+			if(l2  != null)
+				System.out.println("Error");
 		}
 		
-		
-		if(l1 != null && l2 != null){
 		int time1 = 0;
 		for(Flight f: l1){
 			time1 += f.getDuration().getMinutes();
@@ -113,37 +101,15 @@ public class DobleDijkstraTest {
 		for(Flight f: l2){
 			time2 += f.getDuration().getMinutes();
 		}
-		
-		
+				
 		if(time2 < time1){
 			System.out.println("========");
 			System.out.println("Mejor el 2");
 			System.out.println(time1);
 			System.out.println(time2);
 			System.out.println("========");
-		
-				System.out.print(air1 + "  ->");
-				System.out.println(air2);
-				
-				System.out.println(l1);
-				for(Flight f: l1){
-					if(f.getDuration().getMinutes() <= 0)
-						System.err.println("ZERO!L2");
-				}				
-				for(Flight f: l2){
-					if(f.getDuration().getMinutes() <= 0)
-						System.err.println("ZERO! L2");
-				}
 
-				System.out.println(l2);
-				
-				
-				Iterator<Flight> iter = fa.flights.valueIterator();
-				while(iter.hasNext())
-					System.out.println(iter.next());
-			
-
-
+			j += 1;
 		}
 		if(time1 < time2){
 			System.out.println("========");
@@ -151,27 +117,19 @@ public class DobleDijkstraTest {
 			System.out.println(time1);
 			System.out.println(time2);
 			System.out.println("========");
-		
-				System.out.print(air1 + "  ->");
-				System.out.println(air2);
-				System.out.println(l1);
-				System.out.println(l2);
 
 			j += 1;
 		}		
-		
-		
-		assertTrue(time1 == time2);
+				
 		}
-		}
+		System.out.println(j);
 
 	}
 	
-	@Test
 	public void priceTest() {
 		
 		int i = 0;
-		while(i < 10000){
+		while(i < 1){
 		i++;
 		Airport air1 = fa.airports.get(airports[random.nextInt(airports.length)]);
 		Airport air2 = fa.airports.get(airports[random.nextInt(airports.length)]);
@@ -184,11 +142,7 @@ public class DobleDijkstraTest {
 
 		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, PriceWeighter.WEIGHTER);
 		
-		if(l1 == null){
-			assertTrue(l2  == null);
-		}
 		
-		if(l1 != null && l2 != null){
 		double price1 = 0;
 		for(Flight f: l1){
 			price1 += f.getPrice();
@@ -197,19 +151,18 @@ public class DobleDijkstraTest {
 		for(Flight f: l2){
 			price2 += f.getPrice();
 		}
-		if(price1 != price2){
-			System.out.println("Price diff " + price1 + " " + price2);
-			
-			Iterator<Flight> iter = fa.flights.valueIterator();
-			while(iter.hasNext())
-				System.out.println(iter.next());
-		}
-		assertTrue(price1 == price2);
+		
+		if(! (price1 == price2)){
+			System.out.println("ERR");
 		}
 		
 		}
 
 	}
 
+	public static void main(String[] args) throws Exception {
+		setUpBeforeClass();
+		AirTimeTest();
+	}
 
 }

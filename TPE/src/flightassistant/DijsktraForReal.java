@@ -45,6 +45,7 @@ public class DijsktraForReal {
 //	}
 	
 	
+	
 	//Precondicion: aeropuertos desmarcados
 	public static List<Flight> minPath(Airport origin, Airport dest, Weighter weighter){
 		PriorityQueue<Airport> pq = new PriorityQueue<Airport>(new Comparator<Airport>() {

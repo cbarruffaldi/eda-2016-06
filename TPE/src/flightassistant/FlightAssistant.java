@@ -81,7 +81,7 @@ public class FlightAssistant implements Serializable{
 	}
 	
 	
-	void refreshAirportsNodeProperties(){
+	public void refreshAirportsNodeProperties(){
 			Iterator<Airport> airportsIter = airports.valueIterator();
 			while(airportsIter.hasNext()){
 				airportsIter.next().nodeRefresh();
