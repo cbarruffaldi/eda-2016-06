@@ -1,11 +1,11 @@
 package flightassistant;
 
+import structures.BinaryMinHeap;
+import utils.Day;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import structures.BinaryMinHeap;
-import utils.Day;
 
 public class InfinityDijkstra {
 
@@ -30,8 +30,8 @@ public class InfinityDijkstra {
 				Airport next = iter.next();
 				if (origin.flightExistsTo(next)) {
 					WeightedTicket wTicket = originWeighter.minTicket(origin, next);
-					pq.decreasePriority(next, wTicket.weight());
 					next.setIncident(wTicket.ticket());
+					pq.decreasePriority(next, wTicket.weight());
 				}
 			}
 		}
@@ -52,13 +52,13 @@ public class InfinityDijkstra {
 			Iterator<Airport> iter = airport.connectedAirportsIterator();
 				while(iter.hasNext()){
 					Airport next = iter.next();
-					if(!next.visited() && airport.flightExistsTo(next)){
-						WeightedTicket wflight = weighter.minTicket(airport, next);
+					if (!next.visited() && airport.flightExistsTo(next)) {
+						WeightedTicket wTicket = weighter.minTicket(airport, next);
 
 						double nextCurrWeight = pq.getPriority(next);
-						double acumWeight = minWeight + wflight.weight();
+						double acumWeight = minWeight + wTicket.weight();
 						if(acumWeight < nextCurrWeight){
-							next.setIncident(wflight.ticket());
+							next.setIncident(wTicket.ticket());
 							pq.decreasePriority(next, acumWeight);
 						} //end if
 					} // end if
@@ -68,13 +68,64 @@ public class InfinityDijkstra {
 		return null;
 	}
 
+	// Sin repetir codigo, testear
+	public static List<Ticket> minPath2(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
+									   Weighter originWeighter, List<Day> departureDays) {
 
+		BinaryMinHeap<Airport> pq = queueAirports(fa);
 
+		pq.decreasePriority(origin, 0);
+
+		List<Ticket> ans = null;
+		if (departureDays != null) {
+			djistra(pq, dest, originWeighter, true);
+		}
+		ans = djistra(pq, dest, weighter, false);
+
+		return ans;
+	}
+
+	// Cambiar nombre
+	private static List<Ticket> djistra(BinaryMinHeap<Airport> pq, Airport dest, Weighter weighter, boolean isOrigin) {
+
+		while (!pq.isEmpty()) {
+			Double minWeight = pq.minWeight();
+
+			if (Double.compare(minWeight, Double.POSITIVE_INFINITY) == 0)
+				return null; //No existe el camino, no tiene sentido seguir
+
+			Airport airport = pq.dequeue();
+			airport.visit();
+
+			if (airport.equals(dest)) {
+				return buildList(dest);
+			}
+
+			Iterator<Airport> iter = airport.connectedAirportsIterator();
+			while (iter.hasNext()) {
+				Airport next = iter.next();
+				if (!next.visited() && airport.flightExistsTo(next)) {
+					WeightedTicket wTicket = weighter.minTicket(airport, next);
+
+					double nextCurrWeight = pq.getPriority(next);
+					double acumWeight = minWeight + wTicket.weight();
+
+					if (acumWeight < nextCurrWeight) {
+						next.setIncident(wTicket.ticket());
+						pq.decreasePriority(next, acumWeight);
+					}
+				}
+			}
+			// Si está en el aeropuerto del origen tiene que ciclar una sola vez, y devuelve null.
+			if (isOrigin) return null;
+		}
+		return null;
+	}
 
 	private static BinaryMinHeap<Airport> queueAirports(FlightAssistant fa) {
 		int size = fa.airports.size();
 
-		BinaryMinHeap<Airport> heap = new BinaryMinHeap<Airport>(size);
+		BinaryMinHeap<Airport> heap = new BinaryMinHeap<>(size);
 
 		Iterator<Airport> iter = fa.airports.valueIterator();
 

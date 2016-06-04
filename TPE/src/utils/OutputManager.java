@@ -1,7 +1,7 @@
 package utils;
 
 import flightassistant.Airport;
-import flightassistant.Flight;
+import flightassistant.Ticket;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -106,16 +106,21 @@ public class OutputManager {
         // TODO medio choto lo de pedirle el segundo aeropuerto, que pasa si hay uno solo?
         public RouteData(List<Airport> airports) {
             int weeks = 0; boolean moreThanADay = false;
-            Day firstDay = airports.get(1).getIncident().getDeparture().getDay();
+            Airport firstAirport = airports.get(1);
+            Day firstDay = firstAirport.getIncident().getDeparture().getDay();
             Day prevDay = firstDay;
+            fltime = new Time(0);
+
             for (int i = 1; i < airports.size(); i++) {
-                Flight flight = airports.get(i).getIncident();
-                price += flight.getPrice();
-                fltime.addTime(flight.getDuration());
-                if (!prevDay.equals(flight.getDeparture().getDay())) {
+
+                Ticket ticket = airports.get(i).getIncident();
+                price += ticket.getPrice();
+                fltime.addTime(ticket.getDuration());
+
+                if (!prevDay.equals(ticket.getDeparture().getDay())) {
                     moreThanADay = true;
-                } else if (moreThanADay == true && flight.getDeparture().getDay().equals(firstDay)) {
-                        weeks++; // Paso una semana.
+                } else if (moreThanADay && ticket.getDeparture().getDay().equals(firstDay)) {
+                    weeks++; // Paso una semana.
                 }
             }
             // Recorre de nuevo la lista, pero es un poco menos engorroso en el código.
@@ -123,10 +128,22 @@ public class OutputManager {
         }
 
         // TODO testear esto y lo de contar las semanas
-        private Time calculateTotalTime(int weeks, Flight first, Flight last) {
-            Time timeSum = first.getDeparture().howMuchUntil(last.getDeparture().addTime(last.getDuration()));
+        private Time calculateTotalTime(int weeks, Ticket first, Ticket last) {
+            Time timeSum = first.getDeparture().howMuchUntil(last.getArrival());
             timeSum.addMinutes(TimeConstants.MINUTES_PER_WEEK * weeks);
             return timeSum;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public Time getFltime() {
+            return fltime;
+        }
+
+        public Time getTotalTime() {
+            return totalTime;
         }
     }
 

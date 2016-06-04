@@ -10,16 +10,17 @@ import java.util.Scanner;
 public class Application {
     private static FlightAssistant flightAssistant;
 
-
     public static void main(String[] args) {
         
     	//Hay que hardcodear un flightAssistant vacio asi se carga siempre el mismo
-    	flightAssistant = load();	//carga el flightAssistant
+
+        //Por ahora lo saco porque no anda
+        //flightAssistant = load();	//carga el flightAssistant
     	
     	if (calledWithArgument(args)) {
             Parser.parseArguments(args, flightAssistant);
         } else {
-            //flightAssistant = new FlightAssistant();
+            flightAssistant = new FlightAssistant();
             Scanner sc = new Scanner(System.in);
 
             while (!Parser.parseShell(sc, flightAssistant));
