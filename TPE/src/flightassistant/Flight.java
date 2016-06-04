@@ -70,6 +70,7 @@ public class Flight implements Serializable{
 		return id.hashCode();
 	}
 
+	@Override
 	public String toString(){
 		return "Flight: " + id.toString() + " Time: " + getDuration().getMinutes();
 	}

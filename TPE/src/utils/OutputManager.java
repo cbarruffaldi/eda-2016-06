@@ -41,13 +41,13 @@ public class OutputManager {
         }
     }
 
-    public static void printToStdout(List<Airport> airports) {
+    private static void printToStdout(List<Airport> airports) {
         print(airports, System.out);
     }
 
-    public static void printToFile(List<Airport> airports) {
+    private static void printToFile(List<Airport> airports) {
         try {
-            print(airports, new PrintStream(new FileOutputStream(fileName)));
+            print(airports, new PrintStream(new FileOutputStream(fileName, true)));
         } catch (FileNotFoundException e) {
             System.err.println("Error writing/reading file");
         }
@@ -65,15 +65,19 @@ public class OutputManager {
         RouteData data = new RouteData(airports);
         out.println("Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n'
                 + "TiempoTotal#" + data.totalTime);
+        out.println();
 
-        out.print(airports.get(0) + "#");
-        for (int i = 1; i < airports.size() - 1; i++) {
-            Airport curr = airports.get(i);
-            out.println(curr.getIncident() + "#" + curr);
-            out.print(curr + "#");
-        }
-        Airport curr = airports.get(airports.size() - 1);
-        out.println(curr.getIncident() + "#" + curr);
+        for (int i = 1; i < airports.size() - 1; i++)
+        	printTicket(airports.get(i).getIncident(), out);
+    }
+
+    private static void printTicket(Ticket ticket, PrintStream out) {
+    	String origin = ticket.getOrigin().getId();
+    	String destination = ticket.getDestination().getId();
+    	String airline = ticket.getFlightId().getAirline();
+    	int flightNum = ticket.getFlightId().getNumber();
+
+    	out.println(origin+"#"+airline+"#"+flightNum+"#"+destination);
     }
 
     private static void printKML(List<Airport> airports, PrintStream out) {
@@ -103,47 +107,28 @@ public class OutputManager {
         private Time fltime;
         private Time totalTime;
 
-        // TODO medio choto lo de pedirle el segundo aeropuerto, que pasa si hay uno solo?
         public RouteData(List<Airport> airports) {
-            int weeks = 0; boolean moreThanADay = false;
-            Airport firstAirport = airports.get(1);
-            Day firstDay = firstAirport.getIncident().getDeparture().getDay();
-            Day prevDay = firstDay;
-            fltime = new Time(0);
+        	price = 0;
+        	fltime = new Time(0);
+        	totalTime = new Time(0);
+        	Airport current = airports.get(airports.size()-1);
+        	Ticket ticket;
 
-            for (int i = 1; i < airports.size(); i++) {
-
-                Ticket ticket = airports.get(i).getIncident();
-                price += ticket.getPrice();
-                fltime.addTime(ticket.getDuration());
-
-                if (!prevDay.equals(ticket.getDeparture().getDay())) {
-                    moreThanADay = true;
-                } else if (moreThanADay && ticket.getDeparture().getDay().equals(firstDay)) {
-                    weeks++; // Paso una semana.
-                }
-            }
-            // Recorre de nuevo la lista, pero es un poco menos engorroso en el código.
-            totalTime = calculateTotalTime(weeks, airports.get(1).getIncident(), airports.get(airports.size()-1).getIncident());
+        	while ((ticket = current.getIncident()) != null) {
+        		price += ticket.getPrice();
+        		fltime.addTime(ticket.getDuration());
+        		totalTime.addTime(calculateTotalTime(ticket));
+        		current = ticket.getOrigin();
+        	}
         }
 
-        // TODO testear esto y lo de contar las semanas
-        private Time calculateTotalTime(int weeks, Ticket first, Ticket last) {
-            Time timeSum = first.getDeparture().howMuchUntil(last.getArrival());
-            timeSum.addMinutes(TimeConstants.MINUTES_PER_WEEK * weeks);
-            return timeSum;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public Time getFltime() {
-            return fltime;
-        }
-
-        public Time getTotalTime() {
-            return totalTime;
+        private Time calculateTotalTime(Ticket ticket) {
+        	Time t = ticket.getDuration();
+        	if (ticket.getOrigin().getIncident() != null) { // no es el aeropuerto origen
+        		Moment prevFlightArrival = ticket.getOrigin().getIncident().getArrival();
+        		t.addTime(prevFlightArrival.howMuchUntil(ticket.getDeparture()));
+        	}
+        	return t;
         }
     }
 

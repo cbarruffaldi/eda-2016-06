@@ -61,7 +61,9 @@ public class Time implements Comparable<Time>, TimeConstants {
 
     @Override
     public String toString() {
-        return minutes / MINUTES_PER_DAY + "d " + minutes%MINUTES_PER_DAY / MINUTES_PER_HOUR + "h " + minutes % MINUTES_PER_HOUR + "m";
+    	int hours = minutes / MINUTES_PER_HOUR;
+    	int mins = minutes % MINUTES_PER_HOUR;
+        return String.format("%02dh%02dm", hours, mins);  // Formato: xxhyym
     }
 
     @Override
