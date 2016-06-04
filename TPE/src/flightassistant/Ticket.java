@@ -73,4 +73,9 @@ public class Ticket {
 	public int hashCode() {
 		return flight.hashCode() ^ departure.hashCode();
 	}
+
+	@Override
+	public String toString() { //TODO: hacerlo bien
+		return flight.toString();
+	}
 }

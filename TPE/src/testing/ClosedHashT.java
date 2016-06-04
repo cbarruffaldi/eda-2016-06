@@ -1,7 +1,5 @@
 package testing;
 
-import java.util.concurrent.DelayQueue;
-
 import structures.ClosedHash;
 
 public class ClosedHashT {
