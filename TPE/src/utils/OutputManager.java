@@ -81,7 +81,7 @@ public class OutputManager {
     }
 
     private static void printKML(List<Airport> airports, PrintStream out) {
-        // TODO
+    	out.print(KMLFormatter.airportsToKML(airports));
     }
 
     public static void setToKMLFormat() {

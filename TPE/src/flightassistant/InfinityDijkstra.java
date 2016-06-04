@@ -10,7 +10,7 @@ import java.util.List;
 public class InfinityDijkstra {
 
 	public static List<Ticket> minPath(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter) {
-		return minPath(fa, origin, dest, weighter, null, null);
+		return minPath2(fa, origin, dest, weighter, null, null);
 	}
 
 	public static List<Ticket> minPath(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
