@@ -8,6 +8,7 @@ import utils.Moment;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class Airport implements Serializable {
@@ -20,7 +21,7 @@ public class Airport implements Serializable {
 	private SimpleMap<Airport, Route> routes;
 	private boolean visited;
 	private double weight;  //TODO: Sacar weight cuando no sea necesario DijkstraForReal
-	private Flight incident;
+	private Ticket incident;
 
 	public Airport(String id, double latitude, double longitude) {
 		this.id = id;
@@ -48,13 +49,35 @@ public class Airport implements Serializable {
 	}
 
 	public void addFlight(Flight flight) {
+		if (flight == null)
+			throw new NullPointerException("null flight");
+
 		Airport destination = flight.getDestination();
-		if (! routeExistsTo(destination)) { //Un acceso mas, pero queda mas claro
+		if (!routeExistsTo(destination)) { //Un acceso mas, pero queda mas claro
 			throw new IllegalStateException();
 		}
 
 		Route r = routes.get(destination);
-		r.addFlight(flight);
+		List<Ticket> tickets = TicketMachine.makeTickets(flight);
+
+		for (Ticket ticket : tickets)
+			r.addTicket(ticket);
+	}
+
+	public void removeFlight(Flight flight) {
+		if (flight == null)
+			throw new NullPointerException("null flight");
+
+		Airport destination = flight.getDestination();
+		if (!routeExistsTo(destination)) {
+			throw new IllegalStateException();
+		}
+
+		Route r = routes.get(destination);
+		List<Ticket> tickets = TicketMachine.makeTickets(flight);
+
+		for (Ticket ticket : tickets)
+			r.removeTicket(ticket);
 	}
 
 	public Route getRouteTo(Airport airport) {
@@ -69,18 +92,13 @@ public class Airport implements Serializable {
 		routes.put(airport, r);
 	}
 
-	public void removeFlight(Flight flight) {
-		Route r = routes.get(flight.getDestination());
-		if (r == null)
-			throw new IllegalArgumentException("No existe ruta hacia el destino del vuelo a eliminar");
-		r.removeFlight(flight);
-	}
-
 	public void removeRouteTo(Airport destination) {
 		routes.remove(destination);
 	}
 
-	public void removeAllRoutes() { routes.clear(); }
+	public void removeAllRoutes() {
+		routes.clear();
+	}
 
 	public HigherIterator iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
 		Route route = routes.get(to);
@@ -98,6 +116,7 @@ public class Airport implements Serializable {
 		return routes.keyIterator();
 	}
 
+	@Override
 	public String toString(){
 		return "Airport: " + id;
 	}
@@ -129,12 +148,22 @@ public class Airport implements Serializable {
 		return	routeExistsTo(next) && routes.get(next).flightExistsFrom(this);
 	}
 
-	public Flight getCheapestTo(Airport destination) {
+	public Ticket getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
 	}
 
-	public Flight getQuickestTo(Airport destination) {
+	public Ticket getQuickestTo(Airport destination) {
 		return routes.get(destination).getQuickestFrom(this);
+	}
+
+	public Ticket getCheapestTo(Airport destination, Day day) {
+		Route route = routes.get(destination);
+		return route.getCheapestFrom(this, day);
+	}
+
+	public Ticket getQuickestTo(Airport destination, Day day) {
+		Route route = routes.get(destination);
+		return route.getQuickestFrom(this, day);
 	}
 
 	public void nodeRefresh(){
@@ -155,12 +184,12 @@ public class Airport implements Serializable {
 		return visited;
 	}
 
-	public Flight getIncident(){
+	public Ticket getIncident(){
 		return incident;
 	}
 
-	public void setIncident(Flight f){
-		incident = f;
+	public void setIncident(Ticket t){
+		incident = t;
 	}
 
 	public double weight(){
@@ -170,15 +199,4 @@ public class Airport implements Serializable {
 	public void setWeight(double w){
 		weight = w;
 	}
-
-	public Flight getCheapestTo(Airport to, Day day) {
-		Route route = routes.get(to);
-		return route.getCheapestFrom(this, day);
-	}
-
-	public Flight getQuickestTo(Airport to, Day day) {
-		Route route = routes.get(to);
-		return route.getQuickestFrom(this, day);
-	}
-
 }

@@ -7,15 +7,14 @@ import utils.Moment;
 
 import java.util.Comparator;
 
-
 public class Route {
 
 	//Airport A y B son nombres y no implican ningun orden.
 	private Airport airportA;
 	private Airport airportB;
 
-	private FlightContainer containerA; // vuelos que salen del A
-	private FlightContainer containerB; // vuelos que salen del B
+	private TicketContainer containerA; // vuelos que salen del A
+	private TicketContainer containerB; // vuelos que salen del B
 
 	public Route(Airport airport1, Airport airport2) {
 		if(airport1 == null || airport2 == null) {
@@ -27,67 +26,57 @@ public class Route {
 		this.airportA = airport1;
 		this.airportB = airport2;
 
-		this.containerA = new FlightContainer();
-		this.containerB = new FlightContainer();
+		this.containerA = new TicketContainer();
+		this.containerB = new TicketContainer();
 	}
 
-	public void addFlight(Flight flight) {
-		if (flight.getOrigin().equals(airportA))
-			containerA.addFlight(flight);
-		else if (flight.getOrigin().equals(airportB))
-			containerB.addFlight(flight);
-		else
-			throw new IllegalArgumentException("Aeropuerto origen inválido");
+	public void addTicket(Ticket ticket) {
+		TicketContainer container = selectContainer(ticket.getOrigin());
+		container.addTicket(ticket);
 	}
 
-	public void removeFlight(Flight flight) {
-		if (flight.getOrigin().equals(airportA))
-			containerA.removeFlight(flight);
-		else if (flight.getOrigin().equals(airportB))
-			containerB.removeFlight(flight);
-		else
-			throw new IllegalArgumentException("Aeropuerto origen inválido");
+	public void removeTicket(Ticket ticket) {
+		TicketContainer container = selectContainer(ticket.getOrigin());
+		container.removeTicket(ticket);
 	}
 
 	public boolean hasFlights() {
 		return containerA.hasFlights() || containerB.hasFlights();
 	}
 
-	private FlightContainer selectContainer(Airport base){
+	private TicketContainer selectContainer(Airport base){
 		if(base.equals(airportA))
 			return containerA;
 		else if(base.equals(airportB))
 			return containerB;
 		else
-			throw new IllegalArgumentException("This route does not connect" + base);
+			throw new IllegalArgumentException("This route does not connect s" + base);
 	}
 
 	public HigherIterator iteratorOfHigherFlightsFrom(Airport from, Moment startTime) {
 		if (!flightExistsFrom(from))
 			throw new IllegalArgumentException("This route does not connect " + from);
-		FlightContainer container = selectContainer(from);
+		TicketContainer container = selectContainer(from);
 		return container.iteratorOfHigherFlights(startTime);
 	}
 
-	public Flight getCheapestFrom(Airport airport) {
+	public Ticket getCheapestFrom(Airport airport) {
 		return selectContainer(airport).getCheapest();
 	}
 
 
-	public Flight getQuickestFrom(Airport airport) {
+	public Ticket getQuickestFrom(Airport airport) {
 		return selectContainer(airport).getQuickest();
 	}
 
-	public Flight getCheapestFrom(Airport airport, Day day) {
-		FlightContainer container = selectContainer(airport);
-		return container.getCheapest(day);
+	public Ticket getCheapestFrom(Airport airport, Day day) {
+		return selectContainer(airport).getCheapest(day);
 	}
-	
-	public Flight getQuickestFrom(Airport airport, Day day) {
-		FlightContainer container = selectContainer(airport);
-		return container.getQuickest(day);
+
+	public Ticket getQuickestFrom(Airport airport, Day day) {
+		return selectContainer(airport).getQuickest(day);
 	}
-	
+
 	/*
 	 * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
 	 */
@@ -117,100 +106,100 @@ public class Route {
 	public boolean flightExistsFrom(Airport airport) {
 		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
 	}
-	
-	private static class FlightContainer {
+
+	private static class TicketContainer {
 
 		// Vuelos en el container ordenados por momento de salida.
-		private static final Comparator<Flight> flightCmp = new Comparator<Flight>() {
+		private static final Comparator<Ticket> ticketCmp = new Comparator<Ticket>() {
 			@Override
-			public int compare(Flight o1, Flight o2) {
+			public int compare(Ticket o1, Ticket o2) {
 				int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
-				return comp == 0 ? o1.getId().compareTo(o2.getId()) : comp;
+				return comp == 0 ? o1.getFlightId().compareTo(o2.getFlightId()) : comp;
 			}
 		};
 
-		private WeekArray<Flight> cheapest;
-		private WeekArray<Flight> quickest;
-		private WeekArray<AVLSet<Flight>> weekArray;
+		private WeekArray<Ticket> cheapest;
+		private WeekArray<Ticket> quickest;
+		private WeekArray<AVLSet<Ticket>> weekArray;
 
-		public FlightContainer() {
+		public TicketContainer() {
 			cheapest = Day.newWeekArray();
 			quickest = Day.newWeekArray();
 			weekArray = Day.newWeekArray();
-			weekArray.insert(Day.LU, new AVLSet<Flight>(flightCmp));
+			weekArray.insert(Day.LU, new AVLSet<Ticket>(ticketCmp));
 			for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
-				weekArray.insert(day, new AVLSet<Flight>(flightCmp));
+				weekArray.insert(day, new AVLSet<Ticket>(ticketCmp));
 		}
 
 		private boolean hasFlights() {
-			for (Flight f : cheapest)
+			for (Ticket f : cheapest)
 				if (f != null)
 					return true;
 			return false;
 		}
 
-		private void addFlight(Flight flight) {
-			Day departureDay = flight.getArrival().getDay();
-			if (cheapest.get(departureDay) == null || flight.isCheaperThan(cheapest.get(departureDay)))
-				cheapest.insert(departureDay, flight);
-			if (quickest.get(departureDay) == null || flight.isQuickerThan(quickest.get(departureDay)))
-				quickest.insert(departureDay, flight);
-			weekArray.get(flight.getDeparture().getDay()).add(flight);
+		private void addTicket(Ticket ticket) {
+			Day departureDay = ticket.getArrival().getDay();
+			if (cheapest.get(departureDay) == null || ticket.isCheaperThan(cheapest.get(departureDay)))
+				cheapest.insert(departureDay, ticket);
+			if (quickest.get(departureDay) == null || ticket.isQuickerThan(quickest.get(departureDay)))
+				quickest.insert(departureDay, ticket);
+			weekArray.get(ticket.getDeparture().getDay()).add(ticket);
 		}
 
-		private void removeFlight(Flight flight) {
-			Day departureDay = flight.getArrival().getDay();
-			
-			weekArray.get(departureDay).remove(flight);
-			
-			if (flight.equals(cheapest.get(departureDay))) {
+		private void removeTicket(Ticket ticket) {
+			Day departureDay = ticket.getArrival().getDay();
+
+			weekArray.get(departureDay).remove(ticket);
+
+			if (ticket.equals(cheapest.get(departureDay))) {
 				cheapest.insert(departureDay, null);
 				recalculateCheapest(departureDay);
 			}
-			if (flight.equals(quickest.get(departureDay))) {
+			if (ticket.equals(quickest.get(departureDay))) {
 				quickest.insert(departureDay, null);
 				recalculateQuickest(departureDay);
 			}
 		}
 
 		private void recalculateQuickest(Day day) {
-			for (Flight flight : weekArray.get(day))
-				if (quickest.get(day) == null || flight.isQuickerThan(quickest.get(day)))
-					quickest.insert(day, flight);
+			for (Ticket ticket : weekArray.get(day))
+				if (quickest.get(day) == null || ticket.isQuickerThan(quickest.get(day)))
+					quickest.insert(day, ticket);
 		}
 
 		private void recalculateCheapest(Day day) {
-			for (Flight flight : weekArray.get(day))
-				if (cheapest.get(day) == null || flight.isCheaperThan(cheapest.get(day)))
-					cheapest.insert(day, flight);
+			for (Ticket ticket : weekArray.get(day))
+				if (cheapest.get(day) == null || ticket.isCheaperThan(cheapest.get(day)))
+					cheapest.insert(day, ticket);
 		}
 
 		private HigherIterator iteratorOfHigherFlights(Moment startTime) {
 			return new HigherIterator(startTime, weekArray);
 		}
-		
-		public Flight getCheapest(Day day) {
+
+		public Ticket getCheapest(Day day) {
 			return cheapest.get(day);
 		}
-		
-		public Flight getQuickest(Day day) {
+
+		public Ticket getQuickest(Day day) {
 			return quickest.get(day);
 		}
-		
-		public Flight getQuickest() {
-			Flight quickestFlight = null;
-			for (Flight flight : quickest)
-				if (quickestFlight == null || flight.isCheaperThan(quickestFlight))
-					quickestFlight = flight;
-			return quickestFlight;
+
+		public Ticket getQuickest() {
+			Ticket quickestTicket = null;
+			for (Ticket ticket : quickest)
+				if (quickestTicket == null || (ticket != null && ticket.isCheaperThan(quickestTicket)))
+					quickestTicket = ticket;
+			return quickestTicket;
 		}
-		
-		public Flight getCheapest() {
-			Flight cheapestFlight = null;
-			for (Flight flight : cheapest)
-				if (cheapestFlight == null || flight.isCheaperThan(cheapestFlight))
-					cheapestFlight = flight;
-			return cheapestFlight;
+
+		public Ticket getCheapest() {
+			Ticket cheapestTicket = null;
+			for (Ticket ticket : cheapest)
+				if (cheapestTicket == null || (ticket != null && ticket.isCheaperThan(cheapestTicket)))
+					cheapestTicket = ticket;
+			return cheapestTicket;
 		}
 
 	}

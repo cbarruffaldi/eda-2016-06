@@ -7,11 +7,12 @@ import utils.Time;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class FlightAssistant implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int AIRPORTS_SIZE = 20;
 	private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
 
@@ -33,7 +34,7 @@ public class FlightAssistant implements Serializable {
 
 	//Controla todo lo de las rutas aca de los dos aeropuerto. Queda un pcoo mas largo
 	//pero para no delegar control de un aeropuerto en otro
-	public void insertFlight(String airline, int number, double price, LinkedList<Moment> departures, Time duration,
+	public void insertFlight(String airline, int number, double price, List<Moment> departures, Time duration,
 							 String origin, String destination) {
 
 		Airport origAir = airports.get(origin);
@@ -47,14 +48,10 @@ public class FlightAssistant implements Serializable {
 			origAir.addRoute(destAir, r);
 			destAir.addRoute(origAir, r);
 		}
-		Flight newFlight = new Flight(airline, number, price, departures.get(0), duration, origAir, destAir);
-		// En este mapa se guardan sin tener en cuenta el día de partida.
+		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
 		flights.put(newFlight.getId(), newFlight);
 
-		for (Moment departMoment: departures) {
-			Flight auxFl = new Flight(airline, number, price, departMoment, duration, origAir, destAir);
-			origAir.addFlight(auxFl);
-		}
+		origAir.addFlight(newFlight);
 	}
 
 	// PROVISORIO PARA TESTS
@@ -63,6 +60,9 @@ public class FlightAssistant implements Serializable {
 
 		Airport origAir = airports.get(origin);
 		Airport destAir = airports.get(destination);
+		List<Moment> departuresList = new LinkedList<Moment>();
+		for(Moment moment : departures)
+			departuresList.add(moment);
 		if (origAir == null || destAir == null) {
 			return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
 		}
@@ -72,14 +72,11 @@ public class FlightAssistant implements Serializable {
 			origAir.addRoute(destAir, r);
 			destAir.addRoute(origAir, r);
 		}
-		Flight newFlight = new Flight(airline, number, price, departures[0], duration, origAir, destAir);
+		Flight newFlight = new Flight(airline, number, price, departuresList, duration, origAir, destAir);
 		// En este mapa se guardan sin tener en cuenta el día de partida.
 		flights.put(newFlight.getId(), newFlight);
 
-		for (Moment departMoment: departures) {
-			Flight auxFl = new Flight(airline, number, price, departMoment, duration, origAir, destAir);
-			origAir.addFlight(auxFl);
-		}
+		origAir.addFlight(newFlight);
 	}
 
 	public void removeFlight(String airline, int number) {
@@ -127,12 +124,11 @@ public class FlightAssistant implements Serializable {
 		while (iter.hasNext())
 			iter.next().removeRouteTo(airport);
 	}
-	
-	
-	public void refreshAirportsNodeProperties(){
-			Iterator<Airport> airportsIter = airports.valueIterator();
-			while(airportsIter.hasNext()){
-				airportsIter.next().nodeRefresh();
-			}
+
+
+	public void refreshAirportsNodeProperties() {
+		Iterator<Airport> airportsIter = airports.valueIterator();
+		while(airportsIter.hasNext())
+			airportsIter.next().nodeRefresh();
 	}
 }

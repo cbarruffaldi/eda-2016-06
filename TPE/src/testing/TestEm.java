@@ -11,6 +11,7 @@ import flightassistant.Flight;
 import flightassistant.FlightAssistant;
 import flightassistant.InfinityDijkstra;
 import flightassistant.PriceWeighter;
+import flightassistant.Ticket;
 import utils.Day;
 import utils.Moment;
 import utils.Time;
@@ -80,12 +81,12 @@ public class TestEm {
 
 		fa.refreshAirportsNodeProperties();
 
-		List<Flight> l1 = DijsktraForReal.minPath(air1, air2, AirtimeWeighter.WEIGHTER);
+		List<Ticket> l1 = DijsktraForReal.minPath(air1, air2, AirtimeWeighter.WEIGHTER);
 
 
 		fa.refreshAirportsNodeProperties();
 
-		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, AirtimeWeighter.WEIGHTER);
+		List<Ticket> l2 = InfinityDijkstra.minPath(fa, air1, air2, AirtimeWeighter.WEIGHTER);
 
 		if(l1 == null){
 			if(l2  != null)
@@ -93,12 +94,12 @@ public class TestEm {
 		}
 
 		int time1 = 0;
-		for(Flight f: l1){
+		for(Ticket f: l1){
 			time1 += f.getDuration().getMinutes();
 		}
 
 		int time2 = 0;
-		for(Flight f: l2){
+		for(Ticket f: l2){
 			time2 += f.getDuration().getMinutes();
 		}
 
@@ -136,19 +137,19 @@ public class TestEm {
 
 		fa.refreshAirportsNodeProperties();
 
-		List<Flight> l1 = DijsktraForReal.minPath(air1, air2, PriceWeighter.WEIGHTER);
+		List<Ticket> l1 = DijsktraForReal.minPath(air1, air2, PriceWeighter.WEIGHTER);
 
 		fa.refreshAirportsNodeProperties();
 
-		List<Flight> l2 = InfinityDijkstra.minPath(fa, air1, air2, PriceWeighter.WEIGHTER);
+		List<Ticket> l2 = InfinityDijkstra.minPath(fa, air1, air2, PriceWeighter.WEIGHTER);
 
 
 		double price1 = 0;
-		for(Flight f: l1){
+		for(Ticket f: l1){
 			price1 += f.getPrice();
 		}
 		int price2 = 0;
-		for(Flight f: l2){
+		for(Ticket f: l2){
 			price2 += f.getPrice();
 		}
 

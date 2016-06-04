@@ -10,25 +10,26 @@ import java.util.NoSuchElementException;
 /**
  * Created by Bianchi on 2/6/16.
  */
-public class HigherIterator implements Iterator<Flight> {
-    private Iterator<AVLSet<Flight>> dayIter;
-	private Iterator<Flight> flIter;
+public class HigherIterator implements Iterator<Ticket> {
+    private Iterator<AVLSet<Ticket>> dayIter;
+	private Iterator<Ticket> ticketIter;
 
-    public HigherIterator(Moment from, Day.WeekArray<AVLSet<Flight>> weekArray) {
-        Flight dummy = new Flight("A", 0, 0, from, null, null, null); // DUMMYYY preguntar
+    public HigherIterator(Moment from, Day.WeekArray<AVLSet<Ticket>> weekArray) {
+        Flight dummyFlight = new Flight("A", 0, 0, null, null, null, null); // DUMMYYY preguntar
+        Ticket dummyTicket = new Ticket(dummyFlight, from);
         Day currentDay = from.getDay();
         Day nextDay = from.getDay().getNextDay();
 
         dayIter = weekArray.iteratorFrom(nextDay);
-        flIter = weekArray.get(currentDay).higherIterator(dummy);
+        ticketIter = weekArray.get(currentDay).higherIterator(dummyTicket);
 
-        if (!flIter.hasNext())
-        	flIter = getNextIterator();
+        if (!ticketIter.hasNext())
+        	ticketIter = getNextIterator();
     }
 
-    private Iterator<Flight> getNextIterator() {
+    private Iterator<Ticket> getNextIterator() {
     	while (dayIter.hasNext()) {
-    		Iterator<Flight> iter = dayIter.next().iterator();
+    		Iterator<Ticket> iter = dayIter.next().iterator();
     		if (iter.hasNext())
     			return iter;
     	}
@@ -38,17 +39,17 @@ public class HigherIterator implements Iterator<Flight> {
 	// Ver chequeos con el next.
     @Override
     public boolean hasNext() {
-        return flIter != null;
+        return ticketIter != null;
     }
 
     @Override
-    public Flight next() {
+    public Ticket next() {
     	if (!hasNext())
     		throw new NoSuchElementException();
 
-    	Flight f = flIter.next();
-    	if (!flIter.hasNext())
-    		flIter = getNextIterator();
-    	return f;
+    	Ticket t = ticketIter.next();
+    	if (!ticketIter.hasNext())
+    		ticketIter = getNextIterator();
+    	return t;
     }
 }

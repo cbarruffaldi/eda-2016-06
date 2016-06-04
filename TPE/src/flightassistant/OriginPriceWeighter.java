@@ -6,21 +6,19 @@ import utils.Day;
 
 public class OriginPriceWeighter implements Weighter {
 	private List<Day> days;
-	
+
 	public OriginPriceWeighter(List<Day> days) {
 		this.days = days;
 	}
 
-
 	@Override
-	public WeightedFlight minFlight(Airport from, Airport to) {
-		Flight cheapest = from.getCheapestTo(to, days.get(0));
+	public WeightedTicket minTicket(Airport from, Airport to) {
+		Ticket cheapest = null;
 		for (Day day : days) {
-			Flight aux = from.getCheapestTo(to, day);
-			if (aux.getPrice() < cheapest.getPrice())
+			Ticket aux = from.getCheapestTo(to, day);
+			if (cheapest == null || (aux != null && aux.isCheaperThan(cheapest)))
 				cheapest = aux;
 		}
-		return new WeightedFlight(cheapest, cheapest.getPrice());
+		return new WeightedTicket(cheapest, cheapest.getPrice());
 	}
-
 }

@@ -34,7 +34,7 @@ public class DijsktraTest {
 
 		Moment[] departures = new Moment[]{ new Moment(Day.LU, new Time(12,00)) };
 
-		
+
 		fa.insertFlight("AB", 1, 1000, departures, new Time(2,0), "AAA", "BBB");
 		fa.insertFlight("AB", 2, 1500, departures, new Time(1,30), "AAA", "BBB");
 		fa.insertFlight("AB", 3, 550, departures, new Time(4,0), "AAA", "BBB");
@@ -47,7 +47,7 @@ public class DijsktraTest {
 		fa.insertFlight("CF", 1, 900, departures, new Time(10,0), "CCC", "FFF");
 		fa.insertFlight("EF", 1, 300, departures, new Time(2,20), "EEE", "FFF");
 		fa.insertFlight("EF", 2, 1000, departures, new Time(0,40), "EEE", "FFF");
-		
+
 
 		A = fa.airports.get("AAA");
 		B = fa.airports.get("BBB");
@@ -65,77 +65,77 @@ public class DijsktraTest {
 //		D.unvisit();
 //		E.unvisit();
 //		F.unvisit();
-//		
+//
 //		A.setIncident(null);
 //		B.setIncident(null);
 //		C.setIncident(null);
 //		D.setIncident(null);
 //		E.setIncident(null);
 //		F.setIncident(null);
-//		
+//
 //		A.setWeight(Double.MAX_VALUE);
 //		B.setWeight(Double.MAX_VALUE);
 //		C.setWeight(Double.MAX_VALUE);
 //		D.setWeight(Double.MAX_VALUE);
 //		E.setWeight(Double.MAX_VALUE);
 //		F.setWeight(Double.MAX_VALUE);
-		
+
 		fa.refreshAirportsNodeProperties();
-		
+
 	}
 
 	@Test
 	public void test() {
-		assertEquals(new FlightId("AB",2), A.getQuickestTo(B).getId());
-		assertEquals(new FlightId("AB", 3), A.getCheapestTo(B).getId());
-		assertEquals(new FlightId("EF", 1), E.getCheapestTo(F).getId());
+		assertEquals(new FlightId("AB",2), A.getQuickestTo(B).getFlightId());
+		assertEquals(new FlightId("AB", 3), A.getCheapestTo(B).getFlightId());
+		assertEquals(new FlightId("EF", 1), E.getCheapestTo(F).getFlightId());
 		assertTrue(A.routeExistsTo(B));
 		assertTrue(A.flightExistsTo(B));
 		assertFalse(B.flightExistsTo(B));
 		assertFalse(B.flightExistsTo(A));
 		assertTrue(E.flightExistsTo(F));
-		
+
 	}
 
 	@Test
 	public void dijkstraADPrice(){
-		
+
 		//AB3 -> BC1 -> CD1
-		List<Flight> list = DijsktraForReal.minPath(A,D, PriceWeighter.WEIGHTER);
-		
+		List<Ticket> list = DijsktraForReal.minPath(A,D, PriceWeighter.WEIGHTER);
+
 		assertNotNull(list);
 		assertTrue(list.size() == 3);
-		assertEquals(new FlightId("AB",3), list.get(0).getId());
-		assertEquals(new FlightId("BC",1), list.get(1).getId());
-		assertEquals(new FlightId("CD",1), list.get(2).getId());
-		
+		assertEquals(new FlightId("AB",3), list.get(0).getFlightId());
+		assertEquals(new FlightId("BC",1), list.get(1).getFlightId());
+		assertEquals(new FlightId("CD",1), list.get(2).getFlightId());
+
 	}
-	
+
 	@Test
 	public void dijkstraADAirtime(){
 		//AB2 -> BD 1
-		List<Flight> list = DijsktraForReal.minPath(A, D, AirtimeWeighter.WEIGHTER);
+		List<Ticket> list = DijsktraForReal.minPath(A, D, AirtimeWeighter.WEIGHTER);
 
 		assertNotNull(list);
 		assertTrue(list.size() == 2);
-		assertEquals(new FlightId("AB",2), list.get(0).getId());
-		assertEquals(new FlightId("BD",1), list.get(1).getId());
+		assertEquals(new FlightId("AB",2), list.get(0).getFlightId());
+		assertEquals(new FlightId("BD",1), list.get(1).getFlightId());
 	}
-	
+
 	@Test
 	public void dijkstraAFAirtime(){
 		//AB2 -> BD 1 -> DE 1 -> EF 2
-		List<Flight> list = DijsktraForReal.minPath(A,F,AirtimeWeighter.WEIGHTER);
+		List<Ticket> list = DijsktraForReal.minPath(A,F,AirtimeWeighter.WEIGHTER);
 
 		assertNotNull(list);
 		assertTrue(list.size() == 4);
-		assertEquals(new FlightId("AB",2), list.get(0).getId());
-		assertEquals(new FlightId("BD",1), list.get(1).getId());
-		assertEquals(new FlightId("DE",1), list.get(2).getId());
-		assertEquals(new FlightId("EF",2), list.get(3).getId());
+		assertEquals(new FlightId("AB",2), list.get(0).getFlightId());
+		assertEquals(new FlightId("BD",1), list.get(1).getFlightId());
+		assertEquals(new FlightId("DE",1), list.get(2).getFlightId());
+		assertEquals(new FlightId("EF",2), list.get(3).getFlightId());
 
 
 	}
 
-	
+
 }

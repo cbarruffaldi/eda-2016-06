@@ -1,5 +1,5 @@
 package flightassistant;
 
 public interface Weighter {
-	WeightedFlight minFlight(Airport from, Airport to);
+	WeightedTicket minTicket(Airport from, Airport to);
 }

@@ -12,7 +12,7 @@ import flightassistant.DijsktraForReal;
 import flightassistant.Flight;
 import flightassistant.FlightAssistant;
 import flightassistant.InfinityDijkstra;
-import flightassistant.WeightedFlight;
+import flightassistant.WeightedTicket;
 import flightassistant.Weighter;
 import structures.BinaryMinHeap;
 
@@ -85,7 +85,7 @@ public class TestEmergencia {
 		
 		pq.add(B);
 		
-		System.out.println(pq.remove()); //Debería ser BBB pero es CCC
+		System.out.println(pq.remove()); //Deberï¿½a ser BBB pero es CCC
 		System.out.println(pq.remove());
 		System.out.println(pq.remove());
 		System.out.println(pq.remove());

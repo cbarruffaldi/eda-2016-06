@@ -4,6 +4,7 @@ import utils.Moment;
 import utils.Time;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Flight implements Serializable{
 
@@ -13,18 +14,18 @@ public class Flight implements Serializable{
 	private double price;
 
 	//private Schedule[] schedules;
-	private Moment departure;
+	private List<Moment> departures;
 	private Time duration;
 
 	private Airport origin;
 	private Airport destination;
 
-	public Flight(String airline, int number, double price, Moment departure, Time duration,
+	public Flight(String airline, int number, double price, List<Moment> departures, Time duration,
 			Airport origin, Airport destination) {
 		this.id = new FlightId(airline, number);
 		this.price = price;
 		this.duration = duration;
-		this.departure = departure;
+		this.departures = departures;
 		this.origin = origin;
 		this.destination = destination;
 	}
@@ -34,27 +35,22 @@ public class Flight implements Serializable{
 	}
 
 	public Time getDepartureTime() {
-		return departure.getTime();
+		return departures.get(0).getTime();
 	}
 
-	public Moment getDeparture() {
-		return departure;
-	}
-
-	public Moment getArrival() {
-		return departure.addTime(getDuration());
+	public List<Moment> getDepartures() {
+		return departures;
 	}
 
 	public Airport getDestination() {
 		return destination;
 	}
 
-	public boolean isCheaperThan(Flight other) {
-		return price < other.price;
-	}
-
-	public boolean isQuickerThan(Flight other) {
-		return duration.compareTo(other.duration) < 0;
+	public boolean departsAt(Moment moment) {
+		for (Moment departure : departures)
+			if (departure.equals(moment))
+				return true;
+		return false;
 	}
 
 	public Time getDuration() {
@@ -90,5 +86,4 @@ public class Flight implements Serializable{
 		Flight other = (Flight) o;
 		return id.equals(other.id);
 	}
-
 }
