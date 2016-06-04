@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Scanner;
+
 /**
  * Serie de metodos estaticos usando expresiones regulares para validar la entrada
  */
@@ -7,6 +9,10 @@ public class RegexHelper implements InputConstraints {
 
     //Atomos para las expresiones usadas
 	private static String spc = " ";
+
+	// String delimitador del Scanner por defecto. Es el delimitador cuando se lee de entrada estándar.
+	private static String scannerWhitespace = "\\p{javaWhitespace}+";
+
 	private static String airlineName = "[a-zA-Z]{1," + AIRLINE_NAME_MAX_LENGHT + "}";
 	private static String number = "[0-9]+";
 	private static String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
@@ -40,7 +46,7 @@ public class RegexHelper implements InputConstraints {
 	// Se usa de igual manera para leer de linea de comandos o de archivo, con la unica diferencia
 	//que en los archivos se separan las palabras por medio de "#".
     public static boolean validateFlightInsertion(String line, String separator) {
-		String flightFormat = flightFromTextFormat; //TODO : flightFromFileFormat;
+		String flightFormat = (separator.equals(scannerWhitespace))? flightFromTextFormat : flightFromFileFormat;
 		return line.matches(flightFormat);
 	}
 
@@ -49,7 +55,7 @@ public class RegexHelper implements InputConstraints {
 	}
 
     public static boolean validateAirportInsertion(String line, String separator) {
-		String airportFormat = airportFromTextFormat;// TODO : airportFromFileFormat;
+		String airportFormat = (separator.equals(scannerWhitespace)) ? airportFromTextFormat : airportFromFileFormat;
 		return line.matches(airportFormat);
 	}
     
@@ -59,5 +65,9 @@ public class RegexHelper implements InputConstraints {
     
 	public static boolean validateAirportName(String line) {
 		return line.matches(airportName);
+	}
+
+	public static void main(String[] args) {
+		System.out.println((new Scanner("Hola")).delimiter().toString());
 	}
 }
