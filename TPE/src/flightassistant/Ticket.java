@@ -1,9 +1,14 @@
 package flightassistant;
 
+import java.io.Serializable;
+
 import utils.Moment;
 import utils.Time;
 
-public class Ticket {
+public class Ticket implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private Flight flight;
 	private Moment departure;
 
@@ -72,5 +77,10 @@ public class Ticket {
 	@Override
 	public int hashCode() {
 		return flight.hashCode() ^ departure.hashCode();
+	}
+
+	@Override
+	public String toString() { //TODO: hacerlo bien
+		return flight.toString();
 	}
 }

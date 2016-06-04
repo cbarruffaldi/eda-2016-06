@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class Application {
     private static FlightAssistant flightAssistant;
 
+
     public static void main(String[] args) {
         
     	//Hay que hardcodear un flightAssistant vacio asi se carga siempre el mismo

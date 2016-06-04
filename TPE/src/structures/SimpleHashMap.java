@@ -1,5 +1,6 @@
 package structures;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Comparator;
@@ -7,7 +8,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
+public class SimpleHashMap<K, V> implements SimpleMap<K, V>, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private static final int DEFAULT_CAPACITY = 20;
 
 	private int size;

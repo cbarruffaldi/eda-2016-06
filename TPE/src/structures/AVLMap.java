@@ -1,12 +1,15 @@
 package structures;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class AVLMap<K, V> implements SimpleMap<K, V> {
+public class AVLMap<K, V> implements SimpleMap<K, V>, Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	private AVLSet<Node<K,V>> set;
 	private Comparator<K> cmp;
 

@@ -1,5 +1,6 @@
 package structures;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class AVLSet<T> implements Iterable<T>, Set<T>{
+public class AVLSet<T> implements Iterable<T>, Set<T>, Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	private Node<T> root;
 	private Comparator<T> cmp;
 	private int size;
