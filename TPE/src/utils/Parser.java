@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Parser{
     private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
@@ -13,7 +14,10 @@ public class Parser{
     private static boolean hasEnded = false; // Dice si usaron el comando exitAndClose. Pensar mejor solución.
     private static boolean stdOut = true; // Por defecto a salida estandar
 
+    private static Pattern hashpatt = Pattern.compile("#");
+
     // ARGUMENTOS SHELL
+    private static Pattern spacepatt = Pattern.compile("(\\s)*");
 
     public static boolean parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;
@@ -25,7 +29,6 @@ public class Parser{
         flightAssistant = null;
         return hasEnded;
     }
-
 
     private static void parseFunction(Scanner sc) {
         String str = sc.next();
@@ -93,8 +96,7 @@ public class Parser{
     	if(!sc.hasNext())
     		return false;
 
-        sc.skip(" ");
-        String line = sc.nextLine();
+        String line = restOfLine(sc);
 
     	if(!RegexHelper.validateRoute(line))
     		return false; //Mal formato
@@ -180,14 +182,15 @@ public class Parser{
         if (!sc.hasNext())
             return false;
 
-        sc.skip(" ");
-        String line = sc.nextLine();
+        String line = restOfLine(sc);
 
         if (!RegexHelper.validateAirportInsertion(line, sc.delimiter().toString())) {
             return false; //Error en el formato
         }
 
+        Pattern delimiter = sc.delimiter();
         sc = new Scanner(line);
+        sc.useDelimiter(delimiter);
         String name = sc.next();
         double lat = new Double(sc.next());
         double lng = new Double(sc.next());
@@ -200,14 +203,15 @@ public class Parser{
     	if(!sc.hasNext())
     		return false;
 
-        sc.skip(" ");
-    	String line = sc.nextLine();
+    	String line = restOfLine(sc);
 
         //  Matchea la expresion regular.
         if(!RegexHelper.validateFlightInsertion(line, sc.delimiter().toString()))
         	return false; //Salir, algo esta mal escrito
 
+        Pattern delimiter = sc.delimiter();
         sc = new Scanner(line);
+        sc.useDelimiter(delimiter);
 
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
@@ -230,8 +234,7 @@ public class Parser{
     	if(!sc.hasNext())
     		return false; //Error
 
-        sc.skip(" ");
-    	String name = sc.nextLine();
+        String name = restOfLine(sc);
 
     	if(!RegexHelper.validateAirportName(name))
     		return false;
@@ -306,6 +309,8 @@ public class Parser{
 		return departs;
 	}
 
+    // ARGUMENTOS POR LINEA DE COMANDOS.
+
     //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
     private static boolean insertFromFile(Scanner sc, boolean insertAirport) {
         if (!sc.hasNext()) { return false; }
@@ -314,7 +319,7 @@ public class Parser{
         boolean valid = true;
         try {
             Scanner fileSc = new Scanner(new File(pathToFile));
-            fileSc.useDelimiter("#");
+            fileSc.useDelimiter(hashpatt);
 
             // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
             while (valid && fileSc.hasNextLine()) {
@@ -328,8 +333,6 @@ public class Parser{
         }
         return valid;
     }
-
-    // ARGUMENTOS POR LINEA DE COMANDOS.
 
     public static void parseArguments(String[] cmd, FlightAssistant fa) {
         boolean valid = false;
@@ -390,5 +393,11 @@ public class Parser{
                 break;
         }
         return ans;
+    }
+
+    // Avanza el scanner hasta el final de la linea y devuelve toda esa línea sin espacios al principio.
+    private static String restOfLine(Scanner sc) {
+        sc.skip(spacepatt);
+        return sc.nextLine();
     }
 }

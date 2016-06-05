@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.Scanner;
-
 /**
  * Serie de metodos estaticos usando expresiones regulares para validar la entrada
  */
@@ -18,7 +16,7 @@ public class RegexHelper implements InputConstraints {
 	private static String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
 	private static String airportName = "[a-zA-Z]{" + AIRPORT_NAME_LENGHT + "}";
 	private static String twentyFourHourFormat = "([01]?[0-9]|2[0-3]):[0-5][0-9]"; //00:00 - 23:59
-	private static String hours = "([0-9]+h)?[0-5][0-9]m"; // [xxh]xxm
+	private static String hours = "([0-9]+h)?[0-5]?[0-9]m"; // [xxh]xxm
 	private static String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
 	
 	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //-90.000 - 90.0000
@@ -65,9 +63,5 @@ public class RegexHelper implements InputConstraints {
     
 	public static boolean validateAirportName(String line) {
 		return line.matches(airportName);
-	}
-
-	public static void main(String[] args) {
-		System.out.println((new Scanner("Hola")).delimiter().toString());
 	}
 }

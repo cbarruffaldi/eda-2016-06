@@ -47,7 +47,10 @@ public class AVLMap<K, V> implements SimpleMap<K, V>, Serializable{
 	public V get(K key) {
 		Node<K,V> searchNode = new Node<>(key, null);
 		Node<K,V> node = set.find(searchNode);
-		return node.value;
+		if (node != null)
+			return node.value;
+		else
+			return null;
 	}
 
 	@Override

@@ -7,15 +7,12 @@ import utils.Moment;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * Created by Bianchi on 2/6/16.
- */
 public class HigherIterator implements Iterator<Ticket> {
     private Iterator<AVLSet<Ticket>> dayIter;
 	private Iterator<Ticket> ticketIter;
 
     public HigherIterator(Moment from, Day.WeekArray<AVLSet<Ticket>> weekArray) {
-        Flight dummyFlight = new Flight("A", 0, 0, null, null, null, null); // DUMMYYY preguntar
+        Flight dummyFlight = new Flight("A", 0, 0, null, null, null, null);
         Ticket dummyTicket = new Ticket(dummyFlight, from);
         Day currentDay = from.getDay();
         Day nextDay = from.getDay().getNextDay();
@@ -36,7 +33,6 @@ public class HigherIterator implements Iterator<Ticket> {
     	return null;
 	}
 
-	// Ver chequeos con el next.
     @Override
     public boolean hasNext() {
         return ticketIter != null;
