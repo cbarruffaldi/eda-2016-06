@@ -113,7 +113,7 @@ public class InfinityDijkstraTest {
 			Weighter origWeighter = new OriginPriceWeighter(days);
 
 			//AB3 -> BC1 -> CD1
-			List<Ticket> list = InfinityDijkstra.minPath2(fa, A,D, PriceWeighter.WEIGHTER, origWeighter, days);
+			List<Ticket> list = InfinityDijkstra.minPath2(fa, A,D, PriceWeighter.WEIGHTER, origWeighter);
 
 			assertNotNull(list);
 			assertTrue(list.size() == 3);

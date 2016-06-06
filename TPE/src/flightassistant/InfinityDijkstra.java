@@ -1,7 +1,6 @@
 package flightassistant;
 
 import structures.BinaryMinHeap;
-import utils.Day;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,11 +9,11 @@ import java.util.List;
 public class InfinityDijkstra {
 
 	public static List<Ticket> minPath(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter) {
-		return minPath2(fa, origin, dest, weighter, null, null);
+		return minPath2(fa, origin, dest, weighter, null);
 	}
 
 	public static List<Ticket> minPath(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
-			Weighter originWeighter, List<Day> departureDays) {
+			Weighter originWeighter) {
 
 		BinaryMinHeap<Airport> pq = queueAirports(fa);
 
@@ -22,7 +21,7 @@ public class InfinityDijkstra {
 
 		// TODO: se podría hacer una función para no repetir código con el de abajo
 
-		if (departureDays != null) {
+		if (originWeighter != null) {
 			pq.dequeue(); // dequeue origin
 			origin.visit();
 			Iterator<Airport> iter = origin.connectedAirportsIterator();
@@ -70,14 +69,14 @@ public class InfinityDijkstra {
 
 	// Sin repetir codigo, testear
 	public static List<Ticket> minPath2(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
-									   Weighter originWeighter, List<Day> departureDays) {
+									   Weighter originWeighter) {
 
 		BinaryMinHeap<Airport> pq = queueAirports(fa);
 
 		pq.decreasePriority(origin, 0);
 
 		List<Ticket> ans = null;
-		if (departureDays != null) {
+		if (originWeighter != null) {
 			djistra(pq, dest, originWeighter, true);
 		}
 		ans = djistra(pq, dest, weighter, false);
