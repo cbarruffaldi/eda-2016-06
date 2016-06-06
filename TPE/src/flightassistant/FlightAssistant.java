@@ -1,6 +1,7 @@
 package flightassistant;
 
 import structures.SimpleHashMap;
+import utils.Day;
 import utils.Moment;
 import utils.Time;
 
@@ -118,6 +119,32 @@ public class FlightAssistant implements Serializable {
 			airport.removeAllRoutes();
 		}
 	}
+
+	public List<Airport> findQuickestPath(String orig, String dest, List<Day> days) {
+		return findPath(orig, dest, days, AirtimeWeighter.WEIGHTER, new OriginAirtimeWeighter(days));
+	}
+
+	public List<Airport> findCheapestPath(String orig, String dest, List<Day> days) {
+		return findPath(orig, dest, days, PriceWeighter.WEIGHTER, new OriginPriceWeighter(days));
+	}
+
+//	public List<Airport> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
+//
+//	}
+
+	private List<Airport> findPath(String orig, String dest, List<Day> days, Weighter weighter, Weighter originWeighter) {
+		Airport from = airports.get(orig);
+		Airport to = airports.get(dest);
+		if (from == null || to == null || from.equals(to)) {
+			return null; // Ver que hacer
+		}
+		if (days.isEmpty()) {
+			return InfinityDijkstra.minPath(this, from, to, weighter, days);
+		}
+		return InfinityDijkstra.minPath2(this, from, to, weighter, originWeighter, days);
+
+	}
+
 
 	private void removeRoutesTo(Airport airport) {
 		Iterator<Airport> iter = airport.connectedAirportsIterator();

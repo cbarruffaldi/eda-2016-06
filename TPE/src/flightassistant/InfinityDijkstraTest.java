@@ -1,17 +1,16 @@
 package flightassistant;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import utils.Day;
+import utils.Moment;
+import utils.Time;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import utils.Day;
-import utils.Moment;
-import utils.Time;
+import static org.junit.Assert.*;
 
 
 public class InfinityDijkstraTest {
@@ -113,7 +112,7 @@ public class InfinityDijkstraTest {
 			Weighter origWeighter = new OriginPriceWeighter(days);
 
 			//AB3 -> BC1 -> CD1
-			List<Ticket> list = InfinityDijkstra.minPath2(fa, A,D, PriceWeighter.WEIGHTER, origWeighter);
+			List<Airport> list = InfinityDijkstra.minPath2(fa, A,D, PriceWeighter.WEIGHTER, origWeighter, new LinkedList<>());
 
 			assertNotNull(list);
 			assertTrue(list.size() == 3);
@@ -126,7 +125,7 @@ public class InfinityDijkstraTest {
 		@Test
 		public void dijkstraADAirtime(){
 			//AB2 -> BD 1
-			List<Ticket> list = InfinityDijkstra.minPath(fa, A, D, AirtimeWeighter.WEIGHTER);
+			List<Airport> list = InfinityDijkstra.minPath(fa, A, D, AirtimeWeighter.WEIGHTER, new LinkedList<>());
 
 			assertNotNull(list);
 			assertTrue(list.size() == 2);
@@ -137,7 +136,7 @@ public class InfinityDijkstraTest {
 		@Test
 		public void dijkstraAFAirtime(){
 			//AB2 -> BD 1 -> DE 1 -> EF 2
-			List<Ticket> list = InfinityDijkstra.minPath(fa, A,F,AirtimeWeighter.WEIGHTER);
+			List<Airport> list = InfinityDijkstra.minPath(fa, A,F,AirtimeWeighter.WEIGHTER, new L);
 
 			assertNotNull(list);
 			assertTrue(list.size() == 4);

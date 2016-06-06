@@ -13,27 +13,30 @@ import java.util.List;
  */
 public class OutputManager {
 
-    private static boolean textFormat = true;   // Por defecto modo texto.
-
-    private static boolean stdOut = true; // Por defecto va a salida estandar.
-
     private static String fileName;
+    private boolean textFormat = true;   // Por defecto modo texto.
+    private boolean stdOut = true; // Por defecto va a salida estandar.
 
-    public static void invalidCommand() {
+    public OutputManager() {
+        textFormat = true;
+        stdOut = true;
+    }
+
+    public void invalidCommand() {
         System.err.println("Invalid Command");
     }
 
-    public static void notFoundMsg() {
+    public void notFoundMsg() {
         System.out.println("NotFound");
     }
 
-    public static void fileOpenErrorMsg() {
+    public void fileOpenErrorMsg() {
         System.err.println("Could not open/read file");
     }
 
-    public static void exitErrorMsg() { System.err.print("Could not save program files"); }
+    public void exitErrorMsg() { System.err.print("Could not save program files"); }
 
-    public static void printBestRoute(List<Airport> airports) {
+    public void printBestRoute(List<Airport> airports) {
         if (stdOut) {
             printToStdout(airports);
         } else {
@@ -41,11 +44,11 @@ public class OutputManager {
         }
     }
 
-    private static void printToStdout(List<Airport> airports) {
+    private void printToStdout(List<Airport> airports) {
         print(airports, System.out);
     }
 
-    private static void printToFile(List<Airport> airports) {
+    private void printToFile(List<Airport> airports) {
         try {
             print(airports, new PrintStream(new FileOutputStream(fileName, true)));
         } catch (FileNotFoundException e) {
@@ -53,7 +56,7 @@ public class OutputManager {
         }
     }
 
-    private static void print(List<Airport> airports, PrintStream out) {
+    private void print(List<Airport> airports, PrintStream out) {
         if (textFormat == true) {
             printText(airports, out);
         } else {
@@ -61,7 +64,7 @@ public class OutputManager {
         }
     }
 
-    private static void printText(List<Airport> airports, PrintStream out) {
+    private void printText(List<Airport> airports, PrintStream out) {
         RouteData data = new RouteData(airports);
         out.println("Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n'
                 + "TiempoTotal#" + data.totalTime);
@@ -71,7 +74,7 @@ public class OutputManager {
         	printTicket(airports.get(i).getIncident(), out);
     }
 
-    private static void printTicket(Ticket ticket, PrintStream out) {
+    private void printTicket(Ticket ticket, PrintStream out) {
     	String origin = ticket.getOrigin().getId();
     	String destination = ticket.getDestination().getId();
     	String airline = ticket.getFlightId().getAirline();
@@ -80,23 +83,23 @@ public class OutputManager {
     	out.println(origin+"#"+airline+"#"+flightNum+"#"+destination);
     }
 
-    private static void printKML(List<Airport> airports, PrintStream out) {
+    private void printKML(List<Airport> airports, PrintStream out) {
     	out.print(KMLFormatter.airportsToKML(airports));
     }
 
-    public static void setToKMLFormat() {
+    public void setToKMLFormat() {
         textFormat = false;
     }
 
-    public static void setToTextFormat() {
+    public void setToTextFormat() {
         textFormat = true;
     }
 
-    public static void setToStdOutput() {
+    public void setToStdOutput() {
         stdOut = true;
     }
 
-    public static void setToFileOutput(String file) {
+    public void setToFileOutput(String file) {
         stdOut = false;
         fileName = file;
     }

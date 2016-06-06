@@ -37,13 +37,14 @@ public class FlightId implements Comparable<FlightId>, Serializable{
 		FlightId o = (FlightId) other;
 		return airline.equals(o.airline) && number == o.number;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return airline.hashCode() + number; // TODO: hacerlo bien
+		int result = airline != null ? airline.hashCode() : 0;
+		result = 31 * result + number;
+		return result;
 	}
-	
-	
+
 	public String toString(){
 		return airline + number;
 	}

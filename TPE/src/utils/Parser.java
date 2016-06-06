@@ -1,10 +1,12 @@
 package utils;
 
+import flightassistant.Airport;
 import flightassistant.FlightAssistant;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -12,12 +14,13 @@ public class Parser{
     private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     private static FlightAssistant flightAssistant;
     private static boolean hasEnded = false; // Dice si usaron el comando exitAndClose. Pensar mejor solución.
-    private static boolean stdOut = true; // Por defecto a salida estandar
+
+    private static OutputManager Output = new OutputManager();
 
     private static Pattern hashpatt = Pattern.compile("#");
+    private static Pattern spacepatt = Pattern.compile("(\\s)*");
 
     // ARGUMENTOS SHELL
-    private static Pattern spacepatt = Pattern.compile("(\\s)*");
 
     public static boolean parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;
@@ -56,7 +59,7 @@ public class Parser{
         }
 
         if (!valid) {
-            OutputManager.invalidCommand();
+            Output.invalidCommand();
         }
     }
 
@@ -114,17 +117,37 @@ public class Parser{
         sc.skip(" priority=");
         option = sc.next();
 
-        LinkedList<Day> days;
+        List<Day> days = new LinkedList<>();
         if (sc.hasNext()) { // Los weekDays son opcionales
             sc.skip(" weekdays=");
             days = getDaysFromStr(sc.next());
-            // Si no hay weekDays "days" queda en null.
+            // Si no hay weekDays "days" es una lista vacía.
         }
-
-        // TODO Llama al metodo de buscar la ruta
-        // Se supone que le devuelve una lista con los aeropuertos y eso se lo manda al outputmanager a que lo imprima
-        // OutputManager.printBestRoute(airports);
+        List<Airport> path = findPathWithOption(option, orig, dest, days);
+        if (path.isEmpty()) {
+            Output.notFoundMsg();
+        } else {
+            Output.printBestRoute(path);
+        }
         return true;
+    }
+
+    private static List<Airport> findPathWithOption(String option, String orig, String dest, List<Day> days) {
+        List<Airport> path = new LinkedList<>(); // para que no tire warning
+        switch (option) {
+            case "ft":
+                path = flightAssistant.findQuickestPath(orig, dest, days);
+                break;
+            case "pr":
+                path = flightAssistant.findCheapestPath(orig, dest, days);
+                break;
+            case "tt":
+                //path = flightAssistant.totalTime
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Option");
+        }
+        return path;
     }
 
     private static boolean parseOutputFormat(Scanner sc) {
@@ -133,10 +156,10 @@ public class Parser{
 
         switch (format) {
             case "text":
-                OutputManager.setToTextFormat();
+                Output.setToTextFormat();
                 break;
             case "KML":
-                OutputManager.setToKMLFormat();
+                Output.setToKMLFormat();
                 break;
             default:
                 return false;
@@ -149,13 +172,13 @@ public class Parser{
         String type = sc.next();
         switch (type) {
             case "stdout":
-                OutputManager.setToStdOutput();
+                Output.setToStdOutput();
                 break;
             case "file":
                 if (!sc.hasNext()) {
                     return false;
                 } else {
-                    OutputManager.setToFileOutput(sc.next());
+                    Output.setToFileOutput(sc.next());
                 }
                 break;
             default:
@@ -223,7 +246,7 @@ public class Parser{
         double price = new Double(sc.next());
 
         Time depTime = Time.getTimeFromString(timeOfDeparture);
-        LinkedList<Moment> departures = departures(days, depTime);
+        List<Moment> departures = departures(days, depTime);
         int duration = getDuration(durationOfFlightStr);
 
         flightAssistant.insertFlight(airline, flnumber, price, departures, new Time(duration), orig, dest);
@@ -292,7 +315,7 @@ public class Parser{
         return hour * TimeConstants.MINUTES_PER_HOUR + min;
     }
 
-    private static LinkedList<Day> getDaysFromStr(String str) {
+    private static List<Day> getDaysFromStr(String str) {
         String[] daysArr = str.split("-");
         LinkedList<Day> ans = new LinkedList<>();
         for (String s : daysArr) {
@@ -301,7 +324,7 @@ public class Parser{
         return ans;
     }
 
-	private static LinkedList<Moment> departures(String days, Time timeOfDep) {
+	private static List<Moment> departures(String days, Time timeOfDep) {
 		LinkedList<Moment> departs = new LinkedList<>();
         for (Day dayOfDep: getDaysFromStr(days)) {
             departs.add(new Moment(dayOfDep, timeOfDep));
@@ -329,7 +352,7 @@ public class Parser{
             		valid = flightInsert(fileSc);
             }
         } catch (FileNotFoundException e) {
-            OutputManager.fileOpenErrorMsg();
+            Output.fileOpenErrorMsg();
         }
         return valid;
     }
@@ -354,7 +377,7 @@ public class Parser{
                 break;
         }
         if (!valid) {
-            OutputManager.invalidCommand();
+            Output.invalidCommand();
         }
     }
 
