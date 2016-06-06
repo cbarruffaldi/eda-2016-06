@@ -109,6 +109,10 @@ public class Route implements Serializable {
 		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
 	}
 
+	public boolean flightExistsFrom(Airport airport, Day day) {
+		return getCheapestFrom(airport, day) != null;
+	}
+
 	private static class TicketContainer {
 
 		// Vuelos en el container ordenados por momento de salida.

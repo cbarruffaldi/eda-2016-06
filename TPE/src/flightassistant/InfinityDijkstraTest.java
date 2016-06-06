@@ -2,6 +2,7 @@ package flightassistant;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -33,7 +34,11 @@ public class InfinityDijkstraTest {
 			fa.insertAirport("EEE", 4, 4);
 			fa.insertAirport("FFF", 5, 5);
 
-			Moment[] departures = new Moment[]{ new Moment(Day.LU, new Time(12,00)) };
+			Moment departure = new Moment(Day.LU, new Time(12,00));
+
+			List<Moment> departures = new LinkedList<>();
+			departures.add(departure);
+			departures.add(new Moment(Day.MA, new Time(12,00)));
 
 
 			fa.insertFlight("AB", 1, 1000, departures, new Time(2,0), "AAA", "BBB");
@@ -100,8 +105,15 @@ public class InfinityDijkstraTest {
 		@Test
 		public void dijkstraADPrice(){
 
+			List<Day> days = new LinkedList<>();
+
+			days.add(Day.LU);
+			days.add(Day.JU);
+
+			Weighter origWeighter = new OriginPriceWeighter(days);
+
 			//AB3 -> BC1 -> CD1
-			List<Ticket> list = InfinityDijkstra.minPath(fa, A,D, PriceWeighter.WEIGHTER);
+			List<Ticket> list = InfinityDijkstra.minPath2(fa, A,D, PriceWeighter.WEIGHTER, origWeighter, days);
 
 			assertNotNull(list);
 			assertTrue(list.size() == 3);

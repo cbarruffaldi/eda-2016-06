@@ -144,8 +144,34 @@ public class Airport implements Serializable {
 
 	//Cosas de Dijkstrksja
 
-	public boolean flightExistsTo(Airport next) {
-		return	routeExistsTo(next) && routes.get(next).flightExistsFrom(this);
+	public boolean flightExistsTo(Airport destination) {
+		return	routeExistsTo(destination) && routes.get(destination).flightExistsFrom(this);
+	}
+
+	/**
+	 * Devuelve verdadero si existe vuelo que parte al destino en el día deseado.
+	 * @param destination - destino al que se desea volar.
+	 * @param day - día en el cual se desea volar
+	 * @return true si existe vuelo, false sino.
+	 */
+	public boolean flightExistsTo(Airport destination, Day day) {
+		return	routeExistsTo(destination) && routes.get(destination).flightExistsFrom(this, day);
+	}
+
+	/**
+	 * Devuelve verdadero si existe vuelo que parte al destino en alguno de los días de la lista
+	 * @param destination - destino al cual volar.
+	 * @param days - días en los que se desea volar.
+	 * @return true si existe vuelo, false sino
+	 */
+	public boolean flightExistsTo(Airport destination, List<Day> days) {
+		if (routeExistsTo(destination)) {
+			Route r = routes.get(destination);
+			for (Day day : days)
+				if (r.flightExistsFrom(this, day))
+					return true;
+		}
+		return false;
 	}
 
 	public Ticket getCheapestTo(Airport destination) {
