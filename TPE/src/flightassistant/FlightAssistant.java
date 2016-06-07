@@ -1,13 +1,13 @@
 package flightassistant;
 
 import structures.SimpleHashMap;
+import structures.SimpleMap;
 import utils.Day;
 import utils.Moment;
 import utils.Time;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FlightAssistant implements Serializable {
@@ -18,9 +18,9 @@ public class FlightAssistant implements Serializable {
 	private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
 
 	// Coleccion de Aeropuertos;
-	public SimpleHashMap<String, Airport> airports;
+	private SimpleHashMap<String, Airport> airports;
 	// Coleccion de vuelos
-	public SimpleHashMap<FlightId, Flight> flights;
+	private SimpleHashMap<FlightId, Flight> flights;
 
 	public FlightAssistant() {
 		airports = new SimpleHashMap<>(AIRPORTS_SIZE);
@@ -50,31 +50,6 @@ public class FlightAssistant implements Serializable {
 			destAir.addRoute(origAir, r);
 		}
 		Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
-		flights.put(newFlight.getId(), newFlight);
-
-		origAir.addFlight(newFlight);
-	}
-
-	// PROVISORIO PARA TESTS
-	public void insertFlight(String airline, int number, double price, Moment[] departures, Time duration,
-							 String origin, String destination) {
-
-		Airport origAir = airports.get(origin);
-		Airport destAir = airports.get(destination);
-		List<Moment> departuresList = new LinkedList<Moment>();
-		for(Moment moment : departures)
-			departuresList.add(moment);
-		if (origAir == null || destAir == null) {
-			return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
-		}
-		// Crea la ruta en caso de que todavía no exista
-		if (!origAir.routeExistsTo(destAir)) {
-			Route r = new Route(origAir, destAir);
-			origAir.addRoute(destAir, r);
-			destAir.addRoute(origAir, r);
-		}
-		Flight newFlight = new Flight(airline, number, price, departuresList, duration, origAir, destAir);
-		// En este mapa se guardan sin tener en cuenta el día de partida.
 		flights.put(newFlight.getId(), newFlight);
 
 		origAir.addFlight(newFlight);
@@ -140,9 +115,9 @@ public class FlightAssistant implements Serializable {
 		}
 		refreshAirportsNodeProperties();
 		if (days.isEmpty()) {
-			return InfinityDijkstra.minPath(this, from, to, weighter, days);
+			return InfinityDijkstra.minPath(airports, from, to, weighter, days);
 		}
-		return InfinityDijkstra.minPath2(this, from, to, weighter, originWeighter, days);
+		return InfinityDijkstra.minPath2(airports, from, to, weighter, originWeighter, days);
 
 	}
 
@@ -158,5 +133,15 @@ public class FlightAssistant implements Serializable {
 		Iterator<Airport> airportsIter = airports.valueIterator();
 		while(airportsIter.hasNext())
 			airportsIter.next().nodeRefresh();
+	}
+
+
+	// PROVISORIO PARA TESTS
+	SimpleMap<String, Airport> getAirports() {
+		return airports;
+	}
+
+	SimpleMap<FlightId, Flight> getFlights() {
+		return flights;
 	}
 }

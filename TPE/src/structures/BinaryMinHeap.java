@@ -3,7 +3,7 @@ package structures;
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
-public class BinaryMinHeap2<T> implements PriorityQueue<T>{
+public class BinaryMinHeap<T> implements PriorityQueue<T>{
 
 	private final static int HASH_CAPACITY_FACTOR = 3;
 
@@ -14,7 +14,7 @@ public class BinaryMinHeap2<T> implements PriorityQueue<T>{
 	
 	
 	@SuppressWarnings("unchecked")
-	public BinaryMinHeap2(int capacity) {
+	public BinaryMinHeap(int capacity) {
 		array = (PQNode<T>[]) Array.newInstance(PQNode.class, capacity);
 		indexMap = new ClosedHash<T,Integer>(HASH_CAPACITY_FACTOR * capacity);
 	}

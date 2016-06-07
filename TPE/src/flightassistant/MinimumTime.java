@@ -2,7 +2,8 @@ package flightassistant;
 
 import structures.AVLMap;
 import structures.AVLSet;
-import structures.BinaryMinHeap2;
+import structures.BinaryMinHeap;
+import structures.SimpleMap;
 import utils.ArrivalTimesFunction;
 import utils.Day;
 import utils.Moment;
@@ -51,9 +52,9 @@ public class MinimumTime {
 //	}
 	
 	AVLMap<Airport, ArrivalTimesFunction> functions;
-	BinaryMinHeap2<ArrivalTimesFunction> pq; 
+	BinaryMinHeap<ArrivalTimesFunction> pq;
 	
-	FlightAssistant fa;
+	SimpleMap<String, Airport> airports;
 	Airport origin;
 	Airport dest;
 	Day departure;
@@ -61,11 +62,11 @@ public class MinimumTime {
 	Moment momentZero;
 	
 	//Unico dia
-	public MinimumTime(FlightAssistant fa, Airport origin, Airport dest, Day departure){
-		if(fa == null){
+	public MinimumTime(SimpleMap<String, Airport> airports, Airport origin, Airport dest, Day departure){
+		if(airports == null){
 			throw new IllegalArgumentException("null");
 		}
-		this.fa = fa;
+		this.airports = airports;
 		this.origin = origin;
 		this.dest = dest;
 		this.departure = departure;
@@ -80,7 +81,7 @@ public class MinimumTime {
 			
 		});
 		
-		pq = new BinaryMinHeap2<>(fa.airports.size());
+		pq = new BinaryMinHeap<>(airports.size());
 	}
 	
 	public static void main(String[] args) {
@@ -121,14 +122,11 @@ public class MinimumTime {
 		fa.insertFlight("AB", i++, 1, departures, new Time(120), "DDD" , "CCC");
 
 
+		SimpleMap<String, Airport> airports = fa.getAirports();
 
+		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(airports.get("AAA"), airports.get("BBB"), new Moment(Day.LU, new Time(10,00))));
 
-		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.LU, new Time(10,00))));
-
-		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("CCC"), Day.LU).run();
-
-
-
+		new MinimumTime(airports, airports.get("AAA"), airports.get("CCC"), Day.LU).run();
 
 	}
 
@@ -209,7 +207,7 @@ public class MinimumTime {
 
 		AVLSet<Double> times = origin.getFlightTimes(departure);
 
-		Iterator<Airport> airs = fa.airports.valueIterator();
+		Iterator<Airport> airs = airports.valueIterator();
 		Airport curr;
 		while(airs.hasNext()){
 			curr = airs.next();

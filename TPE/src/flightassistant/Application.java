@@ -1,10 +1,8 @@
 package flightassistant;
 
 import utils.FileManager;
-import utils.Parser;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Application {
     private static FlightAssistant flightAssistant;
@@ -15,17 +13,18 @@ public class Application {
 
         //Por ahora lo saco porque no anda
         //TODO flightAssistant = load();	//carga el flightAssistant
-    	
-    	if (calledWithArgument(args)) {
-            Parser.parseArguments(args, flightAssistant);
-        } else {
-            flightAssistant = new FlightAssistant();
-            Scanner sc = new Scanner(System.in);
+    	flightAssistant = new FlightAssistant();
 
-            while (!Parser.parseShell(sc, flightAssistant));
-            // el parser devuelve si se usó el comando para terminar el programa o no
-            sc.close();
-        }
+//    	if (calledWithArgument(args)) {
+//            Parser.parseArguments(args, flightAssistant);
+//        } else {
+//            flightAssistant = new FlightAssistant();
+//            Scanner sc = new Scanner(System.in);
+//
+//            while (!Parser.parseShell(sc, flightAssistant));
+//            // el parser devuelve si se usó el comando para terminar el programa o no
+//            sc.close();
+//        }
     	exit(); 	//en ambos casos guarda y termina.
     }
 
@@ -33,7 +32,9 @@ public class Application {
         try {
             FileManager.save(flightAssistant);
         } catch (IOException e) {
-            System.out.println("Error");
+            e.printStackTrace();
+
+       //     System.out.println("Error");
             //TODO hacer con el outputmanager
         }
     }

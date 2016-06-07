@@ -1,6 +1,7 @@
 package flightassistant;
 
-import structures.BinaryMinHeap2;
+import structures.BinaryMinHeap;
+import structures.SimpleMap;
 import utils.Day;
 
 import java.util.Iterator;
@@ -9,14 +10,14 @@ import java.util.List;
 
 public class InfinityDijkstra {
 
-	public static List<Airport> minPath(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter, List<Day> days) {
-		return minPath2(fa, origin, dest, weighter, null, days);
+	public static List<Airport> minPath(SimpleMap<String, Airport> airports, Airport origin, Airport dest, Weighter weighter, List<Day> days) {
+		return minPath2(airports, origin, dest, weighter, null, days);
 	}
 
-	public static List<Airport> minPath2(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
+	public static List<Airport> minPath2(SimpleMap<String, Airport> airports, Airport origin, Airport dest, Weighter weighter,
 									   Weighter originWeighter, List<Day> days) {
 
-		BinaryMinHeap2<Airport> pq = queueAirports(fa);
+		BinaryMinHeap<Airport> pq = queueAirports(airports);
 
 		pq.decreasePriority(origin, 0);
 
@@ -31,7 +32,7 @@ public class InfinityDijkstra {
 	}
 
 	// Cambiar nombre
-	private static List<Airport> djistra(BinaryMinHeap2<Airport> pq, Airport dest, Weighter weighter, List<Day> days, boolean isOrigin) {
+	private static List<Airport> djistra(BinaryMinHeap<Airport> pq, Airport dest, Weighter weighter, List<Day> days, boolean isOrigin) {
 
 		while (!pq.isEmpty()) {
 			Double minWeight = pq.minWeight();
@@ -64,15 +65,15 @@ public class InfinityDijkstra {
 			// Si está en el aeropuerto del origen tiene que ciclar una sola vez, y devuelve null.
 			if (isOrigin) return null;
 		}
-		return new LinkedList<>(); // lista vacia
+		return new LinkedList<>();
 	}
 
-	private static BinaryMinHeap2<Airport> queueAirports(FlightAssistant fa) {
-		int size = fa.airports.size();
+	private static BinaryMinHeap<Airport> queueAirports(SimpleMap<String, Airport> airports) {
+		int size = airports.size();
 
-		BinaryMinHeap2<Airport> heap = new BinaryMinHeap2<>(size);
+		BinaryMinHeap<Airport> heap = new BinaryMinHeap<>(size);
 
-		Iterator<Airport> iter = fa.airports.valueIterator();
+		Iterator<Airport> iter = airports.valueIterator();
 
 		while(iter.hasNext()){
 			heap.enqueue(iter.next(), Double.POSITIVE_INFINITY);
@@ -81,7 +82,6 @@ public class InfinityDijkstra {
 		return heap;
 	}
 
-	// agregando aeropuertos.
 	private static List<Airport> buildList(Airport last) {
 		LinkedList<Airport> list = new LinkedList<>();
 
@@ -94,18 +94,4 @@ public class InfinityDijkstra {
 		list.addFirst(curr);
 		return list;
 	}
-
-	// Con tickets
-//	private static List<Ticket> buildList(Airport last) {
-//		LinkedList<Ticket> list = new LinkedList<>();
-//
-//		Airport curr = last;
-//		Ticket t;
-//		while((t = curr.getIncident()) != null) {
-//			list.addFirst(t);
-//			curr = t.getOrigin();
-//		}
-//		return list;
-//	}
-
 }
