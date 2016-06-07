@@ -60,6 +60,8 @@ public class MinimumTime {
 	Airport dest;
 	Day departure;
 	
+	Moment momentZero;
+	
 	//Unico dia
 	public MinimumTime(FlightAssistant fa, Airport origin, Airport dest, Day departure){
 		if(fa == null){
@@ -69,6 +71,8 @@ public class MinimumTime {
 		this.origin = origin;
 		this.dest = dest;
 		this.departure = departure;
+		momentZero = new Moment(departure, new Time(0,0));
+
 		this.functions = new AVLMap<Airport, ArrivalTimesFunction>(new Comparator<Airport>() {
 
 			@Override
@@ -85,28 +89,31 @@ public class MinimumTime {
 		initialize();
 		while(pq.size() > 1){
 			ArrivalTimesFunction g_i = pq.dequeue();
+			System.err.println("IN: " + g_i.refinedUpTo());
 			System.err.println("Dequeuing" + g_i.airport());
 			Double minArrivalToAdj = pq.getPriority(pq.head());
 			
 			double delta = minWeightAt(minArrivalToAdj, g_i.airport());
 			double bound = minArrivalToAdj + delta;
-			
+			System.err.println("New bound: " + bound);
 			double newRefined = g_i.getMaxBounded(bound);
 			
 			//TODO: Abstract weighter?
 			
-			Moment momentZero = new Moment(departure, new Time(0,0));
 			Airport a = g_i.airport(); 
 			Iterator<Airport> iter = a.getConnectedAirports().iterator();
+			
 			while(iter.hasNext()){
 				Airport adjacent = iter.next();
-				Iterator<Double> domain = g_i.getDomain().higherIterator(newRefined);
 				ArrivalTimesFunction adjFunction = functions.get(adjacent);
+
+				Iterator<Double> domain = g_i.getDomain().higherIterator(g_i.refinedUpTo());
+				Double t;
 				while(domain.hasNext()){
-					Double t = domain.next();
-					adjFunction.minimizeValue(t, t + 
-							DynamicTimeWeighter.WEIGHTER.weight(a, adjacent, momentZero.addTime(new Time(t))));
+					t = domain.next();
+					adjFunction.minimizeValue(t, g_i.eval(t) + DynamicTimeWeighter.WEIGHTER.weight(a, adjacent, momentZero.addTime(new Time(g_i.eval(t)))));
 				}
+				//TODO: Es ChangePriority, no decrease. Ya lo cambie
 				pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
 			}
 
@@ -119,9 +126,11 @@ public class MinimumTime {
 				}
 				
 			}
+			else{
+				pq.enqueue(g_i, g_i.eval(g_i.refinedUpTo()));
+			}
 		}
 		System.err.println("Apparently pq size is 1");
-		pq.head().print();
 		
 	}
 
@@ -129,15 +138,20 @@ public class MinimumTime {
 		Iterator<Airport> iter = airport.getConnectedAirports().iterator();
 		double min = Double.POSITIVE_INFINITY;
 		
-		Moment momentZero = new Moment(departure, new Time(0,0));
 		Moment now = momentZero.addTime(new Time(minArrivalToAdj));
-		
+
+		double weight=Double.POSITIVE_INFINITY;
 		while(iter.hasNext()){
 			Airport curr = iter.next();
 			if(curr.flightExistsTo(airport)){
-				double weight = DynamicTimeWeighter.WEIGHTER.weight(curr, airport, now);
-				min = weight < min ? weight : min;
+				if(minArrivalToAdj < 24*60 && curr.equals(origin)){ //Minutes_in_a_day
+					weight = new OriginDynamicWeighter(departure).weight(curr, airport, now);
+				}else{
+					weight = DynamicTimeWeighter.WEIGHTER.weight(curr, airport, now);
 				}
+	
+				min = weight < min ? weight : min;
+			}
 		}
 		
 		System.err.println(min);
@@ -187,7 +201,7 @@ public class MinimumTime {
 			ArrivalTimesFunction adjFunction = functions.get(adjacent);
 			while(domain.hasNext()){
 				Double t = domain.next();
-				adjFunction.minimizeValue(t, t + weighter.weight(a, adjacent, new Moment(departure, new Time(t))));
+				adjFunction.minimizeValue(t, deq.eval(t) + weighter.weight(a, adjacent, new Moment(departure, new Time(t))));
 			}
 			pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
 		}

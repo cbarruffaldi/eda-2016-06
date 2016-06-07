@@ -137,33 +137,33 @@ public class ArrivalTimesFunction {
 	}
 	
 
-	
-	public static void main(String[] args) {
-		AVLSet<Double> domain = new AVLSet<Double>();
-		domain.add(300.0);
-		domain.add(420.0);
-		domain.add(100.0);
-		domain.add(200.0);
-
-		ArrivalTimesFunction f = new ArrivalTimesFunction(null, domain);
-		ArrivalTimesFunction g = new ArrivalTimesFunction(null, domain);
-		
-		f.updateValue(100, 40);
-		f.updateValue(200, 129);
-		f.updateValue(300, 100);
-		
-		g.updateValue(100, 50);	
-		g.updateValue(200, 100);
-		g.updateValue(300, 44);
-		g.updateValue(420, 1);
-		
-		f.print();
-		System.out.println("=============");
-		f.minimize(g);
-		f.print();
-		
-		
-	}
+//	
+//	public static void main(String[] args) {
+//		AVLSet<Double> domain = new AVLSet<Double>();
+//		domain.add(300.0);
+//		domain.add(420.0);
+//		domain.add(100.0);
+//		domain.add(200.0);
+//
+//		ArrivalTimesFunction f = new ArrivalTimesFunction(null, domain);
+//		ArrivalTimesFunction g = new ArrivalTimesFunction(null, domain);
+//		
+//		f.updateValue(100, 40);
+//		f.updateValue(200, 129);
+//		f.updateValue(300, 100);
+//		
+//		g.updateValue(100, 50);	
+//		g.updateValue(200, 100);
+//		g.updateValue(300, 44);
+//		g.updateValue(420, 1);
+//		
+//		f.print();
+//		System.out.println("=============");
+//		f.minimize(g);
+//		f.print();
+//		
+//		
+//	}
 
 
 	public Airport airport() {
@@ -171,22 +171,19 @@ public class ArrivalTimesFunction {
 	}
 
 	public double getMaxBounded(double bound) {
-		Iterator<Double> iter = domain.higherIterator(refined);
-		if(!iter.hasNext())
-			throw new IllegalStateException("BOund vacio (?!)?");
+		Iterator<Double> iter = domain.iterator();
 		
-
-		double prev = 0;
+		double prev = leftmost;
 		double curr = iter.next();
 		
-		if(eval(curr) >= bound){
-			System.err.println("Incorrect bound?");
-		}
+		
 		while(iter.hasNext() && eval(curr) < bound){
 			prev = curr;
 			curr = iter.next();
+			System.err.println(eval(curr));
 		}
 		
+		System.err.println("Max bounded " + prev + " by bound: " + bound);
 		return prev;
 	}
 	
