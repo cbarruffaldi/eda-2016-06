@@ -103,7 +103,7 @@ public class MinimumTime {
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(720)));
-        fa.insertFlight("AD", i++, 1, departures, new Time(300), "AAA", "DDD");
+        fa.insertFlight("AD", i++, 1, departures, new Time(100), "AAA", "DDD");
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(1050)));
@@ -111,15 +111,15 @@ public class MinimumTime {
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(660)));
-        fa.insertFlight("AB", i++, 1, departures, new Time(300), "BBB", "CCC");
+        fa.insertFlight("AB", i++, 1, departures, new Time(120), "BBB", "CCC");
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(780)));
         fa.insertFlight("BC", i++, 1, departures, new Time(540), "BBB", "CCC");
 
         departures = new ArrayList<>();
-        departures.add(new Moment(Day.LU, new Time(1140)));
-        fa.insertFlight("DC", i++, 1, departures, new Time(120), "DDD", "CCC");
+        departures.add(new Moment(Day.LU, new Time(850)));
+        fa.insertFlight("DC", i++, 1, departures, new Time(50), "DDD", "CCC");
 
 
         SimpleMap<String, Airport> airports = fa.getAirports();
@@ -162,7 +162,8 @@ public class MinimumTime {
             }
 
             if(newRefined == g_i.refinedUpTo()){
-            	continue;
+            	System.err.println("DAMMIT CHLOE");
+           // 	continue;
             }
             g_i.setRefined(newRefined);
             if (g_i.refinedUpTo() >= g_i.getRightVal()) {
