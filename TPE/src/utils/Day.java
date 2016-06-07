@@ -1,10 +1,12 @@
 package utils;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class Day {
+public class Day implements Serializable {
 
-    public static final Day LU = new Day(0);
+	private static final long serialVersionUID = 1L;
+	public static final Day LU = new Day(0);
     public static final Day MA = new Day(1);
     public static final Day MI = new Day(2);
     public static final Day JU = new Day(3);

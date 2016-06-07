@@ -139,12 +139,12 @@ public class FlightAssistant implements Serializable {
     }
 
 
-    // PROVISORIO PARA TESTS
-    SimpleMap<String, Airport> getAirports () {
+    
+    public SimpleMap<String, Airport> getAirports () {
         return airports;
     }
 
-    SimpleMap<FlightId, Flight> getFlights () {
+    public SimpleMap<FlightId, Flight> getFlights () {
         return flights;
     }
 }
