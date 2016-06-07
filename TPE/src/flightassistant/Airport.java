@@ -20,9 +20,8 @@ public class Airport implements Serializable {
 	private double latitude;
 	private double longitude;
 	private SimpleMap<Airport, Route> routes;
-	private boolean visited;
-	private double weight;  //TODO: Sacar weight cuando no sea necesario DijkstraForReal
 	private Ticket incident;
+	private boolean visited;
 
 	public Airport(String id, double latitude, double longitude) {
 		this.id = id;
@@ -196,7 +195,6 @@ public class Airport implements Serializable {
 	public void nodeRefresh(){
 		visited = false;
 		incident = null;
-		weight = Double.POSITIVE_INFINITY;
 	}
 
 	public void visit(){
@@ -217,14 +215,6 @@ public class Airport implements Serializable {
 
 	public void setIncident(Ticket t){
 		incident = t;
-	}
-
-	public double weight(){
-		return weight;
-	}
-
-	public void setWeight(double w){
-		weight = w;
 	}
 
 	public AVLSet<Double> getFlightTimes(Day departure) {
