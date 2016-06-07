@@ -126,8 +126,9 @@ public class Route implements Serializable {
 		private static final Comparator<Ticket> ticketCmp = new Comparator<Ticket>() {
 			@Override
 			public int compare(Ticket o1, Ticket o2) {
-				int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
-				return comp == 0 ? o1.getFlightId().compareTo(o2.getFlightId()) : comp;
+
+			int comp = o1.getDepartureTime().compareTo(o2.getDepartureTime());
+			return comp == 0 ? o1.getFlightId().compareTo(o2.getFlightId()) : comp;
 			}
 		};
 

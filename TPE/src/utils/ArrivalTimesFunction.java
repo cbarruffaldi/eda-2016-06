@@ -59,6 +59,17 @@ public class ArrivalTimesFunction {
 		function.put(t, newValue);
 	}
 	
+	/** Actualiza el valor al nuevo solo si es mas chico */
+	public void minimizeValue(Double t, Double newValue){
+		if(!function.containsKey(t))
+			throw new IllegalArgumentException();
+		
+		if(Double.compare(newValue, function.get(t)) < 1){
+			function.put(t, newValue);
+		}
+
+	}
+	
 	public void updateValue(Integer t, Integer newValue){
 		updateValue((double)t, (double)newValue);
 	}
@@ -141,6 +152,11 @@ public class ArrivalTimesFunction {
 		f.print();
 		
 		
+	}
+
+
+	public Airport airport() {
+		return airport;
 	}
 	
 }

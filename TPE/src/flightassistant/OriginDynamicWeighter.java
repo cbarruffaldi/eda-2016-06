@@ -1,11 +1,19 @@
 package flightassistant;
 
+import utils.Day;
 import utils.Moment;
 import utils.Time;
 
-public class DynamicTimeWeighter {
-    public static final DynamicTimeWeighter WEIGHTER = new DynamicTimeWeighter();
+//Tiene que salir si o si ese dia
+//Repetimos codigo. Mala suerte :(
+public class OriginDynamicWeighter {
 
+	Day departureDay;
+	
+	public OriginDynamicWeighter(Day departure){
+		this.departureDay = departure;
+	}
+	
     public Double weight(Airport from, Airport to, Moment startMoment) {
 
     	if(!from.flightExistsTo(to))
@@ -18,7 +26,8 @@ public class DynamicTimeWeighter {
 
         Ticket min = ticketIter.next();
         Time shortestTime = totalTime(startMoment, min);
-        while (ticketIter.hasNext()) {
+          
+       	while (ticketIter.hasNext() && min.getDeparture().getDay().equals(departureDay)) {
             Ticket ticket = ticketIter.next();
             Time waitTime = startMoment.howMuchUntil(ticket.getDeparture());
 
@@ -35,7 +44,10 @@ public class DynamicTimeWeighter {
                 shortestTime = aux;
             }
         }
-        
+   
+       	if(!min.getDeparture().getDay().equals(departureDay))
+        	return Double.POSITIVE_INFINITY;
+
         return (double)shortestTime.getMinutes();
 
     }

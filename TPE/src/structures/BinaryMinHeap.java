@@ -52,6 +52,14 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 		return elem;
 	}
 
+	public T head() {
+		if (isEmpty())
+			throw new NoSuchElementException("Cola vacia");
+		
+		return array[0].value;
+	}
+
+	
 	@Override
 	public double getPriority(T elem) {
 		Integer index = indexMap.get(elem);
@@ -154,4 +162,5 @@ public class BinaryMinHeap<T> implements PriorityQueue<T>{
 		}
 		return array[0].priority;
 	}
+
 }

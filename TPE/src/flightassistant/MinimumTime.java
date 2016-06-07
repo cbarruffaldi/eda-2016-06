@@ -8,7 +8,6 @@ import java.util.List;
 import structures.AVLMap;
 import structures.AVLSet;
 import structures.BinaryMinHeap;
-import structures.PriorityQueue;
 import utils.ArrivalTimesFunction;
 import utils.Day;
 import utils.Moment;
@@ -42,6 +41,10 @@ public class MinimumTime {
 		
 		public int hashCode(){
 			return g.hashCode();
+		}
+		
+		public Airport airport(){
+			return g.airport();
 		}
 	}
 	
@@ -101,10 +104,27 @@ public class MinimumTime {
 			pq.enqueue(node, node.priority());
 		}
 		
-		pq.dequeue().g.print();
-		pq.dequeue().g.print();
+		refineOrigin(); //Debe hacerse al principio por el tema de que el vuelo de partida debe caer
+						//en el dia especificado
+	}
+	
+	
+	
+	
+	private void refineOrigin() {
+		PQNode deq = pq.dequeue();
+		//PQNode head = pq.head();
+		Airport a = deq.airport();
+		Iterator<Airport> iter = a.getConnectedAirports().iterator();
+		while(iter.hasNext()){
+			Airport adjacent = iter.next();
+			Iterator<Double> domain = deq.g.getDomain().iterator();
+			
+		}
+		
 		
 	}
+
 	public static void main(String[] args) {
 		FlightAssistant fa = new FlightAssistant();
 		fa.insertAirport("AAA", 1, 1);
@@ -122,21 +142,21 @@ public class MinimumTime {
 		fa.insertFlight("AB", i++, 1, departures, new Time(1,0), "AAA" , "BBB");
 		
 		departures = new ArrayList<>();
-		departures.add(new Moment(Day.LU, new Time(15, 0)));
+		departures.add(new Moment(Day.LU, new Time(14, 0)));
 		departures.add(new Moment(Day.SA, new Time(14, 0)));
 		departures.add(new Moment(Day.DO, new Time(14, 0)));
 
-		fa.insertFlight("AB", i++, 1, departures, new Time(3,0), "AAA", "BBB");
+		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA", "BBB");
 		
 		
 		departures = new ArrayList<>();
 		departures.add(new Moment(Day.LU, new Time(11, 0)));
-		departures.add(new Moment(Day.SA, new Time(11, 0)));
+		departures.add(new Moment(Day.MA, new Time(14, 0)));
 		departures.add(new Moment(Day.DO, new Time(11, 0)));
 
 		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA" , "BBB");
 	
-		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.LU, new Time(12,00))));
+		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.MI, new Time(9,00))));
 		
 		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("BBB"), Day.LU);
 		
