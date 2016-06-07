@@ -3,8 +3,11 @@ package flightassistant;
 import structures.AVLSet;
 import utils.Day;
 import utils.Moment;
+import utils.Time;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class HigherIterator implements Iterator<Ticket> {
@@ -12,8 +15,13 @@ public class HigherIterator implements Iterator<Ticket> {
 	private Iterator<Ticket> ticketIter;
 
     public HigherIterator(Moment from, Day.WeekArray<AVLSet<Ticket>> weekArray) {
-        Flight dummyFlight = new Flight("A", 0, 0, null, null, null, null);
+   
+    	List<Moment> dummyList = new ArrayList<>();
+    	dummyList.add(new Moment(Day.LU, new Time(0,0)));
+    	dummyList.add(from);
+        Flight dummyFlight = new Flight("A", 0, 0, dummyList, null, null, null);
         Ticket dummyTicket = new Ticket(dummyFlight, from);
+     
         Day currentDay = from.getDay();
         Day nextDay = from.getDay().getNextDay();
 

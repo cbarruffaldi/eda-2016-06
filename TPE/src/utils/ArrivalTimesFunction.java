@@ -14,6 +14,10 @@ public class ArrivalTimesFunction {
 	//private AVLMap<Integer, Integer> inverse;
 	private AVLSet<Double> domain;
 	
+	private double leftmost;
+	private double rightmost;
+	
+	
 	public ArrivalTimesFunction(Airport airport, AVLSet<Double> times){
 		if(times.size() < 1){
 			throw new IllegalArgumentException("Empty domain");
@@ -23,7 +27,10 @@ public class ArrivalTimesFunction {
 		
 		this.airport = airport;
 		function = new AVLMap<>();
+		leftmost = Double.MAX_VALUE;
 		for(Double t: times){
+			leftmost = t < leftmost ? t : leftmost;
+			rightmost = t > rightmost ? t : rightmost;
 			function.put(t, Double.POSITIVE_INFINITY);
 		}
 	}
@@ -89,7 +96,14 @@ public class ArrivalTimesFunction {
 		
 	}
 		
-		
+
+	public double getRightVal(){
+		return rightmost;
+	}
+	
+	public double getLeftVal(){
+		return leftmost;
+	}
 	
 	public boolean equals(Object o){
 		if(this == o)

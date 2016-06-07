@@ -21,6 +21,15 @@ public class MinimumTime {
 		ArrivalTimesFunction g;
 		Double tau;
 		
+		public PQNode(ArrivalTimesFunction function, Double intervalStart){
+			g = function;
+			tau = intervalStart;
+		}
+		
+		public double priority(){
+			return g.eval(tau);
+		}
+		
 		@Override
 		public int compareTo(PQNode o) {
 			return Double.compare(g.eval(tau), o.g.eval(o.tau));
@@ -80,9 +89,20 @@ public class MinimumTime {
 		
 		ArrivalTimesFunction originF = functions.get(origin);
 		for(double t: originF.getDomain()){
-			originF.updateValue(t, t);
+			originF.updateValue(t, t); //g_e(t) = t
 		}
 		
+		Iterator<ArrivalTimesFunction> iter = functions.valueIterator();
+		
+		PQNode node;
+		while(iter.hasNext()){
+			ArrivalTimesFunction g = iter.next();
+			node = new PQNode(g, g.getLeftVal()); //Horrible pero necesario (ponele)
+			pq.enqueue(node, node.priority());
+		}
+		
+		pq.dequeue().g.print();
+		pq.dequeue().g.print();
 		
 	}
 	public static void main(String[] args) {
@@ -99,14 +119,14 @@ public class MinimumTime {
 		departures.add(new Moment(Day.MI, new Time(10, 0)));
 		departures.add(new Moment(Day.JU, new Time(10, 0)));
 		
-		fa.insertFlight("AB", i++, 1, departures, new Time(3,0), "AAA" , "BBB");
+		fa.insertFlight("AB", i++, 1, departures, new Time(1,0), "AAA" , "BBB");
 		
 		departures = new ArrayList<>();
-		departures.add(new Moment(Day.LU, new Time(14, 0)));
+		departures.add(new Moment(Day.LU, new Time(15, 0)));
 		departures.add(new Moment(Day.SA, new Time(14, 0)));
 		departures.add(new Moment(Day.DO, new Time(14, 0)));
 
-		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA" , "BBB");
+		fa.insertFlight("AB", i++, 1, departures, new Time(3,0), "AAA", "BBB");
 		
 		
 		departures = new ArrayList<>();
@@ -115,8 +135,11 @@ public class MinimumTime {
 		departures.add(new Moment(Day.DO, new Time(11, 0)));
 
 		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA" , "BBB");
+	
+		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.LU, new Time(12,00))));
 		
-		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("BBB"), Day.SA);
+		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("BBB"), Day.LU);
+		
 		
 
 		
