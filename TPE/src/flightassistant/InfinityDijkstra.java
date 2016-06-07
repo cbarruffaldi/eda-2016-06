@@ -29,7 +29,8 @@ public class InfinityDijkstra {
             findPath(pq, dest, originWeighter, days, true, -1);
         }
 
-        ans = findPath(pq, dest, weighter, null, false, -1).list;
+        Box b = findPath(pq, dest, weighter, null, false, -1);
+        ans = (b != null) ? b.list : null;
 
         return ans;
     }
