@@ -74,7 +74,7 @@ public class ArrivalTimesFunction {
 			throw new IllegalArgumentException();
 		
 		if(Double.compare(newValue, function.get(t)) < 1){
-			System.out.println("Minimizing");
+			System.out.println("Minimizing...");
 			function.put(t, newValue);
 		}
 

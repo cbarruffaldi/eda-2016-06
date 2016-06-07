@@ -8,6 +8,7 @@ import utils.Time;
 //Repetimos codigo. Mala suerte :(
 public class OriginDynamicWeighter {
 
+	private static final int MINUTES_IN_A_DAY = 24*60;
 	Day departureDay;
 	
 	public OriginDynamicWeighter(Day departure){
@@ -27,16 +28,10 @@ public class OriginDynamicWeighter {
         Ticket min = ticketIter.next();
         Time shortestTime = totalTime(startMoment, min);
           
-       	while (ticketIter.hasNext() && min.getDeparture().getDay().equals(departureDay)) {
+       	while (ticketIter.hasNext() && 
+       			startMoment.getTime().getMinutes() + shortestTime.getMinutes() <= MINUTES_IN_A_DAY) {
             Ticket ticket = ticketIter.next();
             Time waitTime = startMoment.howMuchUntil(ticket.getDeparture());
-
-            // Dado que los vuelos se iteran se forma ordenada por momento de salida,
-            // los waitTime son crecientes. Si un waitTime es mayor a el
-            // menor total time ya puedo cortar y retornar; todos los siguientes
-            // vuelos tendrÃ¡n mayor waitTime y por ende mayor total time.
-            if (waitTime.compareTo(shortestTime) >= 0)
-            	return (double)shortestTime.getMinutes();
 
             Time aux = totalTime(startMoment, ticket);
             if (aux.compareTo(shortestTime) < 0) {
@@ -45,8 +40,9 @@ public class OriginDynamicWeighter {
             }
         }
    
-       	if(!min.getDeparture().getDay().equals(departureDay))
+       	if(startMoment.getTime().getMinutes() + shortestTime.getMinutes() > MINUTES_IN_A_DAY){ //Me pase del día
         	return Double.POSITIVE_INFINITY;
+       	}
 
         return (double)shortestTime.getMinutes();
 
