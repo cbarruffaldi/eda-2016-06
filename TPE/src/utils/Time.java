@@ -11,6 +11,10 @@ public class Time implements Comparable<Time>, TimeConstants {
     public Time(int min) {
         minutes = min;
     }
+    
+    public Time(Double min){
+    	this(min.intValue());
+    }
 
     public static Time getTimeFromString(String str) {
         String[] timeStr = str.split(":");

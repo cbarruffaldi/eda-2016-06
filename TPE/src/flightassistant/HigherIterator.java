@@ -17,7 +17,7 @@ public class HigherIterator implements Iterator<Ticket> {
     public HigherIterator(Moment from, Day.WeekArray<AVLSet<Ticket>> weekArray) {
    
     	List<Moment> dummyList = new ArrayList<>();
-    	dummyList.add(new Moment(Day.LU, new Time(0,0)));
+   // 	dummyList.add(new Moment(Day.LU, new Time(0,0)));
     	dummyList.add(from);
         Flight dummyFlight = new Flight("A", 0, 0, dummyList, null, null, null);
         Ticket dummyTicket = new Ticket(dummyFlight, from);
