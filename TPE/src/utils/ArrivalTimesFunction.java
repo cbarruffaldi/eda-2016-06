@@ -18,7 +18,6 @@ public class ArrivalTimesFunction {
     private double rightmost;
 
 
-
     public ArrivalTimesFunction (Airport airport, AVLSet<Double> times) {
         if (times.size() < 1) {
             throw new IllegalArgumentException("Empty domain");
@@ -28,7 +27,9 @@ public class ArrivalTimesFunction {
 
         this.airport = airport;
         function = new AVLMap<>();
-        leftmost = Double.MAX_VALUE;
+        
+        leftmost = Double.POSITIVE_INFINITY;
+        
         for (Double t : times) {
             leftmost = t < leftmost ? t : leftmost;
             rightmost = t > rightmost ? t : rightmost;
@@ -171,7 +172,7 @@ public class ArrivalTimesFunction {
     }
 
     public double getMaxBounded (double bound) {
-        Iterator<Double> iter = domain.iterator();
+        Iterator<Double> iter = domain.higherIterator(refined);
 
         double prev = leftmost;
         double curr = iter.next();
@@ -183,7 +184,6 @@ public class ArrivalTimesFunction {
             System.err.println(eval(curr));
         }
 
-        System.err.println("Max bounded " + prev + " by bound: " + bound);
         return prev;
     }
 

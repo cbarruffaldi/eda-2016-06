@@ -87,23 +87,23 @@ public class MinimumTime {
     public static void main (String[] args) {
         FlightAssistant fa = new FlightAssistant();
         fa.insertAirport("AAA", 1, 1);
-        fa.insertAirport("BBB", 1, 1);
-        fa.insertAirport("CCC", 1, 1);
-        fa.insertAirport("DDD", 1, 1);
+        fa.insertAirport("BBB", 2, 19);
+        fa.insertAirport("CCC", 12, 3);
+        fa.insertAirport("DDD", 31,91);
 
 
         int i = 0;
         List<Moment> departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(300)));
         fa.insertFlight("AB", i++, 1, departures, new Time(300), "AAA", "BBB");
-
+        
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(600)));
         fa.insertFlight("AB", i++, 1, departures, new Time(120), "AAA", "BBB");
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(720)));
-        fa.insertFlight("AB", i++, 1, departures, new Time(300), "AAA", "DDD");
+        fa.insertFlight("AD", i++, 1, departures, new Time(100), "AAA", "DDD");
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(1050)));
@@ -115,18 +115,17 @@ public class MinimumTime {
 
         departures = new ArrayList<>();
         departures.add(new Moment(Day.LU, new Time(780)));
-        fa.insertFlight("AB", i++, 1, departures, new Time(540), "BBB", "CCC");
+        fa.insertFlight("BC", i++, 1, departures, new Time(540), "BBB", "CCC");
 
         departures = new ArrayList<>();
-        departures.add(new Moment(Day.LU, new Time(1140)));
-        fa.insertFlight("AB", i++, 1, departures, new Time(120), "DDD", "CCC");
+        departures.add(new Moment(Day.LU, new Time(850)));
+        fa.insertFlight("DC", i++, 1, departures, new Time(50), "DDD", "CCC");
 
 
         SimpleMap<String, Airport> airports = fa.getAirports();
 
-        System.out.println(DynamicTimeWeighter.WEIGHTER
-            .weight(airports.get("AAA"), airports.get("BBB"),
-                new Moment(Day.LU, new Time(10, 00))));
+        System.out.println(DynamicTimeWeighter.WEIGHTER.weight(airports.get("DDD"), airports.get("BBB"),
+                new Moment(Day.LU, new Time(300))));
 
         new MinimumTime(airports, airports.get("AAA"), airports.get("CCC"), Day.LU).run();
 
@@ -136,16 +135,13 @@ public class MinimumTime {
         initialize();
         while (pq.size() > 1) {
             ArrivalTimesFunction g_i = pq.dequeue();
-            System.err.println("IN: " + g_i.refinedUpTo());
-            System.err.println("Dequeuing" + g_i.airport());
+
             Double minArrivalToAdj = pq.getPriority(pq.head());
 
             double delta = minWeightAt(minArrivalToAdj, g_i.airport());
             double bound = minArrivalToAdj + delta;
-            System.err.println("New bound: " + bound);
-            double newRefined = g_i.getMaxBounded(bound);
 
-            //TODO: Abstract weighter?
+            double newRefined = g_i.getMaxBounded(bound);
 
             Airport a = g_i.airport();
             Iterator<Airport> iter = a.getConnectedAirports().iterator();
@@ -156,8 +152,8 @@ public class MinimumTime {
 
                 Iterator<Double> domain = g_i.getDomain().higherIterator(g_i.refinedUpTo());
                 Double t;
-                while (domain.hasNext()) {
-                    t = domain.next();
+                System.out.println(newRefined);
+                while (domain.hasNext() && (t=domain.next()) <= newRefined) {
                     adjFunction.minimizeValue(t, g_i.eval(t) + DynamicTimeWeighter.WEIGHTER
                         .weight(a, adjacent, momentZero.addTime(new Time(g_i.eval(t)))));
                 }
@@ -165,6 +161,10 @@ public class MinimumTime {
                 pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));
             }
 
+            if(newRefined == g_i.refinedUpTo()){
+            	System.err.println("DAMMIT CHLOE");
+           // 	continue;
+            }
             g_i.setRefined(newRefined);
             if (g_i.refinedUpTo() >= g_i.getRightVal()) {
                 System.out.println("Done!");
@@ -178,6 +178,10 @@ public class MinimumTime {
             }
         }
         System.err.println("Apparently pq size is 1");
+        
+        System.out.println("PR ================");
+        functions.get(dest).print();
+        System.out.println(functions.get(dest).getMin());
 
     }
 
@@ -208,7 +212,8 @@ public class MinimumTime {
     private void initialize () {
 
         AVLSet<Double> times = origin.getFlightTimes(departure);
-
+        //TODO: Empty
+        
         Iterator<Airport> airs = airports.valueIterator();
         Airport curr;
         while (airs.hasNext()) {

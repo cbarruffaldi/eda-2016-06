@@ -22,6 +22,7 @@ public class Day implements Serializable {
     private Day (int index) {
         daysIndex = index;
     }
+    
 
     public static Day getDay (String day) {
         for (int i = 0; i < TOTAL_DAYS; i++)
