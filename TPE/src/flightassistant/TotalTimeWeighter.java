@@ -6,12 +6,11 @@ import utils.Time;
 public class TotalTimeWeighter implements Weighter {
     public static final Weighter WEIGHTER = new TotalTimeWeighter();
 
-    @Override
-    public WeightedTicket minTicket(Airport from, Airport to) {
+    @Override public WeightedTicket minTicket (Airport from, Airport to) {
         Ticket previous = from.getIncident();
-//        if (previous == null) {
-//            // El tema del primer aeropuerto que no anda con djiasakjst normal
-//        }
+        //        if (previous == null) {
+        //            // El tema del primer aeropuerto que no anda con djiasakjst normal
+        //        }
         Moment startMoment = previous.getArrival();
 
         HigherIterator ticketIter = from.iteratorOfHigherFlightsTo(to, startMoment);
@@ -30,7 +29,7 @@ public class TotalTimeWeighter implements Weighter {
             // menor total time ya puedo cortar y retornar; todos los siguientes
             // vuelos tendrán mayor waitTime y por ende mayor total time.
             if (waitTime.compareTo(shortestTime) >= 0)
-            	return new WeightedTicket(min, shortestTime.getMinutes());
+                return new WeightedTicket(min, shortestTime.getMinutes());
 
             Time aux = totalTime(startMoment, ticket);
             if (aux.compareTo(shortestTime) < 0) {
@@ -42,7 +41,7 @@ public class TotalTimeWeighter implements Weighter {
         return new WeightedTicket(min, shortestTime.getMinutes());
     }
 
-    private Time totalTime(Moment start, Ticket ticket) {
+    private Time totalTime (Moment start, Ticket ticket) {
         Time wait = start.howMuchUntil(ticket.getDeparture());
         return wait.addTime(ticket.getDuration());
     }

@@ -17,26 +17,28 @@ public class OutputManager {
     private boolean textFormat = true;   // Por defecto modo texto.
     private boolean stdOut = true; // Por defecto va a salida estandar.
 
-    public OutputManager() {
+    public OutputManager () {
         textFormat = true;
         stdOut = true;
     }
 
-    public void invalidCommand() {
+    public void invalidCommand () {
         System.err.println("Invalid Command");
     }
 
-    public void notFoundMsg() {
+    public void notFoundMsg () {
         System.out.println("NotFound");
     }
 
-    public void fileOpenErrorMsg() {
+    public void fileOpenErrorMsg () {
         System.err.println("Could not open/read file");
     }
 
-    public void exitErrorMsg() { System.err.print("Could not save program files"); }
+    public void exitErrorMsg () {
+        System.err.print("Could not save program files");
+    }
 
-    public void printBestRoute(List<Airport> airports) {
+    public void printBestRoute (List<Airport> airports) {
         if (stdOut) {
             printToStdout(airports);
         } else {
@@ -44,11 +46,11 @@ public class OutputManager {
         }
     }
 
-    private void printToStdout(List<Airport> airports) {
+    private void printToStdout (List<Airport> airports) {
         print(airports, System.out);
     }
 
-    private void printToFile(List<Airport> airports) {
+    private void printToFile (List<Airport> airports) {
         try {
             print(airports, new PrintStream(new FileOutputStream(fileName, true)));
         } catch (FileNotFoundException e) {
@@ -56,7 +58,7 @@ public class OutputManager {
         }
     }
 
-    private void print(List<Airport> airports, PrintStream out) {
+    private void print (List<Airport> airports, PrintStream out) {
         if (textFormat) {
             printText(airports, out);
         } else {
@@ -64,41 +66,42 @@ public class OutputManager {
         }
     }
 
-    private void printText(List<Airport> airports, PrintStream out) {
+    private void printText (List<Airport> airports, PrintStream out) {
         RouteData data = new RouteData(airports);
-        out.println("Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n'
-                + "TiempoTotal#" + data.totalTime + '\n');
+        out.println(
+            "Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n' + "TiempoTotal#"
+                + data.totalTime + '\n');
 
         for (int i = 1; i < airports.size(); i++)
-        	printTicket(airports.get(i).getIncident(), out);
+            printTicket(airports.get(i).getIncident(), out);
     }
 
-    private void printTicket(Ticket ticket, PrintStream out) {
-    	String origin = ticket.getOrigin().getId();
-    	String destination = ticket.getDestination().getId();
-    	String airline = ticket.getFlightId().getAirline();
-    	int flightNum = ticket.getFlightId().getNumber();
+    private void printTicket (Ticket ticket, PrintStream out) {
+        String origin = ticket.getOrigin().getId();
+        String destination = ticket.getDestination().getId();
+        String airline = ticket.getFlightId().getAirline();
+        int flightNum = ticket.getFlightId().getNumber();
 
-    	out.println(origin+"#"+airline+"#"+flightNum+"#"+destination);
+        out.println(origin + "#" + airline + "#" + flightNum + "#" + destination);
     }
 
-    private void printKML(List<Airport> airports, PrintStream out) {
-    	out.print(KMLFormatter.airportsToKML(airports));
+    private void printKML (List<Airport> airports, PrintStream out) {
+        out.print(KMLFormatter.airportsToKML(airports));
     }
 
-    public void setToKMLFormat() {
+    public void setToKMLFormat () {
         textFormat = false;
     }
 
-    public void setToTextFormat() {
+    public void setToTextFormat () {
         textFormat = true;
     }
 
-    public void setToStdOutput() {
+    public void setToStdOutput () {
         stdOut = true;
     }
 
-    public void setToFileOutput(String file) {
+    public void setToFileOutput (String file) {
         stdOut = false;
         fileName = file;
     }
@@ -109,28 +112,28 @@ public class OutputManager {
         private Time fltime;
         private Time totalTime;
 
-        public RouteData(List<Airport> airports) {
-        	price = 0;
-        	fltime = new Time(0);
-        	totalTime = new Time(0);
-        	Airport current = airports.get(airports.size()-1);
-        	Ticket ticket;
+        public RouteData (List<Airport> airports) {
+            price = 0;
+            fltime = new Time(0);
+            totalTime = new Time(0);
+            Airport current = airports.get(airports.size() - 1);
+            Ticket ticket;
 
-        	while ((ticket = current.getIncident()) != null) {
-        		price += ticket.getPrice();
-        		fltime.addTime(ticket.getDuration());
-        		totalTime.addTime(calculateTotalTime(ticket));
-        		current = ticket.getOrigin();
-        	}
+            while ((ticket = current.getIncident()) != null) {
+                price += ticket.getPrice();
+                fltime.addTime(ticket.getDuration());
+                totalTime.addTime(calculateTotalTime(ticket));
+                current = ticket.getOrigin();
+            }
         }
 
-        private Time calculateTotalTime(Ticket ticket) {
-        	Time t = ticket.getDuration();
-        	if (ticket.getOrigin().getIncident() != null) { // no es el aeropuerto origen
-        		Moment prevFlightArrival = ticket.getOrigin().getIncident().getArrival();
-        		t.addTime(prevFlightArrival.howMuchUntil(ticket.getDeparture()));
-        	}
-        	return t;
+        private Time calculateTotalTime (Ticket ticket) {
+            Time t = ticket.getDuration();
+            if (ticket.getOrigin().getIncident() != null) { // no es el aeropuerto origen
+                Moment prevFlightArrival = ticket.getOrigin().getIncident().getArrival();
+                t.addTime(prevFlightArrival.howMuchUntil(ticket.getDeparture()));
+            }
+            return t;
         }
     }
 
