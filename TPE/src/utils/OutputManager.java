@@ -57,7 +57,7 @@ public class OutputManager {
     }
 
     private void print(List<Airport> airports, PrintStream out) {
-        if (textFormat == true) {
+        if (textFormat) {
             printText(airports, out);
         } else {
             printKML(airports, out);
@@ -67,10 +67,9 @@ public class OutputManager {
     private void printText(List<Airport> airports, PrintStream out) {
         RouteData data = new RouteData(airports);
         out.println("Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n'
-                + "TiempoTotal#" + data.totalTime);
-        out.println();
+                + "TiempoTotal#" + data.totalTime + '\n');
 
-        for (int i = 1; i < airports.size() - 1; i++)
+        for (int i = 1; i < airports.size(); i++)
         	printTicket(airports.get(i).getIncident(), out);
     }
 

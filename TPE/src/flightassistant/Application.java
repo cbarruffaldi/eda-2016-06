@@ -1,7 +1,6 @@
 package flightassistant;
 
 import utils.FileManager;
-import utils.OutputManager;
 import utils.Parser;
 
 import java.io.IOException;
@@ -12,10 +11,10 @@ public class Application {
 
     public static void main(String[] args) {
         
-    	//Hay que hardcodear un flightAssistant vacio asi se carga siempre el mismo
+    	//TODO Hay que hardcodear un flightAssistant vacio asi se carga siempre el mismo
 
         //Por ahora lo saco porque no anda
-        //flightAssistant = load();	//carga el flightAssistant
+        //TODO flightAssistant = load();	//carga el flightAssistant
     	
     	if (calledWithArgument(args)) {
             Parser.parseArguments(args, flightAssistant);
@@ -25,8 +24,7 @@ public class Application {
 
             while (!Parser.parseShell(sc, flightAssistant));
             // el parser devuelve si se usó el comando para terminar el programa o no
-
-            sc.close(); // Solo lo puedo cerrar cuando termino de leer de entrada estandar.
+            sc.close();
         }
     	exit(); 	//en ambos casos guarda y termina.
     }
@@ -35,7 +33,8 @@ public class Application {
         try {
             FileManager.save(flightAssistant);
         } catch (IOException e) {
-            OutputManager.exitErrorMsg();
+            System.out.println("Error");
+            //TODO hacer con el outputmanager
         }
     }
 

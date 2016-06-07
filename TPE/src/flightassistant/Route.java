@@ -202,7 +202,7 @@ public class Route implements Serializable {
 		public Ticket getQuickest() {
 			Ticket quickestTicket = null;
 			for (Ticket ticket : quickest)
-				if (quickestTicket == null || (ticket != null && ticket.isCheaperThan(quickestTicket)))
+				if (quickestTicket == null || (ticket != null && ticket.isQuickerThan(quickestTicket)))
 					quickestTicket = ticket;
 			return quickestTicket;
 		}

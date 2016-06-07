@@ -138,6 +138,7 @@ public class FlightAssistant implements Serializable {
 		if (from == null || to == null || from.equals(to)) {
 			return null; // Ver que hacer
 		}
+		refreshAirportsNodeProperties();
 		if (days.isEmpty()) {
 			return InfinityDijkstra.minPath(this, from, to, weighter, days);
 		}

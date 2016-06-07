@@ -5,31 +5,30 @@ package utils;
  */
 public class RegexHelper implements InputConstraints {
 
-    //Atomos para las expresiones usadas
-	private static String spc = " ";
+	private static final String spc = " ";
 
 	// String delimitador del Scanner por defecto. Es el delimitador cuando se lee de entrada estándar.
-	private static String scannerWhitespace = "\\p{javaWhitespace}+";
+	private static final String scannerWhitespace = "\\p{javaWhitespace}+";
 
-	private static String airlineName = "[a-zA-Z]{1," + AIRLINE_NAME_MAX_LENGHT + "}";
-	private static String number = "[0-9]+";
-	private static String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
-	private static String airportName = "[a-zA-Z]{" + AIRPORT_NAME_LENGHT + "}";
-	private static String twentyFourHourFormat = "([01]?[0-9]|2[0-3]):[0-5][0-9]"; //00:00 - 23:59
-	private static String hours = "([0-9]+h)?[0-5]?[0-9]m"; // [xxh]xxm
-	private static String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
+	private static final String airlineName = "[a-zA-Z]{1," + AIRLINE_NAME_MAX_LENGHT + "}";
+	private static final String number = "[0-9]+";
+	private static final String days = "(Lu|Ma|Mi|Ju|Vi|Sa|Do)(-(Lu|Ma|Mi|Ju|Vi|Sa|Do))*"; // "Lu" o bien "Lu-Mi-Ju", etc
+	private static final String airportName = "[a-zA-Z]{" + AIRPORT_NAME_LENGHT + "}";
+	private static final String twentyFourHourFormat = "([01]?[0-9]|2[0-3]):[0-5][0-9]"; //00:00 - 23:59
+	private static final String hours = "([0-9]+h)?[0-5]?[0-9]m"; // [xxh]xxm
+	private static final String realPositiveNum = "[0-9]+(\\.[0-9]+)?";
 	
-	private static String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //-90.000 - 90.0000
-	private static String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //-180.000 - 180.0000
+	private static final String latitude = "-?([0-8]?[0-9](\\.[0-9]+)?|90(\\.0+)?)"; //-90.000 - 90.0000
+	private static final String longitude = "-?(([0-9]|1[0-7])?[0-9](\\.[0-9]+)?|180(\\.0+)?)"; //-180.000 - 180.0000
 
-    private static String flightFromTextFormat = createFlightFormat(spc);
-	private static String flightFromFileFormat = createFlightFormat("#");
+    private static final String flightFromTextFormat = createFlightFormat(spc);
+	private static final String flightFromFileFormat = createFlightFormat("#");
 
-	private static String airportFromTextFormat = createAirportFormat(spc);
-	private static String airportFromFileFormat = createAirportFormat("#");
+	private static final String airportFromTextFormat = createAirportFormat(spc);
+	private static final String airportFromFileFormat = createAirportFormat("#");
 
-    private static String flightNameFormat = airlineName + spc + number;
-    private static String routeFormat = "src=" + airportName + spc + "dst=" + airportName
+    private static final String flightNameFormat = airlineName + spc + number;
+    private static final String routeFormat = "src=" + airportName + spc + "dst=" + airportName
 			+ spc + "priority=(ft|pr|tt)" + "( weekdays=" + days + ")?";
 
 	private static String createFlightFormat(String separator) {

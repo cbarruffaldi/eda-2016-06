@@ -11,14 +11,12 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Parser{
-    private static final String[] daysOfWeek = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
+    private static final Pattern numeralPatt = Pattern.compile("#");
+    private static final Pattern spacePatt = Pattern.compile("(\\s)*");
+    private static final Pattern allPatt = Pattern.compile(".*");
     private static FlightAssistant flightAssistant;
     private static boolean hasEnded = false; // Dice si usaron el comando exitAndClose. Pensar mejor solución.
-
     private static OutputManager Output = new OutputManager();
-
-    private static Pattern hashpatt = Pattern.compile("#");
-    private static Pattern spacepatt = Pattern.compile("(\\s)*");
 
     // ARGUMENTOS SHELL
 
@@ -60,7 +58,13 @@ public class Parser{
 
         if (!valid) {
             Output.invalidCommand();
+            consumeScanner(sc);
         }
+    }
+
+
+    private static void consumeScanner(Scanner sc) {
+        sc.skip(allPatt);
     }
 
     private static boolean parseInsert(Scanner sc) {
@@ -124,7 +128,7 @@ public class Parser{
             // Si no hay weekDays "days" es una lista vacía.
         }
         List<Airport> path = findPathWithOption(option, orig, dest, days);
-        if (path.isEmpty()) {
+        if (path == null || path.isEmpty()) {
             Output.notFoundMsg();
         } else {
             Output.printBestRoute(path);
@@ -303,7 +307,7 @@ public class Parser{
 
     private static int getDuration(String durationStr) {
         Scanner auxSc = new Scanner(durationStr);
-        int hour = 0, min = 0;
+        int hour = 0, min;
         if (durationStr.contains("h")) {
             auxSc.useDelimiter("h");
             hour = auxSc.nextInt();
@@ -342,7 +346,7 @@ public class Parser{
         boolean valid = true;
         try {
             Scanner fileSc = new Scanner(new File(pathToFile));
-            fileSc.useDelimiter(hashpatt);
+            fileSc.useDelimiter(numeralPatt);
 
             // Lo único que cambia en leer de archivo es que separa "#" en lugar de " ".
             while (valid && fileSc.hasNextLine()) {
@@ -420,7 +424,7 @@ public class Parser{
 
     // Avanza el scanner hasta el final de la linea y devuelve toda esa línea sin espacios al principio.
     private static String restOfLine(Scanner sc) {
-        sc.skip(spacepatt);
+        sc.skip(spacePatt);
         return sc.nextLine();
     }
 }
