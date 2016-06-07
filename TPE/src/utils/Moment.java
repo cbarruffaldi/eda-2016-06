@@ -1,8 +1,11 @@
 package utils;
 
-public class Moment implements Comparable<Moment>, TimeConstants {
+import java.io.Serializable;
 
-    private Day day;
+public class Moment implements Comparable<Moment>, TimeConstants, Serializable{
+
+	private static final long serialVersionUID = 1L;
+	private Day day;
     private Time timeOfDay; // Desde las 00:00 hs
 
     // timeOfDay es el tiempo pasado desde las 00:00 hs de el Day dado.

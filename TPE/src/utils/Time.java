@@ -1,8 +1,11 @@
 package utils;
 
-public class Time implements Comparable<Time>, TimeConstants {
+import java.io.Serializable;
 
-    private int minutes;
+public class Time implements Comparable<Time>, TimeConstants, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private int minutes;
 
     public Time(int hour, int min) {
         minutes = hour * 60 + min;

@@ -1,6 +1,6 @@
 package flightassistant;
 
-import utils.FileManager;
+import utils.FileManager2;
 import utils.Parser;
 
 import java.io.IOException;
@@ -8,18 +8,17 @@ import java.util.Scanner;
 
 public class Application {
     private static FlightAssistant flightAssistant;
-
+    private static final String AirportsFileString = "airports.txt";
+    private static final String FlightsFileString = "flights.txt";
+    
     public static void main(String[] args) {
-        
-    	//TODO Hay que hardcodear un flightAssistant vacio asi se carga siempre el mismo
-
-        //Por ahora lo saco porque no anda
-        //TODO flightAssistant = load();	//carga el flightAssistant
+       // Por ahora lo saco porque no anda
+        flightAssistant = load();	//carga el flightAssistant
     	
     	if (calledWithArgument(args)) {
             Parser.parseArguments(args, flightAssistant);
         } else {
-            flightAssistant = new FlightAssistant();
+            //flightAssistant = new FlightAssistant();
             Scanner sc = new Scanner(System.in);
 
             while (!Parser.parseShell(sc, flightAssistant));
@@ -31,24 +30,21 @@ public class Application {
 
     private static void exit() {
         try {
-            FileManager.save(flightAssistant);
+        	FileManager2.saveAirports(flightAssistant);
+            FileManager2.saveFlights(flightAssistant);
         } catch (IOException e) {
+        	e.printStackTrace();
             System.out.println("Error");
             //TODO hacer con el outputmanager
         }
     }
 
     private static FlightAssistant load() {
-        FlightAssistant fa;
-        try {
-            return FileManager.load();
-            // TODO que carajo imprimir en caso de error
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null; // No se cargo el flightAssistant
+        FlightAssistant fa = new FlightAssistant();
+        Parser.insertAirportsFromFile(AirportsFileString, fa);
+        Parser.insertFlightsFromFile(FlightsFileString, fa);
+        
+        return fa;
     }
 
     private static boolean calledWithArgument(String[] args) {

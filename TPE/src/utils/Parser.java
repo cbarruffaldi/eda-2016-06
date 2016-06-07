@@ -196,10 +196,10 @@ public class Parser{
         if (!sc.hasNext()) { return false; }
         switch (sc.next()) {
             case "airport":
-                valid = insertFromFile(sc, true);
+                valid = insertFromFile(sc.next(), true);
                 break;
             case "flight":
-                valid = insertFromFile(sc, false);
+                valid = insertFromFile(sc.next(), false);
                 break;
         }
         return valid;
@@ -337,12 +337,21 @@ public class Parser{
 	}
 
     // ARGUMENTOS POR LINEA DE COMANDOS.
-
+	
+	public static void insertAirportsFromFile(String fileName, FlightAssistant fa) {
+		flightAssistant = fa;
+		insertFromFile(fileName, true);
+		flightAssistant = null;
+	}
+	
+	public static void insertFlightsFromFile(String fileName, FlightAssistant fa) {
+		flightAssistant = fa;
+		insertFromFile(fileName, false);
+		flightAssistant = null;
+	}
+	
     //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
-    private static boolean insertFromFile(Scanner sc, boolean insertAirport) {
-        if (!sc.hasNext()) { return false; }
-        String pathToFile = sc.next();
-
+    private static boolean insertFromFile(String pathToFile, boolean insertAirport) {
         boolean valid = true;
         try {
             Scanner fileSc = new Scanner(new File(pathToFile));
@@ -392,12 +401,12 @@ public class Parser{
         boolean ans = false;
         switch (cmd[2]) {
             case "--append-airports":
-                insertFromFile(filePathSc, true);
+                insertFromFile(filePathSc.next(), true);
                 ans = true;
                 break;
             case "--replace-airports":
                 flightAssistant.removeAllAirports(); // Borro antes de insertar
-                insertFromFile(filePathSc, true);
+                insertFromFile(filePathSc.next(), true);
                 ans = true;
                 break;
         }
@@ -410,12 +419,12 @@ public class Parser{
         boolean ans = false;
         switch (cmd[2]) {
             case "--append-flights":
-                insertFromFile(filePathSc, false);
+                insertFromFile(filePathSc.next(), false);
                 ans = true;
                 break;
             case "--replace-flights":
                 flightAssistant.removeAllFlights(); // Borro antes de insertar
-                insertFromFile(filePathSc, false);
+                insertFromFile(filePathSc.next(), false);
                 ans = true;
                 break;
         }
