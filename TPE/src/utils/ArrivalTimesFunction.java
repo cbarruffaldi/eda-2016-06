@@ -14,8 +14,12 @@ public class ArrivalTimesFunction {
 	//private AVLMap<Integer, Integer> inverse;
 	private AVLSet<Double> domain;
 	
+	private double refined;
+	
 	private double leftmost;
 	private double rightmost;
+	
+	
 	
 	
 	public ArrivalTimesFunction(Airport airport, AVLSet<Double> times){
@@ -33,8 +37,13 @@ public class ArrivalTimesFunction {
 			rightmost = t > rightmost ? t : rightmost;
 			function.put(t, Double.POSITIVE_INFINITY);
 		}
+		
+		refined = leftmost;
 	}
 	
+	public double refinedUpTo(){
+		return refined;
+	}
 	
 	public void minimize(ArrivalTimesFunction refiner){
 		Iterator<Double> domain = function.keyIterator();
@@ -65,6 +74,7 @@ public class ArrivalTimesFunction {
 			throw new IllegalArgumentException();
 		
 		if(Double.compare(newValue, function.get(t)) < 1){
+			System.out.println("Minimizing");
 			function.put(t, newValue);
 		}
 
@@ -80,6 +90,7 @@ public class ArrivalTimesFunction {
 	}
 	
 	public void print(){
+		System.out.println("Function for " + airport);
 		Iterator<Double> domain = function.keyIterator();
 		double t;
 		while(domain.hasNext()){

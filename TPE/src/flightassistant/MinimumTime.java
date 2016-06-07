@@ -49,7 +49,7 @@ public class MinimumTime {
 	}
 	
 	AVLMap<Airport, ArrivalTimesFunction> functions;
-	BinaryMinHeap<PQNode> pq; 
+	BinaryMinHeap<ArrivalTimesFunction> pq; 
 	
 	FlightAssistant fa;
 	Airport origin;
@@ -97,11 +97,9 @@ public class MinimumTime {
 		
 		Iterator<ArrivalTimesFunction> iter = functions.valueIterator();
 		
-		PQNode node;
 		while(iter.hasNext()){
 			ArrivalTimesFunction g = iter.next();
-			node = new PQNode(g, g.getLeftVal()); //Horrible pero necesario (ponele)
-			pq.enqueue(node, node.priority());
+			pq.enqueue(g, g.eval(g.refinedUpTo()));
 		}
 		
 		refineOrigin(); //Debe hacerse al principio por el tema de que el vuelo de partida debe caer
@@ -112,17 +110,23 @@ public class MinimumTime {
 	
 	
 	private void refineOrigin() {
-		PQNode deq = pq.dequeue();
+		ArrivalTimesFunction deq = pq.dequeue(); //Origin
+		OriginDynamicWeighter weighter = new OriginDynamicWeighter(departure);
 		//PQNode head = pq.head();
-		Airport a = deq.airport();
+		Airport a = deq.airport(); 
 		Iterator<Airport> iter = a.getConnectedAirports().iterator();
 		while(iter.hasNext()){
 			Airport adjacent = iter.next();
-			Iterator<Double> domain = deq.g.getDomain().iterator();
-			
+			Iterator<Double> domain = deq.getDomain().iterator();
+			ArrivalTimesFunction adjFunction = functions.get(adjacent);
+			while(domain.hasNext()){
+				Double t = domain.next();
+				adjFunction.minimizeValue(t, weighter.weight(a, adjacent, new Moment(departure, new Time(t.intValue()))));
+			}
+			pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
 		}
-		
-		
+		pq.dequeue().print();
+		pq.dequeue().print();
 	}
 
 	public static void main(String[] args) {
@@ -142,19 +146,19 @@ public class MinimumTime {
 		fa.insertFlight("AB", i++, 1, departures, new Time(1,0), "AAA" , "BBB");
 		
 		departures = new ArrayList<>();
-		departures.add(new Moment(Day.LU, new Time(14, 0)));
-		departures.add(new Moment(Day.SA, new Time(14, 0)));
-		departures.add(new Moment(Day.DO, new Time(14, 0)));
+		departures.add(new Moment(Day.LU, new Time(11, 0)));
+		departures.add(new Moment(Day.SA, new Time(11, 0)));
+		departures.add(new Moment(Day.DO, new Time(11, 0)));
 
 		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA", "BBB");
 		
 		
 		departures = new ArrayList<>();
-		departures.add(new Moment(Day.LU, new Time(11, 0)));
+		departures.add(new Moment(Day.LU, new Time(9, 0)));
 		departures.add(new Moment(Day.MA, new Time(14, 0)));
 		departures.add(new Moment(Day.DO, new Time(11, 0)));
 
-		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA" , "BBB");
+		fa.insertFlight("AB", i++, 1, departures, new Time(2,0), "AAA" , "CCC");
 	
 		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.MI, new Time(9,00))));
 		
