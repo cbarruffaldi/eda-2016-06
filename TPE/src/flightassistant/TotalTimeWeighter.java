@@ -8,9 +8,7 @@ public class TotalTimeWeighter implements Weighter {
 
     @Override public WeightedTicket minTicket (Airport from, Airport to) {
         Ticket previous = from.getIncident();
-        //        if (previous == null) {
-        //            // El tema del primer aeropuerto que no anda con djiasakjst normal
-        //        }
+
         Moment startMoment = previous.getArrival();
 
         HigherIterator ticketIter = from.iteratorOfHigherFlightsTo(to, startMoment);

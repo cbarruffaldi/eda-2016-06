@@ -105,9 +105,10 @@ public class FlightAssistant implements Serializable {
         return findPath(orig, dest, days, PriceWeighter.WEIGHTER, new OriginPriceWeighter(days));
     }
 
-    //	public List<Airport> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
-    //
-    //	}
+    	public List<Airport> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
+    	    refreshAirportsNodeProperties();
+            return InfinityDijkstra.minPathTotalTime(airports, airports.get(orig), airports.get(dest), days);
+        }
 
     private List<Airport> findPath (String orig, String dest, List<Day> days, Weighter weighter,
         Weighter originWeighter) {
@@ -120,7 +121,7 @@ public class FlightAssistant implements Serializable {
         if (days.isEmpty()) {
             return InfinityDijkstra.minPath(airports, from, to, weighter, days);
         }
-        return InfinityDijkstra.minPath2(airports, from, to, weighter, originWeighter, days);
+        return InfinityDijkstra.minpath(airports, from, to, weighter, originWeighter, days);
 
     }
 
@@ -140,11 +141,11 @@ public class FlightAssistant implements Serializable {
 
 
     // PROVISORIO PARA TESTS
-    SimpleMap<String, Airport> getAirports () {
+    public SimpleMap<String, Airport> getAirports () {
         return airports;
     }
 
-    SimpleMap<FlightId, Flight> getFlights () {
+    public SimpleMap<FlightId, Flight> getFlights () {
         return flights;
     }
 }

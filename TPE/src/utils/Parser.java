@@ -146,7 +146,7 @@ public class Parser{
                 path = flightAssistant.findCheapestPath(orig, dest, days);
                 break;
             case "tt":
-                //path = flightAssistant.totalTime
+                path = flightAssistant.findShortestTotalTimeRoute(orig, dest, days);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Option");

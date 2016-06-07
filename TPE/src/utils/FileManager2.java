@@ -1,21 +1,20 @@
 package utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.List;
-
 import flightassistant.Airport;
 import flightassistant.Flight;
 import flightassistant.FlightAssistant;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.List;
 
 public class FileManager2 {
 	
 	public static void saveFlights(FlightAssistant fa) throws FileNotFoundException {
 		PrintStream out = new PrintStream(new File("flights.txt"));
-		Iterator<Flight> it = fa.flights.valueIterator();
+		Iterator<Flight> it = fa.getFlights().valueIterator();
 		while(it.hasNext()){
 			Flight flight = it.next();
 			out.println(airline(flight) + "#" + flight.getId().getNumber() + "#" + departuresStr(flight) + "#" + 
@@ -27,7 +26,7 @@ public class FileManager2 {
 	
 	public static void saveAirports(FlightAssistant fa) throws FileNotFoundException{
 		PrintStream out = new PrintStream(new File("airports.txt"));
-		Iterator<Airport> it = fa.airports.valueIterator();
+		Iterator<Airport> it = fa.getAirports().valueIterator();
 		while(it.hasNext()) {
 			Airport airport = it.next();
 			out.println(airport.getId() + "#" + airport.getLatitude() + "#" + airport.getLongitude());
