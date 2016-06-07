@@ -1,86 +1,83 @@
 package flightassistant;
 
-import java.io.Serializable;
-
 import utils.Moment;
 import utils.Time;
 
+import java.io.Serializable;
+
 public class Ticket implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	private Flight flight;
-	private Moment departure;
+    private static final long serialVersionUID = 1L;
 
-	public Ticket(Flight flight, Moment departure) {
-		if (flight == null)
-			throw new NullPointerException("null flight");
-		if (departure == null)
-			throw new NullPointerException("null departure");
-		if (!flight.departsAt(departure))
-			throw new IllegalArgumentException("Flight doesn't leave at given departure");
+    private Flight flight;
+    private Moment departure;
 
-		this.flight = flight;
-		this.departure = departure;
-	}
+    public Ticket (Flight flight, Moment departure) {
+        if (flight == null)
+            throw new NullPointerException("null flight");
+        if (departure == null)
+            throw new NullPointerException("null departure");
+        if (!flight.departsAt(departure))
+            throw new IllegalArgumentException("Flight doesn't leave at given departure");
 
-	public Airport getOrigin() {
-		return flight.getOrigin();
-	}
+        this.flight = flight;
+        this.departure = departure;
+    }
 
-	public Airport getDestination() {
-		return flight.getDestination();
-	}
+    public Airport getOrigin () {
+        return flight.getOrigin();
+    }
 
-	public FlightId getFlightId() {
-		return flight.getId();
-	}
+    public Airport getDestination () {
+        return flight.getDestination();
+    }
 
-	public Time getDepartureTime() {
-		return flight.getDepartureTime();
-	}
+    public FlightId getFlightId () {
+        return flight.getId();
+    }
 
-	public boolean isCheaperThan(Ticket other) {
-		return Double.compare(getPrice(), other.getPrice()) < 0;
-	}
+    public Time getDepartureTime () {
+        return flight.getDepartureTime();
+    }
 
-	public boolean isQuickerThan(Ticket other) {
-		return getDuration().compareTo(other.getDuration()) < 0;
-	}
+    public boolean isCheaperThan (Ticket other) {
+        return Double.compare(getPrice(), other.getPrice()) < 0;
+    }
 
-	public double getPrice() {
-		return flight.getPrice();
-	}
+    public boolean isQuickerThan (Ticket other) {
+        return getDuration().compareTo(other.getDuration()) < 0;
+    }
 
-	public Moment getDeparture() {
-		return departure;
-	}
+    public double getPrice () {
+        return flight.getPrice();
+    }
 
-	public Time getDuration() {
-		return flight.getDuration();
-	}
+    public Moment getDeparture () {
+        return departure;
+    }
 
-	public Moment getArrival() {
-		return getDeparture().addTime(getDuration());
-	}
+    public Time getDuration () {
+        return flight.getDuration();
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (other == this)
-			return true;
-		if (other == null || this.getClass() != other.getClass())
-			return false;
-		Ticket o = (Ticket) other;
-		return departure.equals(o.departure) && flight.equals(o.flight);
-	}
+    public Moment getArrival () {
+        return getDeparture().addTime(getDuration());
+    }
 
-	@Override
-	public int hashCode() {
-		return flight.hashCode() ^ departure.hashCode();
-	}
+    @Override public boolean equals (Object other) {
+        if (other == this)
+            return true;
+        if (other == null || this.getClass() != other.getClass())
+            return false;
+        Ticket o = (Ticket) other;
+        return departure.equals(o.departure) && flight.equals(o.flight);
+    }
 
-	@Override
-	public String toString() { //TODO: hacerlo bien
-		return flight.toString();
-	}
+    @Override public int hashCode () {
+        return flight.hashCode() ^ departure.hashCode();
+    }
+
+    @Override public String toString () { //TODO: hacerlo bien
+        return flight.toString();
+    }
 }

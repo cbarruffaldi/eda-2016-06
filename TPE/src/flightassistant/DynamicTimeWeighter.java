@@ -6,11 +6,11 @@ import utils.Time;
 public class DynamicTimeWeighter {
     public static final DynamicTimeWeighter WEIGHTER = new DynamicTimeWeighter();
 
-    public Double weight(Airport from, Airport to, Moment startMoment) {
+    public Double weight (Airport from, Airport to, Moment startMoment) {
 
-    	if(!from.flightExistsTo(to))
-    		return Double.POSITIVE_INFINITY;
-    	
+        if (!from.flightExistsTo(to))
+            return Double.POSITIVE_INFINITY;
+
         HigherIterator ticketIter = from.iteratorOfHigherFlightsTo(to, startMoment);
 
         if (!ticketIter.hasNext())
@@ -27,7 +27,7 @@ public class DynamicTimeWeighter {
             // menor total time ya puedo cortar y retornar; todos los siguientes
             // vuelos tendrán mayor waitTime y por ende mayor total time.
             if (waitTime.compareTo(shortestTime) >= 0)
-            	return (double)shortestTime.getMinutes();
+                return (double) shortestTime.getMinutes();
 
             Time aux = totalTime(startMoment, ticket);
             if (aux.compareTo(shortestTime) < 0) {
@@ -35,13 +35,14 @@ public class DynamicTimeWeighter {
                 shortestTime = aux;
             }
         }
-        
-        return (double)shortestTime.getMinutes();
+
+        return (double) shortestTime.getMinutes();
 
     }
 
-    private Time totalTime(Moment start, Ticket ticket) {
+    private Time totalTime (Moment start, Ticket ticket) {
         Time wait = start.howMuchUntil(ticket.getDeparture());
-        return wait.addTime(ticket.getDuration()); //Se hace esto en lugar de ticket.getArrival por si dura mas de una semana?
+        return wait.addTime(ticket
+            .getDuration()); //Se hace esto en lugar de ticket.getArrival por si dura mas de una semana?
     }
 }

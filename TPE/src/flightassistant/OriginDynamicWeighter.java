@@ -8,18 +8,18 @@ import utils.Time;
 //Repetimos codigo. Mala suerte :(
 public class OriginDynamicWeighter {
 
-	private static final int MINUTES_IN_A_DAY = 24*60;
-	Day departureDay;
-	
-	public OriginDynamicWeighter(Day departure){
-		this.departureDay = departure;
-	}
-	
-    public Double weight(Airport from, Airport to, Moment startMoment) {
+    private static final int MINUTES_IN_A_DAY = 24 * 60;
+    Day departureDay;
 
-    	if(!from.flightExistsTo(to))
-    		return Double.POSITIVE_INFINITY;
-    	
+    public OriginDynamicWeighter (Day departure) {
+        this.departureDay = departure;
+    }
+
+    public Double weight (Airport from, Airport to, Moment startMoment) {
+
+        if (!from.flightExistsTo(to))
+            return Double.POSITIVE_INFINITY;
+
         HigherIterator ticketIter = from.iteratorOfHigherFlightsTo(to, startMoment);
 
         if (!ticketIter.hasNext())
@@ -27,9 +27,9 @@ public class OriginDynamicWeighter {
 
         Ticket min = ticketIter.next();
         Time shortestTime = totalTime(startMoment, min);
-          
-       	while (ticketIter.hasNext() && 
-       			startMoment.getTime().getMinutes() + shortestTime.getMinutes() <= MINUTES_IN_A_DAY) {
+
+        while (ticketIter.hasNext()
+            && startMoment.getTime().getMinutes() + shortestTime.getMinutes() <= MINUTES_IN_A_DAY) {
             Ticket ticket = ticketIter.next();
             Time waitTime = startMoment.howMuchUntil(ticket.getDeparture());
 
@@ -39,17 +39,19 @@ public class OriginDynamicWeighter {
                 shortestTime = aux;
             }
         }
-   
-       	if(startMoment.getTime().getMinutes() + shortestTime.getMinutes() > MINUTES_IN_A_DAY){ //Me pase del día
-        	return Double.POSITIVE_INFINITY;
-       	}
 
-        return (double)shortestTime.getMinutes();
+        if (startMoment.getTime().getMinutes() + shortestTime.getMinutes()
+            > MINUTES_IN_A_DAY) { //Me pase del dï¿½a
+            return Double.POSITIVE_INFINITY;
+        }
+
+        return (double) shortestTime.getMinutes();
 
     }
 
-    private Time totalTime(Moment start, Ticket ticket) {
+    private Time totalTime (Moment start, Ticket ticket) {
         Time wait = start.howMuchUntil(ticket.getDeparture());
-        return wait.addTime(ticket.getDuration()); //Se hace esto en lugar de ticket.getArrival por si dura mas de una semana?
+        return wait.addTime(ticket
+            .getDuration()); //Se hace esto en lugar de ticket.getArrival por si dura mas de una semana?
     }
 }

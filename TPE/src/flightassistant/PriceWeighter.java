@@ -1,14 +1,13 @@
 package flightassistant;
 
 public class PriceWeighter implements Weighter {
-	public static final Weighter WEIGHTER = new PriceWeighter();
+    public static final Weighter WEIGHTER = new PriceWeighter();
 
-	private PriceWeighter() {
-	}
+    private PriceWeighter () {
+    }
 
-	@Override
-	public WeightedTicket minTicket(Airport from, Airport to) {
-		Ticket cheapest = from.getCheapestTo(to);
-		return new WeightedTicket(cheapest, cheapest.getPrice());
-	}
+    @Override public WeightedTicket minTicket (Airport from, Airport to) {
+        Ticket cheapest = from.getCheapestTo(to);
+        return new WeightedTicket(cheapest, cheapest.getPrice());
+    }
 }
