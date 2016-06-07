@@ -14,7 +14,7 @@ import java.util.Set;
 public class AVLSet<T> implements Iterable<T>, Set<T>, Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Node<T> root;
 	private Comparator<T> cmp;
 	private int size;
@@ -156,6 +156,11 @@ public class AVLSet<T> implements Iterable<T>, Set<T>, Serializable{
 		return a;
 	}
 
+	/**
+	 * Devuelve un nuevo AVLSet resultado de la unión.
+	 * @param other - AVLSet con el cual realizar la unión
+	 * @return nuevo AVLSet resultado de la unión.
+	 */
 	public AVLSet<T> merge(AVLSet<T> other) {
 		if (other == null)
 			throw new IllegalArgumentException("Illegal merge: other set null");
