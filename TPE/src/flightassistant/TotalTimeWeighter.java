@@ -3,9 +3,6 @@ package flightassistant;
 import utils.Moment;
 import utils.Time;
 
-/**
- * Created by Bianchi on 2/6/16.
- */
 public class TotalTimeWeighter implements Weighter {
     public static final Weighter WEIGHTER = new TotalTimeWeighter();
 

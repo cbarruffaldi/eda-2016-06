@@ -11,27 +11,6 @@ public class Moment implements Comparable<Moment>, TimeConstants {
         this.timeOfDay = timeOfDay;
     }
 
-    public static void main(String[] args) {
-		Moment m1 = new Moment(Day.DO, new Time(12, 00));
-		Moment m2 = new Moment(Day.DO, new Time(12, 00));
-
-		System.err.println(m1.equals(m2));
-
-		Moment m4 = new Moment(Day.LU, new Time(12,00));
-		Moment m5 = new Moment(Day.LU, new Time(12,30));
-		Moment m6 = new Moment(Day.MI, new Time(15,00));
-
-		System.out.println(m1.howMuchUntil(m2));
-		System.out.println(m5.howMuchUntil(m1));
-		System.out.println(m1.howMuchUntil(m5));
-		System.out.println(m4.howMuchUntil(m5));
-
-		System.out.println(m4.howMuchUntil(m6));
-
-		System.out.println(m4.addTime(new Time(4, 00)));
-		System.out.println(m4);
-    }
-
     public Time getTime() {
     	return timeOfDay;
     }
@@ -58,11 +37,6 @@ public class Moment implements Comparable<Moment>, TimeConstants {
         int minuteDiff = other.timeOfDay.getMinutes() - this.timeOfDay.getMinutes();
         return daysDiff*MINUTES_PER_DAY + minuteDiff;
 
-    }
-
-    //Necesario?
-    public Moment nextDay() {
-        return new Moment(day.getNextDay(), timeOfDay);
     }
 
     public Moment addTime(Time t) {

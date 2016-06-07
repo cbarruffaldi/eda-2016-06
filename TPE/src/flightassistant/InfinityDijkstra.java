@@ -1,6 +1,6 @@
 package flightassistant;
 
-import structures.BinaryMinHeap;
+import structures.BinaryMinHeap2;
 import utils.Day;
 
 import java.util.Iterator;
@@ -16,7 +16,7 @@ public class InfinityDijkstra {
 	public static List<Airport> minPath2(FlightAssistant fa, Airport origin, Airport dest, Weighter weighter,
 									   Weighter originWeighter, List<Day> days) {
 
-		BinaryMinHeap<Airport> pq = queueAirports(fa);
+		BinaryMinHeap2<Airport> pq = queueAirports(fa);
 
 		pq.decreasePriority(origin, 0);
 
@@ -31,7 +31,7 @@ public class InfinityDijkstra {
 	}
 
 	// Cambiar nombre
-	private static List<Airport> djistra(BinaryMinHeap<Airport> pq, Airport dest, Weighter weighter, List<Day> days, boolean isOrigin) {
+	private static List<Airport> djistra(BinaryMinHeap2<Airport> pq, Airport dest, Weighter weighter, List<Day> days, boolean isOrigin) {
 
 		while (!pq.isEmpty()) {
 			Double minWeight = pq.minWeight();
@@ -67,10 +67,10 @@ public class InfinityDijkstra {
 		return new LinkedList<>(); // lista vacia
 	}
 
-	private static BinaryMinHeap<Airport> queueAirports(FlightAssistant fa) {
+	private static BinaryMinHeap2<Airport> queueAirports(FlightAssistant fa) {
 		int size = fa.airports.size();
 
-		BinaryMinHeap<Airport> heap = new BinaryMinHeap<>(size);
+		BinaryMinHeap2<Airport> heap = new BinaryMinHeap2<>(size);
 
 		Iterator<Airport> iter = fa.airports.valueIterator();
 

@@ -73,12 +73,13 @@ public class BinaryMinHeap2<T> implements PriorityQueue<T>{
 		Integer index = indexMap.get(elem);
 		if (index == null)
 			return;
-		if (array[index].priority <= priority){
+		if (array[index].priority <= priority) {
 			array[index].priority = priority;
 			moveDown(index);
+		} else {
+			array[index].priority = priority;
+			moveUp(index);
 		}
-		array[index].priority = priority;
-		moveUp(index);
 	}
 
 	@Override
@@ -143,6 +144,13 @@ public class BinaryMinHeap2<T> implements PriorityQueue<T>{
 		return i*2+2;
 	}
 
+	public Double minWeight() {
+		if(isEmpty()){
+			throw new IllegalStateException("Empty queue");
+		}
+		return array[0].priority;
+	}
+
 	private static class PQNode<T> implements Comparable<PQNode<T>> {
 		private T value;
 		private double priority;
@@ -156,13 +164,6 @@ public class BinaryMinHeap2<T> implements PriorityQueue<T>{
 		public int compareTo(PQNode<T> o) {
 			return Double.compare(priority, o.priority);
 		}
-	}
-
-	public Double minWeight() {
-		if(isEmpty()){
-			throw new IllegalStateException("Empty queue");
-		}
-		return array[0].priority;
 	}
 
 }

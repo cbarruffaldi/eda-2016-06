@@ -1,19 +1,17 @@
 package flightassistant;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.DelayQueue;
-
 import structures.AVLMap;
 import structures.AVLSet;
-import structures.BinaryMinHeap;
 import structures.BinaryMinHeap2;
 import utils.ArrivalTimesFunction;
 import utils.Day;
 import utils.Moment;
 import utils.Time;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 
 //TODO: Domain deberia estar afuera como una lista o algo. Mismo los bounds
@@ -85,134 +83,6 @@ public class MinimumTime {
 		pq = new BinaryMinHeap2<>(fa.airports.size());
 	}
 	
-	private void run() {
-		initialize();
-		while(pq.size() > 1){
-			ArrivalTimesFunction g_i = pq.dequeue();
-			System.err.println("IN: " + g_i.refinedUpTo());
-			System.err.println("Dequeuing" + g_i.airport());
-			Double minArrivalToAdj = pq.getPriority(pq.head());
-			
-			double delta = minWeightAt(minArrivalToAdj, g_i.airport());
-			double bound = minArrivalToAdj + delta;
-			System.err.println("New bound: " + bound);
-			double newRefined = g_i.getMaxBounded(bound);
-			
-			//TODO: Abstract weighter?
-			
-			Airport a = g_i.airport(); 
-			Iterator<Airport> iter = a.getConnectedAirports().iterator();
-			
-			while(iter.hasNext()){
-				Airport adjacent = iter.next();
-				ArrivalTimesFunction adjFunction = functions.get(adjacent);
-
-				Iterator<Double> domain = g_i.getDomain().higherIterator(g_i.refinedUpTo());
-				Double t;
-				while(domain.hasNext()){
-					t = domain.next();
-					adjFunction.minimizeValue(t, g_i.eval(t) + DynamicTimeWeighter.WEIGHTER.weight(a, adjacent, momentZero.addTime(new Time(g_i.eval(t)))));
-				}
-				//TODO: Es ChangePriority, no decrease. Ya lo cambie
-				pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
-			}
-
-			g_i.setRefined(newRefined);
-			if(g_i.refinedUpTo() >= g_i.getRightVal()){
-				System.out.println("Done!");
-				if(g_i.airport().equals(dest)){
-					System.err.println("DONE DONE");
-					return;
-				}
-				
-			}
-			else{
-				pq.enqueue(g_i, g_i.eval(g_i.refinedUpTo()));
-			}
-		}
-		System.err.println("Apparently pq size is 1");
-		
-	}
-
-	private double minWeightAt(Double minArrivalToAdj, Airport airport) {
-		Iterator<Airport> iter = airport.getConnectedAirports().iterator();
-		double min = Double.POSITIVE_INFINITY;
-		
-		Moment now = momentZero.addTime(new Time(minArrivalToAdj));
-
-		double weight=Double.POSITIVE_INFINITY;
-		while(iter.hasNext()){
-			Airport curr = iter.next();
-			if(curr.flightExistsTo(airport)){
-				if(minArrivalToAdj < 24*60 && curr.equals(origin)){ //Minutes_in_a_day
-					weight = new OriginDynamicWeighter(departure).weight(curr, airport, now);
-				}else{
-					weight = DynamicTimeWeighter.WEIGHTER.weight(curr, airport, now);
-				}
-	
-				min = weight < min ? weight : min;
-			}
-		}
-		
-		System.err.println(min);
-		return min;			
-	}
-	
-
-	private void initialize(){
-		
-		AVLSet<Double> times = origin.getFlightTimes(departure);
-		
-		Iterator<Airport> airs = fa.airports.valueIterator();
-		Airport curr;
-		while(airs.hasNext()){
-			curr = airs.next();
-			ArrivalTimesFunction g = new ArrivalTimesFunction(curr, times);
-			functions.put(curr, g);
-		}
-		
-		//La funcion para origen arranca g(t) = t
-		ArrivalTimesFunction originF = functions.get(origin);
-		for(double t: originF.getDomain()){
-			originF.updateValue(t, t); //g_e(t) = t
-		}
-		
-		Iterator<ArrivalTimesFunction> iter = functions.valueIterator();
-		
-		while(iter.hasNext()){
-			ArrivalTimesFunction g = iter.next();
-			pq.enqueue(g, g.eval(g.refinedUpTo()));
-		}
-		
-		refineOrigin(); //Debe hacerse al principio por el tema de que el vuelo de partida debe caer
-						//en el dia especificado
-	}
-	
-	
-	private void refineOrigin() {
-		ArrivalTimesFunction deq = pq.dequeue(); //Origin
-		OriginDynamicWeighter weighter = new OriginDynamicWeighter(departure);
-		//PQNode head = pq.head();
-		Airport a = deq.airport(); 
-		Iterator<Airport> iter = a.getConnectedAirports().iterator();
-		while(iter.hasNext()){
-			Airport adjacent = iter.next();
-			Iterator<Double> domain = deq.getDomain().iterator();
-			ArrivalTimesFunction adjFunction = functions.get(adjacent);
-			while(domain.hasNext()){
-				Double t = domain.next();
-				adjFunction.minimizeValue(t, deq.eval(t) + weighter.weight(a, adjacent, new Moment(departure, new Time(t))));
-			}
-			pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
-		}
-		
-		deq.print();
-		pq.head().print();
-	}
-	
-	
-	
-
 	public static void main(String[] args) {
 		FlightAssistant fa = new FlightAssistant();
 		fa.insertAirport("AAA", 1, 1);
@@ -220,7 +90,7 @@ public class MinimumTime {
 		fa.insertAirport("CCC", 1, 1);
 		fa.insertAirport("DDD", 1, 1);
 
-		
+
 		int i=0;
 		List<Moment> departures = new ArrayList<>();
 		departures.add(new Moment(Day.LU, new Time(300)));
@@ -245,21 +115,144 @@ public class MinimumTime {
 		departures = new ArrayList<>();
 		departures.add(new Moment(Day.LU, new Time(780)));
 		fa.insertFlight("AB", i++, 1, departures, new Time(540), "BBB" , "CCC");
-		
+
 		departures = new ArrayList<>();
 		departures.add(new Moment(Day.LU, new Time(1140)));
 		fa.insertFlight("AB", i++, 1, departures, new Time(120), "DDD" , "CCC");
 
 
-		
-		
-		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.LU, new Time(10,00))));
-		
-		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("CCC"), Day.LU).run();
-		
-		
 
-		
+
+		System.out.println(DynamicTimeWeighter.WEIGHTER.weight(fa.airports.get("AAA"), fa.airports.get("BBB"), new Moment(Day.LU, new Time(10,00))));
+
+		new MinimumTime(fa, fa.airports.get("AAA"), fa.airports.get("CCC"), Day.LU).run();
+
+
+
+
+	}
+
+	private void run() {
+		initialize();
+		while(pq.size() > 1){
+			ArrivalTimesFunction g_i = pq.dequeue();
+			System.err.println("IN: " + g_i.refinedUpTo());
+			System.err.println("Dequeuing" + g_i.airport());
+			Double minArrivalToAdj = pq.getPriority(pq.head());
+
+			double delta = minWeightAt(minArrivalToAdj, g_i.airport());
+			double bound = minArrivalToAdj + delta;
+			System.err.println("New bound: " + bound);
+			double newRefined = g_i.getMaxBounded(bound);
+
+			//TODO: Abstract weighter?
+
+			Airport a = g_i.airport();
+			Iterator<Airport> iter = a.getConnectedAirports().iterator();
+
+			while(iter.hasNext()){
+				Airport adjacent = iter.next();
+				ArrivalTimesFunction adjFunction = functions.get(adjacent);
+
+				Iterator<Double> domain = g_i.getDomain().higherIterator(g_i.refinedUpTo());
+				Double t;
+				while(domain.hasNext()){
+					t = domain.next();
+					adjFunction.minimizeValue(t, g_i.eval(t) + DynamicTimeWeighter.WEIGHTER.weight(a, adjacent, momentZero.addTime(new Time(g_i.eval(t)))));
+				}
+				//TODO: Es ChangePriority, no decrease. Ya lo cambie
+				pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));
+			}
+
+			g_i.setRefined(newRefined);
+			if(g_i.refinedUpTo() >= g_i.getRightVal()){
+				System.out.println("Done!");
+				if(g_i.airport().equals(dest)){
+					System.err.println("DONE DONE");
+					return;
+				}
+
+			}
+			else{
+				pq.enqueue(g_i, g_i.eval(g_i.refinedUpTo()));
+			}
+		}
+		System.err.println("Apparently pq size is 1");
+
+	}
+	
+	private double minWeightAt(Double minArrivalToAdj, Airport airport) {
+		Iterator<Airport> iter = airport.getConnectedAirports().iterator();
+		double min = Double.POSITIVE_INFINITY;
+
+		Moment now = momentZero.addTime(new Time(minArrivalToAdj));
+
+		double weight=Double.POSITIVE_INFINITY;
+		while(iter.hasNext()){
+			Airport curr = iter.next();
+			if(curr.flightExistsTo(airport)){
+				if(minArrivalToAdj < 24*60 && curr.equals(origin)){ //Minutes_in_a_day
+					weight = new OriginDynamicWeighter(departure).weight(curr, airport, now);
+				}else{
+					weight = DynamicTimeWeighter.WEIGHTER.weight(curr, airport, now);
+				}
+
+				min = weight < min ? weight : min;
+			}
+		}
+
+		System.err.println(min);
+		return min;
+	}
+	
+	private void initialize(){
+
+		AVLSet<Double> times = origin.getFlightTimes(departure);
+
+		Iterator<Airport> airs = fa.airports.valueIterator();
+		Airport curr;
+		while(airs.hasNext()){
+			curr = airs.next();
+			ArrivalTimesFunction g = new ArrivalTimesFunction(curr, times);
+			functions.put(curr, g);
+		}
+
+		//La funcion para origen arranca g(t) = t
+		ArrivalTimesFunction originF = functions.get(origin);
+		for(double t: originF.getDomain()){
+			originF.updateValue(t, t); //g_e(t) = t
+		}
+
+		Iterator<ArrivalTimesFunction> iter = functions.valueIterator();
+
+		while(iter.hasNext()){
+			ArrivalTimesFunction g = iter.next();
+			pq.enqueue(g, g.eval(g.refinedUpTo()));
+		}
+
+		refineOrigin(); //Debe hacerse al principio por el tema de que el vuelo de partida debe caer
+						//en el dia especificado
+	}
+	
+	private void refineOrigin() {
+		ArrivalTimesFunction deq = pq.dequeue(); //Origin
+		OriginDynamicWeighter weighter = new OriginDynamicWeighter(departure);
+		//PQNode head = pq.head();
+		Airport a = deq.airport();
+		Iterator<Airport> iter = a.getConnectedAirports().iterator();
+		while(iter.hasNext()){
+			Airport adjacent = iter.next();
+			Iterator<Double> domain = deq.getDomain().iterator();
+			ArrivalTimesFunction adjFunction = functions.get(adjacent);
+			while(domain.hasNext()){
+				Double t = domain.next();
+				adjFunction.minimizeValue(t, deq.eval(t) + weighter.weight(a, adjacent, new Moment(departure, new Time(t))));
+			}
+			pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));
+		}
+
+		deq.print();
+		pq.head().print();
 	}
 
 	
