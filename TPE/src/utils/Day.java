@@ -85,6 +85,7 @@ public class Day {
         public Iterator<T> iteratorFrom(Day day) {
             return new WeekIterator<T>(array, day.daysIndex);
         }
+        
     }
 
     private static class WeekIterator<T> implements Iterator<T> {

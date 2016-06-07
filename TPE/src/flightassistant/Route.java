@@ -7,6 +7,7 @@ import utils.Moment;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class Route implements Serializable {
 
@@ -109,8 +110,14 @@ public class Route implements Serializable {
 		return getCheapestFrom(airport) != null; //Cheapest es null cuando no hay vuelos
 	}
 
+	
 	public boolean flightExistsFrom(Airport airport, Day day) {
 		return getCheapestFrom(airport, day) != null;
+	}
+	
+	public Iterator<Ticket> dayFlights(Airport from, Day day){
+		TicketContainer container = selectContainer(from);
+		return container.weekArray.get(day).iterator();		
 	}
 
 	private static class TicketContainer {

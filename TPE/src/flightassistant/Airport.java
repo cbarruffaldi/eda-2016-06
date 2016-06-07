@@ -1,5 +1,6 @@
 package flightassistant;
 
+import structures.AVLSet;
 import structures.SimpleHashMap;
 import structures.SimpleMap;
 import utils.Day;
@@ -224,5 +225,23 @@ public class Airport implements Serializable {
 
 	public void setWeight(double w){
 		weight = w;
+	}
+
+	public AVLSet<Double> getFlightTimes(Day departure) {
+		AVLSet<Double> set = new AVLSet<>();
+
+		Iterator<Route> iter = routes.valueIterator();
+		Route curr;
+		while(iter.hasNext()){
+			curr = iter.next();
+			if(curr.flightExistsFrom(this, departure)){
+				Iterator<Ticket> df = curr.dayFlights(this, departure);
+				while(df.hasNext()){
+					set.add((double)df.next().getDepartureTime().getMinutes());
+				}
+			}
+		}
+		return set;
+		
 	}
 }
