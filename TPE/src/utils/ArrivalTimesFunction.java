@@ -74,7 +74,7 @@ public class ArrivalTimesFunction {
 			throw new IllegalArgumentException();
 		
 		if(Double.compare(newValue, function.get(t)) < 1){
-			System.out.println("Minimizing...");
+			System.out.println("Minimizing..." + airport + ":" + t + ":" + function.get(t) + " -> " + newValue);
 			function.put(t, newValue);
 		}
 
@@ -169,5 +169,28 @@ public class ArrivalTimesFunction {
 	public Airport airport() {
 		return airport;
 	}
+
+	public double getMaxBounded(double bound) {
+		Iterator<Double> iter = domain.higherIterator(refined);
+		if(!iter.hasNext())
+			throw new IllegalStateException("BOund vacio (?!)?");
+		
+
+		double prev = 0;
+		double curr = iter.next();
+		
+		if(eval(curr) >= bound){
+			System.err.println("Incorrect bound?");
+		}
+		while(iter.hasNext() && eval(curr) < bound){
+			prev = curr;
+			curr = iter.next();
+		}
+		
+		return prev;
+	}
 	
+	public void setRefined(double newRefined){
+		refined = newRefined;
+	}
 }

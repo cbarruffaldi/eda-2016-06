@@ -9,11 +9,14 @@ import java.util.concurrent.DelayQueue;
 import structures.AVLMap;
 import structures.AVLSet;
 import structures.BinaryMinHeap;
+import structures.BinaryMinHeap2;
 import utils.ArrivalTimesFunction;
 import utils.Day;
 import utils.Moment;
 import utils.Time;
 
+
+//TODO: Domain deberia estar afuera como una lista o algo. Mismo los bounds
 public class MinimumTime {
 	
 //	
@@ -50,7 +53,7 @@ public class MinimumTime {
 //	}
 	
 	AVLMap<Airport, ArrivalTimesFunction> functions;
-	BinaryMinHeap<ArrivalTimesFunction> pq; 
+	BinaryMinHeap2<ArrivalTimesFunction> pq; 
 	
 	FlightAssistant fa;
 	Airport origin;
@@ -75,19 +78,50 @@ public class MinimumTime {
 			
 		});
 		
-		pq = new BinaryMinHeap<>(fa.airports.size());
+		pq = new BinaryMinHeap2<>(fa.airports.size());
 	}
 	
 	private void run() {
 		initialize();
 		while(pq.size() > 1){
 			ArrivalTimesFunction g_i = pq.dequeue();
+			System.err.println("Dequeuing" + g_i.airport());
 			Double minArrivalToAdj = pq.getPriority(pq.head());
 			
 			double delta = minWeightAt(minArrivalToAdj, g_i.airport());
 			double bound = minArrivalToAdj + delta;
 			
+			double newRefined = g_i.getMaxBounded(bound);
+			
+			//TODO: Abstract weighter?
+			
+			Moment momentZero = new Moment(departure, new Time(0,0));
+			Airport a = g_i.airport(); 
+			Iterator<Airport> iter = a.getConnectedAirports().iterator();
+			while(iter.hasNext()){
+				Airport adjacent = iter.next();
+				Iterator<Double> domain = g_i.getDomain().higherIterator(newRefined);
+				ArrivalTimesFunction adjFunction = functions.get(adjacent);
+				while(domain.hasNext()){
+					Double t = domain.next();
+					adjFunction.minimizeValue(t, t + 
+							DynamicTimeWeighter.WEIGHTER.weight(a, adjacent, momentZero.addTime(new Time(t))));
+				}
+				pq.decreasePriority(adjFunction, adjFunction.eval(adjFunction.refinedUpTo()));	
+			}
+
+			g_i.setRefined(newRefined);
+			if(g_i.refinedUpTo() >= g_i.getRightVal()){
+				System.out.println("Done!");
+				if(g_i.airport().equals(dest)){
+					System.err.println("DONE DONE");
+					return;
+				}
+				
+			}
 		}
+		System.err.println("Apparently pq size is 1");
+		pq.head().print();
 		
 	}
 
