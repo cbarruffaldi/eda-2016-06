@@ -179,6 +179,9 @@ public class ClosedHash <K, V> implements SimpleMap<K, V> {
         }
 
         @Override public T next () {
+           	if (!hasNext())
+        		throw new NoSuchElementException();
+
             T value = valueGetter.getValue(array[i++]);
             findNext();
             return value;

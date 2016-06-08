@@ -47,15 +47,6 @@ public class Route implements Serializable {
         return containerA.hasFlights() || containerB.hasFlights();
     }
 
-    private TicketContainer selectContainer (Airport base) {
-        if (base.equals(airportA))
-            return containerA;
-        else if (base.equals(airportB))
-            return containerB;
-        else
-            throw new IllegalArgumentException("This route does not connect s" + base);
-    }
-
     public HigherIterator iteratorOfHigherFlightsFrom (Airport from, Moment startTime) {
         if (!flightExistsFrom(from))
             throw new IllegalArgumentException("This route does not connect " + from);
@@ -78,6 +69,15 @@ public class Route implements Serializable {
 
     public Ticket getQuickestFrom (Airport airport, Day day) {
         return selectContainer(airport).getQuickest(day);
+    }
+
+    private TicketContainer selectContainer (Airport base) {
+        if (base.equals(airportA))
+            return containerA;
+        else if (base.equals(airportB))
+            return containerB;
+        else
+            throw new IllegalArgumentException("This route does not connect s" + base);
     }
 
     /*

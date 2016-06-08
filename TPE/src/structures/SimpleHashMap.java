@@ -171,6 +171,8 @@ public class SimpleHashMap <K, V> implements SimpleMap<K, V>, Serializable {
         }
 
         @Override public T next () {
+           	if (!hasNext())
+        		throw new NoSuchElementException();
             T key = iter.next();
             if (!iter.hasNext())
                 iter = getNextIterator();

@@ -33,6 +33,12 @@ public interface PriorityQueue <T> {
     public double getPriority (T elem);
 
     /**
+     * Devuelve la prioridad del siguiente elemento a desencolar.
+     * @return
+     */
+    public double minPriority ();
+
+    /**
      * Decrece la prioridad de un elemento.
      *
      * @param elem     elemento a decrecer prioridad.

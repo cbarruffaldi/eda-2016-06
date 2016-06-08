@@ -64,6 +64,7 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
         return array[index].priority;
     }
 
+    // TODO: hacer que solo decrezca
     @Override public void decreasePriority (T elem, double priority) {
         Integer index = indexMap.get(elem);
         if (index == null)
@@ -85,6 +86,13 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
     @Override public int size () {
         return size;
         //return indexMap.size();
+    }
+
+    public double minPriority () {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Cola vacía");
+        }
+        return array[0].priority;
     }
 
     private void insert (PQNode<T> pqNode, int index) {
@@ -136,13 +144,6 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
 
     private int getRightIndex (int i) {
         return i * 2 + 2;
-    }
-
-    public Double minWeight () {
-        if (isEmpty()) {
-            throw new IllegalStateException("Empty queue");
-        }
-        return array[0].priority;
     }
 
     private static class PQNode <T> implements Comparable<PQNode<T>> {

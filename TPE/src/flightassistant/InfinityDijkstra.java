@@ -76,7 +76,7 @@ public class InfinityDijkstra {
         Weighter weighter, List<Day> days, boolean isOrigin, double cutWeight) { // si es -1 no se tiene en cuenta
 
         while (!pq.isEmpty()) {
-            Double minWeight = pq.minWeight();
+            Double minWeight = pq.minPriority();
 
             if (Double.compare(minWeight, Double.POSITIVE_INFINITY) == 0)
                 return new Box(new LinkedList<>(), Double.POSITIVE_INFINITY); //No existe el camino, no tiene sentido seguir

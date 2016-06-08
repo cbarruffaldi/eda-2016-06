@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class AVLMap <K, V> implements SimpleMap<K, V>, Serializable {
 
@@ -36,7 +37,7 @@ public class AVLMap <K, V> implements SimpleMap<K, V>, Serializable {
     }
 
     @Override public void put (K key, V value) {
-        set.add(new Node<K, V>(key, value));
+        set.addAndReplace(new Node<K, V>(key, value));
     }
 
     @Override public V get (K key) {
@@ -137,6 +138,8 @@ public class AVLMap <K, V> implements SimpleMap<K, V>, Serializable {
         }
 
         @Override public T next () {
+           	if (!hasNext())
+        		throw new NoSuchElementException();
             return valueGetter.getValue(iter.next());
         }
     }

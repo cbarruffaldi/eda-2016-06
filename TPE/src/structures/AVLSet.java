@@ -24,25 +24,37 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
         cmp = c;
     }
 
+    @Override
     public boolean add (T value) {
         int prevSize = size();
-        root = add(value, root);
+        root = add(value, root, false);
         return prevSize != size();
     }
 
-    private Node<T> add (T value, Node<T> n) {
+    /**
+     * Agrega un nuevo elemento y si ya existe lo reemplaza por value.
+     * De esta forma un AVLMap puede estar compuesto por un AVLSet.
+     * @param value - valor a agregar
+     * @return true si el valor no existía.
+     */
+    public boolean addAndReplace(T value) {
+    	int prevSize = size();
+    	root = add(value, root, true);
+    	return prevSize != size();
+    }
+
+    private Node<T> add (T value, Node<T> n, boolean replace) {
         if (n == null) {
             size += 1;
             return new Node<T>(value);
         }
         int comp = cmp.compare(value, n.value);
         if (comp > 0)
-            n.right = add(value, n.right);
+            n.right = add(value, n.right, replace);
         else if (comp < 0)
-            n.left = add(value, n.left);
-        else
-            n.value =
-                value;  // se pisa el valor; de esta forma un AVLMap puede estar compuesto por un AVLSet
+            n.left = add(value, n.left, replace);
+        else if (replace)  // de esta forma un AVLMap puede estar compuesto por un AVLSet
+            n.value = value; // se pisa el valor
         n.updateHeight();
         return rebalance(n);
     }
@@ -127,6 +139,16 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
         return size;
     }
 
+    @Override
+    public void clear () {
+        root = null;
+        size = 0;
+    }
+
+    @SuppressWarnings("unchecked") public boolean contains (Object value) {
+        return find((T) value, root) != null;
+    }
+
     public Object[] toArray () {
         Object[] arr = new Object[size()];
         int i = 0;
@@ -144,6 +166,26 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
             a[i++] = (E) each;
 
         return a;
+    }
+
+    /**
+     * Devuelve el valor del nodo que contenga como valor a value. De esta manera un AVLMap puede
+     * estar compuesto por un AVLSet; con este método se puede buscar el nodo que contenga una Key
+     * específica y devolver el valor asociado a la key, contenido en el nodo.
+     */
+    public T find (T value) {
+        return find(value, root);
+    }
+
+    private T find (T value, Node<T> t) {
+        if (t == null)
+            return null;
+        int comp = cmp.compare(value, t.value);
+        if (comp > 0)
+            return find(value, t.right);
+        else if (comp < 0)
+            return find(value, t.left);
+        return t.value;
     }
 
     /**
@@ -207,35 +249,6 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
             merged.add(k++, iter2.next());
 
         return merged;
-    }
-
-    public void clear () {
-        root = null;
-        size = 0;
-    }
-
-    @SuppressWarnings("unchecked") public boolean contains (Object value) {
-        return find((T) value, root) != null;
-    }
-
-    private T find (T value, Node<T> t) {
-        if (t == null)
-            return null;
-        int comp = cmp.compare(value, t.value);
-        if (comp > 0)
-            return find(value, t.right);
-        else if (comp < 0)
-            return find(value, t.left);
-        return t.value;
-    }
-
-    /**
-     * Devuelve el valor del nodo que contenga como valor a value. De esta manera un AVLMap puede
-     * estar compuesto por un AVLSet; con este método puede buscar el nodo que contenga una Key
-     * específica y devolver el valor asociado a la key, contenido en el nodo.
-     */
-    public T find (T value) {
-        return find(value, root);
     }
 
     /**
@@ -351,7 +364,6 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
         }
     }
 
-
     private static class InorderIterator <T> implements Iterator<T> {
         // arriba del stack está siempre el nodo cuyo valor devolver
         private Deque<Node<T>> stack = new LinkedList<>();
@@ -366,7 +378,8 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
         }
 
         private T peek () {
-            // TODO: excepción si no hay next
+        	if (!hasNext())
+        		throw new NoSuchElementException();
             return stack.peek().value;
         }
 
@@ -375,6 +388,9 @@ public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
         }
 
         @Override public T next () {
+           	if (!hasNext())
+        		throw new NoSuchElementException();
+
             Node<T> t = stack.pop();
             T value = t.value;
 

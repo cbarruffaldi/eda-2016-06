@@ -86,14 +86,17 @@ public class AVLSetTest {
         AVLSet<Integer> negativeSet = new AVLSet<Integer>();
         for (int i = 0; i < RANDOMS; i++) {
             int r = rand.nextInt(RANDOMS);
-            negativeSet.add(-r - 1); // nos aseguramos con el -1 que no pueda dar cero
+            negativeSet.add(-r - 1); // insertamos todos números negativos
         }
 
         AVLSet<Integer> merged = set.merge(negativeSet);
         assertTrue(merged.size() == set.size() + negativeSet.size());
         merged.containsAll(set);
         merged.containsAll(negativeSet);
-        // TODO: probar más cosas
-
+        int i = -RANDOMS - 2; // seguro es menor a todos
+        for (Integer n : merged) {
+        	assertTrue(n > i);
+        	n = i;
+        }
     }
 }

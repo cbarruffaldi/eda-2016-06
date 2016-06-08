@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class SimpleHashMapTest {
 
 
-    public static final int CAPACITY = 200;
+    public static final int CAPACITY = 10000;
     public static SimpleMap<Integer, Integer> intMap;
     public static SimpleMap<String, String> stringMap;
     public static Random rand;
@@ -25,7 +25,7 @@ public class SimpleHashMapTest {
 
 
     @BeforeClass public static void initialize () {
-        intMap = new SimpleHashMap<>(10, new Comparator<Integer>() {
+        intMap = new SimpleHashMap<>(200, new Comparator<Integer>() {
 
             @Override public int compare (Integer o1, Integer o2) {
                 return o1.compareTo(o2);
