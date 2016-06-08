@@ -1,6 +1,5 @@
 package utils;
 
-import flightassistant.Airport;
 import flightassistant.FlightAssistant;
 import flightassistant.Ticket;
 
@@ -224,6 +223,7 @@ public class Parser{
         double lng = new Double(sc.next());
 
         flightAssistant.insertAirport(name, lat, lng);
+        consumeScanner(sc);
         return true;
     }
 
@@ -255,6 +255,7 @@ public class Parser{
         int duration = getDuration(durationOfFlightStr);
 
         flightAssistant.insertFlight(airline, flnumber, price, departures, new Time(duration), orig, dest);
+        consumeScanner(sc);
         return true;
     }
 
@@ -275,7 +276,7 @@ public class Parser{
         if(!sc.hasNext())
         	return false;
 
-        String line = sc.next();
+        String line = restOfLine(sc);
 
         if(!RegexHelper.validateFlightName(line))
         	return false;

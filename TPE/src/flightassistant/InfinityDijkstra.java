@@ -3,8 +3,6 @@ package flightassistant;
 import structures.BinaryMinHeap;
 import structures.SimpleMap;
 import utils.Day;
-import utils.Moment;
-import utils.Time;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -39,25 +37,28 @@ public class InfinityDijkstra {
         Airport dest, List<Day> days) {
 
         List<Ticket> bestPath = null;
-        BinaryMinHeap<Airport> pq = queueAirports(fa.getAirports());
+        BinaryMinHeap<Airport> pq;
         double bestWeight = Double.POSITIVE_INFINITY;
 
-        // Saco y visito el primero, peso 0.
-        pq.decreasePriority(origin, 0);
-        pq.dequeue();
         Iterator<Airport> adjIter = origin.connectedAirportsIterator();
 
         // Falta hacer que lo haga en los días dados
         while (adjIter.hasNext()) {
+
             Airport adj = adjIter.next();
             if (origin.flightExistsTo(adj)) {
                 Iterator<Ticket> ticketIter = origin.ticketIterTo(adj, Day.LU);
-                while (ticketIter.hasNext()) {
-                    Ticket ticket = ticketIter.next();
-                    System.out.println(ticket);
 
-                    fa.refreshAirportsNodeProperties();
+                while (ticketIter.hasNext()) {
+                    // Para cada vuelo distinto creo el heap de vuelta con los pesos infinitos.
+                    pq = queueAirports(fa.getAirports());
+                    pq.decreasePriority(origin, 0);
+                    pq.dequeue();
                     origin.visit();
+
+                    Ticket ticket = ticketIter.next();
+                    fa.refreshAirportsNodeProperties();
+
                     adj.setIncident(ticket);
                     pq.decreasePriority(adj, ticket.getDuration().getMinutes());
 
@@ -82,24 +83,25 @@ public class InfinityDijkstra {
             if (Double.compare(minWeight, Double.POSITIVE_INFINITY) == 0)
                 return new Box(new LinkedList<>(), Double.POSITIVE_INFINITY); //No existe el camino, no tiene sentido seguir
 
-            Airport airport = pq.dequeue();
-            airport.visit();
+            Airport current = pq.dequeue();
+            current.visit();
 
             if (cutWeight > 0 && minWeight > cutWeight) {
                 return null;
             }
 
-            if (airport.equals(dest)) {
+            if (current.equals(dest)) {
                 return new Box(buildList(dest), minWeight);
             }
 
-            Iterator<Airport> iter = airport.connectedAirportsIterator();
+            Iterator<Airport> iter = current.connectedAirportsIterator();
             while (iter.hasNext()) {
                 Airport next = iter.next();
-                if (!next.visited() && ((isOrigin && airport.flightExistsTo(next, days)) || (
-                    !isOrigin && airport.flightExistsTo(next)))) {
-                    WeightedTicket wTicket = weighter.minTicket(airport, next);
+                if (!next.visited() && ((isOrigin && current.flightExistsTo(next, days)) || (
+                    !isOrigin && current.flightExistsTo(next)))) {
+                    WeightedTicket wTicket = weighter.minTicket(current, next);
 
+                    //TODO Me tiró una excepcion porque no estaba next en la PQ. Ver.
                     double nextCurrWeight = pq.getPriority(next);
                     double acumWeight = minWeight + wTicket.weight();
 
