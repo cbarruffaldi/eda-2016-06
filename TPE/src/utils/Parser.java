@@ -2,6 +2,7 @@ package utils;
 
 import flightassistant.Airport;
 import flightassistant.FlightAssistant;
+import flightassistant.Ticket;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -127,7 +128,7 @@ public class Parser{
             days = getDaysFromStr(sc.next());
             // Si no hay weekDays "days" es una lista vacía.
         }
-        List<Airport> path = findPathWithOption(option, orig, dest, days);
+        List<Ticket> path = findPathWithOption(option, orig, dest, days);
         if (path == null || path.isEmpty()) {
             Output.notFoundMsg();
         } else {
@@ -136,8 +137,8 @@ public class Parser{
         return true;
     }
 
-    private static List<Airport> findPathWithOption(String option, String orig, String dest, List<Day> days) {
-        List<Airport> path = new LinkedList<>(); // para que no tire warning
+    private static List<Ticket> findPathWithOption(String option, String orig, String dest, List<Day> days) {
+        List<Ticket> path = new LinkedList<>(); // para que no tire warning
         switch (option) {
             case "ft":
                 path = flightAssistant.findQuickestPath(orig, dest, days);
@@ -337,19 +338,19 @@ public class Parser{
 	}
 
     // ARGUMENTOS POR LINEA DE COMANDOS.
-	
+
 	public static void insertAirportsFromFile(String fileName, FlightAssistant fa) {
 		flightAssistant = fa;
 		insertFromFile(fileName, true);
 		flightAssistant = null;
 	}
-	
+
 	public static void insertFlightsFromFile(String fileName, FlightAssistant fa) {
 		flightAssistant = fa;
 		insertFromFile(fileName, false);
 		flightAssistant = null;
 	}
-	
+
     //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
     private static boolean insertFromFile(String pathToFile, boolean insertAirport) {
         boolean valid = true;

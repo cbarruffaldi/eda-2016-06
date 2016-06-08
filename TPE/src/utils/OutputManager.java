@@ -38,7 +38,7 @@ public class OutputManager {
         System.err.print("Could not save program files");
     }
 
-    public void printBestRoute (List<Airport> airports) {
+    public void printBestRoute (List<Ticket> airports) {
         if (stdOut) {
             printToStdout(airports);
         } else {
@@ -46,11 +46,11 @@ public class OutputManager {
         }
     }
 
-    private void printToStdout (List<Airport> airports) {
+    private void printToStdout (List<Ticket> airports) {
         print(airports, System.out);
     }
 
-    private void printToFile (List<Airport> airports) {
+    private void printToFile (List<Ticket> airports) {
         try {
             print(airports, new PrintStream(new FileOutputStream(fileName, true)));
         } catch (FileNotFoundException e) {
@@ -58,22 +58,21 @@ public class OutputManager {
         }
     }
 
-    private void print (List<Airport> airports, PrintStream out) {
+    private void print (List<Ticket> airports, PrintStream out) {
         if (textFormat) {
             printText(airports, out);
         } else {
-            printKML(airports, out);
+            // TODO: printKML(airports, out);
         }
     }
 
-    private void printText (List<Airport> airports, PrintStream out) {
-        RouteData data = new RouteData(airports);
+    private void printText (List<Ticket> tickets, PrintStream out) {
+        RouteData data = new RouteData(tickets);
         out.println(
             "Precio#" + data.price + '\n' + "TiempoVuelo#" + data.fltime + '\n' + "TiempoTotal#"
                 + data.totalTime + '\n');
-
-        for (int i = 1; i < airports.size(); i++)
-            printTicket(airports.get(i).getIncident(), out);
+        for (Ticket ticket : tickets)
+        	printTicket(ticket, out);
     }
 
     private void printTicket (Ticket ticket, PrintStream out) {
@@ -111,28 +110,25 @@ public class OutputManager {
         private double price;
         private Time fltime;
         private Time totalTime;
+        private Moment arrivalMoment;
 
-        public RouteData (List<Airport> airports) {
+        public RouteData (List<Ticket> tickets) {
             price = 0;
             fltime = new Time(0);
             totalTime = new Time(0);
-            Airport current = airports.get(airports.size() - 1);
-            Ticket ticket;
+            arrivalMoment = tickets.get(0).getDeparture();
 
-            while ((ticket = current.getIncident()) != null) {
+
+            for (Ticket ticket : tickets) {
                 price += ticket.getPrice();
-                fltime.addTime(ticket.getDuration());
-                totalTime.addTime(calculateTotalTime(ticket));
-                current = ticket.getOrigin();
+                fltime = fltime.addTime(ticket.getDuration());
+                totalTime = totalTime.addTime(calculateTotalTime(ticket));
             }
         }
 
         private Time calculateTotalTime (Ticket ticket) {
             Time t = ticket.getDuration();
-            if (ticket.getOrigin().getIncident() != null) { // no es el aeropuerto origen
-                Moment prevFlightArrival = ticket.getOrigin().getIncident().getArrival();
-                t.addTime(prevFlightArrival.howMuchUntil(ticket.getDeparture()));
-            }
+            t = t.addTime(arrivalMoment.howMuchUntil(ticket.getDeparture()));
             return t;
         }
     }

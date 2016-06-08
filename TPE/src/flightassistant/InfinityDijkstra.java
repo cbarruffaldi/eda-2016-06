@@ -12,19 +12,19 @@ import java.util.List;
 
 public class InfinityDijkstra {
 
-    public static List<Airport> minPath (SimpleMap<String, Airport> airports, Airport origin,
+    public static List<Ticket> minPath (SimpleMap<String, Airport> airports, Airport origin,
         Airport dest, Weighter weighter, List<Day> days) {
         return minpath(airports, origin, dest, weighter, null, days);
     }
 
-    public static List<Airport> minpath (SimpleMap<String, Airport> airports, Airport origin,
+    public static List<Ticket> minpath (SimpleMap<String, Airport> airports, Airport origin,
         Airport dest, Weighter weighter, Weighter originWeighter, List<Day> days) {
 
         BinaryMinHeap<Airport> pq = queueAirports(airports);
 
         pq.decreasePriority(origin, 0);
 
-        List<Airport> ans;
+        List<Ticket> ans;
         if (originWeighter != null) {
             findPath(pq, dest, originWeighter, days, true, -1);
         }
@@ -35,14 +35,14 @@ public class InfinityDijkstra {
         return ans;
     }
 
-    public static List<Airport> minPathTotalTime (SimpleMap<String, Airport> airports, Airport origin,
+    public static List<Ticket> minPathTotalTime (FlightAssistant fa, Airport origin,
         Airport dest, List<Day> days) {
-        List<Airport> bestPath = null;
-        BinaryMinHeap<Airport> pq = queueAirports(airports);
-        double bestWeight = Double.MAX_VALUE;
+
+        List<Ticket> bestPath = null;
+        BinaryMinHeap<Airport> pq = queueAirports(fa.getAirports());
+        double bestWeight = Double.POSITIVE_INFINITY;
 
         // Saco y visito el primero, peso 0.
-        origin.visit();
         pq.decreasePriority(origin, 0);
         pq.dequeue();
         Iterator<Airport> adjIter = origin.connectedAirportsIterator();
@@ -51,21 +51,22 @@ public class InfinityDijkstra {
         while (adjIter.hasNext()) {
             Airport adj = adjIter.next();
             if (origin.flightExistsTo(adj)) {
-                HigherIterator ticketIter = origin.iteratorOfHigherFlightsTo(adj, new Moment(Day.LU, new Time(0)));
-
+                Iterator<Ticket> ticketIter = origin.ticketIterTo(adj, Day.LU);
                 while (ticketIter.hasNext()) {
                     Ticket ticket = ticketIter.next();
                     System.out.println(ticket);
+
+                    fa.refreshAirportsNodeProperties();
+                    origin.visit();
                     adj.setIncident(ticket);
                     pq.decreasePriority(adj, ticket.getDuration().getMinutes());
 
                     Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
 
-                    if (b != null && bestWeight > b.lastWeight) {
+                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
                         bestWeight = b.lastWeight;
                         bestPath = b.list;
                     }
-
                 }
             }
         }
@@ -129,25 +130,24 @@ public class InfinityDijkstra {
         return heap;
     }
 
-    private static List<Airport> buildList (Airport last) {
-        LinkedList<Airport> list = new LinkedList<>();
+    private static List<Ticket> buildList (Airport last) {
+        LinkedList<Ticket> list = new LinkedList<>();
 
         Airport curr = last;
         Ticket t;
         while ((t = curr.getIncident()) != null) {
-            list.addFirst(curr);
+            list.addFirst(t);
             curr = t.getOrigin();
         }
-        list.addFirst(curr);
         return list;
     }
 
 
     private static class Box {
-        List<Airport> list;
+        List<Ticket> list;
         double lastWeight;
 
-        public Box (List<Airport> list, double lastWeight) {
+        public Box (List<Ticket> list, double lastWeight) {
             this.list = list;
             this.lastWeight = lastWeight;
         }

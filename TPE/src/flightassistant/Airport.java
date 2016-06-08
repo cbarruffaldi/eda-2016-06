@@ -232,6 +232,10 @@ public class Airport implements Serializable {
 			}
 		}
 		return set;
-		
+
+	}
+
+	public Iterator<Ticket> ticketIterTo(Airport adj, Day day) {
+		return routes.get(adj).dayFlights(this, day);
 	}
 }

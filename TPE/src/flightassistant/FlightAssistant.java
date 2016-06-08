@@ -96,21 +96,20 @@ public class FlightAssistant implements Serializable {
         }
     }
 
-    public List<Airport> findQuickestPath (String orig, String dest, List<Day> days) {
+    public List<Ticket> findQuickestPath (String orig, String dest, List<Day> days) {
         return findPath(orig, dest, days, AirtimeWeighter.WEIGHTER,
             new OriginAirtimeWeighter(days));
     }
 
-    public List<Airport> findCheapestPath (String orig, String dest, List<Day> days) {
+    public List<Ticket> findCheapestPath (String orig, String dest, List<Day> days) {
         return findPath(orig, dest, days, PriceWeighter.WEIGHTER, new OriginPriceWeighter(days));
     }
 
-    	public List<Airport> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
-    	    refreshAirportsNodeProperties();
-            return InfinityDijkstra.minPathTotalTime(airports, airports.get(orig), airports.get(dest), days);
-        }
+    public List<Ticket> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
+        return InfinityDijkstra.minPathTotalTime(this, airports.get(orig), airports.get(dest), days);
+    }
 
-    private List<Airport> findPath (String orig, String dest, List<Day> days, Weighter weighter,
+    private List<Ticket> findPath (String orig, String dest, List<Day> days, Weighter weighter,
         Weighter originWeighter) {
         Airport from = airports.get(orig);
         Airport to = airports.get(dest);
