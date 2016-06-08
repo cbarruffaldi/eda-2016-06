@@ -4,6 +4,10 @@ import flightassistant.Airport;
 
 import java.util.List;
 
+/**
+ * Se encarga de generar un string con el formato correspondiente a un documento KML
+ *
+ */
 public class KMLFormatter {
     private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     private static final String KML_OPENER = "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n";
