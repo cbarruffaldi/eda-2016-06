@@ -110,13 +110,13 @@ public class OutputManager {
         private double price;
         private Time fltime;
         private Time totalTime;
-        private Moment arrivalMoment;
+        private Moment prevArrivalMoment;
 
         public RouteData (List<Ticket> tickets) {
             price = 0;
             fltime = new Time(0);
             totalTime = new Time(0);
-            arrivalMoment = tickets.get(0).getDeparture();
+            prevArrivalMoment = tickets.get(0).getDeparture();
 
 
             for (Ticket ticket : tickets) {
@@ -128,7 +128,8 @@ public class OutputManager {
 
         private Time calculateTotalTime (Ticket ticket) {
             Time t = ticket.getDuration();
-            t = t.addTime(arrivalMoment.howMuchUntil(ticket.getDeparture()));
+            t = t.addTime(prevArrivalMoment.howMuchUntil(ticket.getDeparture()));
+            prevArrivalMoment = ticket.getArrival();
             return t;
         }
     }
