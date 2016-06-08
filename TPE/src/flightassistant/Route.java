@@ -151,7 +151,7 @@ public class Route implements Serializable {
         }
 
         private void addTicket (Ticket ticket) {
-            Day departureDay = ticket.getArrival().getDay();
+            Day departureDay = ticket.getDeparture().getDay();
             if (cheapest.get(departureDay) == null || ticket
                 .isCheaperThan(cheapest.get(departureDay)))
                 cheapest.insert(departureDay, ticket);
@@ -162,7 +162,7 @@ public class Route implements Serializable {
         }
 
         private void removeTicket (Ticket ticket) {
-            Day departureDay = ticket.getArrival().getDay();
+            Day departureDay = ticket.getDeparture().getDay();
 
             weekArray.get(departureDay).remove(ticket);
 

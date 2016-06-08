@@ -36,6 +36,13 @@ public class InfinityDijkstra {
     public static List<Ticket> minPathTotalTime (FlightAssistant fa, Airport origin,
         Airport dest, List<Day> days) {
 
+    	// Se crea una lista con todos los días de la semana si no desea viajar un día especifico
+    	if (days.isEmpty()) {
+    		days.add(Day.LU);
+    		for (Day day = Day.MA; !day.equals(Day.LU); day = day.getNextDay())
+    			days.add(day);
+    	}
+
         List<Ticket> bestPath = null;
         BinaryMinHeap<Airport> pq;
         double bestWeight = Double.POSITIVE_INFINITY;
@@ -47,28 +54,30 @@ public class InfinityDijkstra {
 
             Airport adj = adjIter.next();
             if (origin.flightExistsTo(adj)) {
-                Iterator<Ticket> ticketIter = origin.ticketIterTo(adj, Day.LU);
+            	for (Day day : days) {
+	                Iterator<Ticket> ticketIter = origin.ticketIterTo(adj, day);
 
-                while (ticketIter.hasNext()) {
-                    // Para cada vuelo distinto creo el heap de vuelta con los pesos infinitos.
-                    pq = queueAirports(fa.getAirports());
-                    pq.decreasePriority(origin, 0);
-                    pq.dequeue();
-                    origin.visit();
+	                while (ticketIter.hasNext()) {
+	                    // Para cada vuelo distinto creo el heap de vuelta con los pesos infinitos.
+	                    pq = queueAirports(fa.getAirports());
+	                    pq.decreasePriority(origin, 0);
+	                    pq.dequeue();
 
-                    Ticket ticket = ticketIter.next();
-                    fa.refreshAirportsNodeProperties();
+	                    Ticket ticket = ticketIter.next();
+	                    fa.refreshAirportsNodeProperties();
 
-                    adj.setIncident(ticket);
-                    pq.decreasePriority(adj, ticket.getDuration().getMinutes());
+	                    origin.visit();
+	                    adj.setIncident(ticket);
+	                    pq.decreasePriority(adj, ticket.getDuration().getMinutes());
 
-                    Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
+	                    Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
 
-                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
-                        bestWeight = b.lastWeight;
-                        bestPath = b.list;
-                    }
-                }
+	                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
+	                        bestWeight = b.lastWeight;
+	                        bestPath = b.list;
+	                    }
+	                }
+	            }
             }
         }
         return bestPath;
@@ -100,8 +109,6 @@ public class InfinityDijkstra {
                 if (!next.visited() && ((isOrigin && current.flightExistsTo(next, days)) || (
                     !isOrigin && current.flightExistsTo(next)))) {
                     WeightedTicket wTicket = weighter.minTicket(current, next);
-
-                    //TODO Me tiró una excepcion porque no estaba next en la PQ. Ver.
                     double nextCurrWeight = pq.getPriority(next);
                     double acumWeight = minWeight + wTicket.weight();
 
