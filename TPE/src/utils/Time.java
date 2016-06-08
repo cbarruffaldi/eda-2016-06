@@ -19,6 +19,7 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
         this(min.intValue());
     }
 
+    // TODO: no podría ser un constructor o parsearse desde afuera?
     public static Time getTimeFromString (String str) {
         String[] timeStr = str.split(":");
         Time t = new Time(Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR);
@@ -26,23 +27,16 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
         return t;
     }
 
-    public Time getSum (Time t) {
+    public Time addTime (Time t) {
         return new Time(minutes + t.minutes);
     }
 
-    public Time addTime (Time t) {
-        this.minutes += t.minutes;
-        return this;
-    }
-
     public Time addMinutes (int minutes) {
-        this.minutes += minutes;
-        return this;
+        return new Time(this.minutes + minutes);
     }
 
     public Time sumADay () {
-        this.minutes += HOURS_PER_DAY * MINUTES_PER_HOUR;
-        return this;
+        return new Time(minutes + HOURS_PER_DAY * MINUTES_PER_HOUR);
     }
 
     public int minutesDifference (Time t) {
