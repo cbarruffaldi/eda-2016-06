@@ -1,11 +1,12 @@
 package utils;
 
-import java.io.Serializable;
 import java.util.Iterator;
 
-public class Day implements Serializable {
+/**
+ * Representa los 7 días de la semana.
+ */
+public class Day{
 
-	private static final long serialVersionUID = 1L;
 	public static final Day LU = new Day(0);
     public static final Day MA = new Day(1);
     public static final Day MI = new Day(2);
@@ -15,7 +16,14 @@ public class Day implements Serializable {
     public static final Day DO = new Day(6);
 
     private static final Day days[] = {LU, MA, MI, JU, VI, SA, DO};
+    
+    /**
+     * Cantidad de días de una semana 
+     */
     public static final int TOTAL_DAYS = days.length;
+    /**
+     * Cadena de caracteres que corresponden a cada día de la semana
+     */
     private static final String daysStr[] = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
     private final int daysIndex;
 
@@ -24,6 +32,11 @@ public class Day implements Serializable {
     }
     
 
+    /**
+     * Convierte una cadena de carateres al <tt>Day</tt> correspondiente.
+     * @return <tt>Day</tt> al que se refiere el String recibido
+     * @throws IllegalArgumentException si el String recibido no corresponde a ningun día.
+     */
     public static Day getDay (String day) {
         for (int i = 0; i < TOTAL_DAYS; i++)
             if (daysStr[i].equals(day))
@@ -35,16 +48,29 @@ public class Day implements Serializable {
         return new WeekArray<T>();
     }
 
+    /**
+     * Retorna el siguiente día de la semana
+     * @return el siguiente <tt>Day</tt>
+     */
     public Day getNextDay () {
         int i = (daysIndex + 1) % TOTAL_DAYS;
         return days[i];
     }
-
+    
+    /**
+     * Retorna el día previo al actual
+     * @return el <tt>Day</tt> previo
+     */
     public Day previousDay () {
         int i = daysIndex > 0 ? (daysIndex - 1) : TOTAL_DAYS - 1;
         return days[i];
     }
 
+    /**
+     * Retorna la cantidad días que hay de diferencia entre el actual y otro.
+     * @param <tt>Day</tt> para obtener la diferencia de días
+     * @return numero de días que separan el dia actual con el día recibido
+     */
     public int getDaysDifference (Day d1) {
         return d1.daysIndex - this.daysIndex;
     }
@@ -68,6 +94,10 @@ public class Day implements Serializable {
         return daysIndex;
     }
 
+    /**
+     * Representa una semana completa como un array de Objetos, cada día será accedido
+     * por su índice correspondiente.
+     */
     public static class WeekArray <T> implements Iterable<T> {
         @SuppressWarnings("unchecked") private T[] array = (T[]) new Object[TOTAL_DAYS];
 
