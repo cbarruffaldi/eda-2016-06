@@ -60,24 +60,18 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
     @Override public double getPriority (T elem) {
         Integer index = indexMap.get(elem);
         if (index == null)
-            throw new IllegalArgumentException("No existe el elemento");
+            throw new NoSuchElementException("No existe " + elem);
         return array[index].priority;
     }
 
-    // TODO: hacer que solo decrezca
     @Override public void decreasePriority (T elem, double priority) {
         Integer index = indexMap.get(elem);
         if (index == null)
-            return;
-        if (array[index].priority < priority) {
-        	if(array[index].priority > priority){
-        	System.out.println("Augmenting!!!");}
-            array[index].priority = priority;
-            moveDown(index);
-        } else {
-            array[index].priority = priority;
-            moveUp(index);
-        }
+            throw new NoSuchElementException("No existe " + elem);
+        if (array[index].priority <= priority)
+        	throw new IllegalArgumentException("Nueva prioridad mayor o igual a la existente");
+        array[index].priority = priority;
+        moveUp(index);
     }
 
     @Override public boolean isEmpty () {
@@ -86,7 +80,6 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
 
     @Override public int size () {
         return size;
-        //return indexMap.size();
     }
 
     public double minPriority () {

@@ -1,6 +1,6 @@
 package flightassistant;
 
-import structures.SimpleHashMap;
+import structures.AVLHashMap;
 import structures.SimpleMap;
 import utils.Day;
 import utils.Moment;
@@ -16,19 +16,18 @@ public class FlightAssistant implements Serializable {
 
     private static final int AIRPORTS_SIZE = 20;
     private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
-
+    
     // Coleccion de Aeropuertos;
-    private SimpleHashMap<String, Airport> airports;
+    private SimpleMap<String, Airport> airports;
     // Coleccion de vuelos
-    private SimpleHashMap<FlightId, Flight> flights;
+    private SimpleMap<FlightId, Flight> flights;
 
     public FlightAssistant () {
-        airports = new SimpleHashMap<>(AIRPORTS_SIZE);
-        flights = new SimpleHashMap<>(FLIGHTS_SIZE);
+        airports = new AVLHashMap<>(AIRPORTS_SIZE);
+        flights = new AVLHashMap<>(FLIGHTS_SIZE);
     }
 
     public void insertAirport (String id, double latitude, double longitude) {
-        // Preguntar por inserción de dos aeropuertos con mismo ID.
         if (!airports.containsKey(id))
             airports.put(id, new Airport(id, latitude, longitude));
     }
@@ -49,8 +48,7 @@ public class FlightAssistant implements Serializable {
             origAir.addRoute(destAir, r);
             destAir.addRoute(origAir, r);
         }
-        Flight newFlight =
-            new Flight(airline, number, price, departures, duration, origAir, destAir);
+        Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
         flights.put(newFlight.getId(), newFlight);
 
         origAir.addFlight(newFlight);
@@ -97,8 +95,7 @@ public class FlightAssistant implements Serializable {
     }
 
     public List<Ticket> findQuickestPath (String orig, String dest, List<Day> days) {
-        return findPath(orig, dest, days, AirtimeWeighter.WEIGHTER,
-            new OriginAirtimeWeighter(days));
+        return findPath(orig, dest, days, AirtimeWeighter.WEIGHTER, new OriginAirtimeWeighter(days));
     }
 
     public List<Ticket> findCheapestPath (String orig, String dest, List<Day> days) {
@@ -119,16 +116,15 @@ public class FlightAssistant implements Serializable {
         Airport origin = airports.get(orig);
         Airport destination = airports.get(dest);
         if (origin == null || destination == null || origin.equals(destination)) {
-            return null; // Ver que hacer
+            return null;
         }
         refreshAirportsNodeProperties();
         if (days.isEmpty()) {
-            return InfinityDijkstra.minPath(airports, origin, destination, weighter, days);
+            return InfinityDijkstra.minPath(airports, origin, destination, weighter);
         }
-        return InfinityDijkstra.minpath(airports, origin, destination, weighter, originWeighter, days);
+        return InfinityDijkstra.minPath(airports, origin, destination, weighter, originWeighter, days);
 
     }
-
 
     private void removeRoutesTo (Airport airport) {
         Iterator<Airport> iter = airport.connectedAirportsIterator();
@@ -136,15 +132,12 @@ public class FlightAssistant implements Serializable {
             iter.next().removeRouteTo(airport);
     }
 
-
     public void refreshAirportsNodeProperties () {
         Iterator<Airport> airportsIter = airports.valueIterator();
         while (airportsIter.hasNext())
             airportsIter.next().nodeRefresh();
     }
 
-
-    // PROVISORIO PARA TESTS
     public SimpleMap<String, Airport> getAirports () {
         return airports;
     }

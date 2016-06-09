@@ -11,26 +11,23 @@ import java.util.List;
 public class InfinityDijkstra {
 
     public static List<Ticket> minPath (SimpleMap<String, Airport> airports, Airport origin,
-        Airport dest, Weighter weighter, List<Day> days) {
-        return minpath(airports, origin, dest, weighter, null, days);
+        Airport dest, Weighter weighter) {
+        return minPath(airports, origin, dest, weighter, null, null);
     }
 
-    public static List<Ticket> minpath (SimpleMap<String, Airport> airports, Airport origin,
+    public static List<Ticket> minPath (SimpleMap<String, Airport> airports, Airport origin,
         Airport dest, Weighter weighter, Weighter originWeighter, List<Day> days) {
 
         BinaryMinHeap<Airport> pq = queueAirports(airports);
 
         pq.decreasePriority(origin, 0);
 
-        List<Ticket> ans;
         if (originWeighter != null) {
-            findPath(pq, dest, originWeighter, days, true, -1);
+            findPath(pq, dest, originWeighter, days, true, Double.POSITIVE_INFINITY);
         }
 
-        Box b = findPath(pq, dest, weighter, null, false, -1);
-        ans = (b != null) ? b.list : null;
-
-        return ans;
+        Box b = findPath(pq, dest, weighter, null, false, Double.POSITIVE_INFINITY);
+        return (b != null) ? b.list : new LinkedList<>(); // lista vacia si no enontró camino
     }
 
     public static List<Ticket> minPathTotalTime (FlightAssistant fa, Airport origin,
@@ -84,7 +81,7 @@ public class InfinityDijkstra {
 	            }
             }
         }
-        return bestPath;
+        return (bestPath != null) ? bestPath : new LinkedList<>();  // Lista vacia en caso de no encontrar camino
     }
     
     private static boolean sameTicketFeatures(Ticket ticket, Ticket other){
@@ -98,15 +95,17 @@ public class InfinityDijkstra {
         while (!pq.isEmpty()) {
             Double minWeight = pq.minPriority();
 
-            if (Double.compare(minWeight, Double.POSITIVE_INFINITY) == 0)
-                return new Box(new LinkedList<>(), Double.POSITIVE_INFINITY); //No existe el camino, no tiene sentido seguir
-
+            if (minWeight.compareTo(Double.POSITIVE_INFINITY) == 0) {
+                return null; // No existe el camino, no tiene sentido seguir
+            }
+                
+            if (minWeight >= cutWeight) { // El peso acumulado es mayor al del mejor camino encontrado
+            	return null;
+            }
+            
             Airport current = pq.dequeue();
             current.visit();
 
-            if (cutWeight > 0 && minWeight > cutWeight) {
-                return null;
-            }
 
             if (current.equals(dest)) {
                 return new Box(buildList(dest), minWeight);
@@ -131,7 +130,7 @@ public class InfinityDijkstra {
             if (isOrigin)
                 return null;
         }
-        return new Box(new LinkedList<>(), Double.POSITIVE_INFINITY);
+        return null;
     }
 
     private static BinaryMinHeap<Airport> queueAirports (SimpleMap<String, Airport> airports) {

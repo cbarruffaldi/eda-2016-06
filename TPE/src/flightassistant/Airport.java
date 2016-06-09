@@ -1,7 +1,7 @@
 package flightassistant;
 
 import structures.AVLSet;
-import structures.SimpleHashMap;
+import structures.AVLHashMap;
 import structures.SimpleMap;
 import utils.Day;
 import utils.Moment;
@@ -49,7 +49,7 @@ public class Airport implements Serializable {
 		this.latitude = latitude;
 		this.longitude = longitude;
 
-		routes = new SimpleHashMap<>(new Comparator<Airport>() {
+		routes = new AVLHashMap<>(new Comparator<Airport>() {
 			@Override
 			public int compare(Airport o1, Airport o2) {
 				return o1.getId().compareTo(o2.getId());

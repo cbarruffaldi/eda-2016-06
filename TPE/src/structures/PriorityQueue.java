@@ -1,5 +1,7 @@
 package structures;
 
+import java.util.NoSuchElementException;
+
 public interface PriorityQueue <T> {
 
     /**
@@ -29,12 +31,12 @@ public interface PriorityQueue <T> {
      *
      * @param elem elemento a consultar prioridad.
      * @return prioridad del elemento.
+     * @throws NoSuchElementException Si no existe el elemento.
      */
     public double getPriority (T elem);
 
     /**
      * Devuelve la prioridad del siguiente elemento a desencolar.
-     * @return
      */
     public double minPriority ();
 

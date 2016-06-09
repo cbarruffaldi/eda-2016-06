@@ -1,11 +1,10 @@
 package utils;
 
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * La clase Moment representa un instante dado en la semana (minutos que pasan desde las 00:00hs
- * para un día determinado) 
+ * para un dï¿½a determinado) 
  */
 public class Moment implements /*Comparable<Moment>,*/ TimeConstants, Serializable{
 	private static final long serialVersionUID = 1L;
@@ -16,7 +15,7 @@ public class Moment implements /*Comparable<Moment>,*/ TimeConstants, Serializab
     private Time timeOfDay; 
 
     /**
-     * Construye el momento del día <i>day</i> y horario según los minutos que
+     * Construye el momento del dï¿½a <i>day</i> y horario segï¿½n los minutos que
      * representa <i>timeOfDay</i>, que debe ser menor a la cantidad de minutos
      * en un dia, menos uno (en efecto, de 00:00 a 23:59).
      * 

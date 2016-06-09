@@ -33,15 +33,6 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
 
         minutes = hours * MINUTES_PER_HOUR + mins;
     }
-
-    /**
-	 * Construye un intervalo a partir de una cantidad minutos dados. 
-	 * Se toma la parte entera del valor pasado como parametro
-     */
-    public Time (Double mins) {
-        this(mins.intValue());
-    }
-
     
     /**
      * Construye un intervalo temporal parseando un String, que debe tener formato
@@ -84,21 +75,6 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
         return new Time(this.minutes + minutes);
     }
     
-    /**
-     * Devuelve un nuevo <i>Time</i> con un tiempo igual al del objeto actual mas 
-     * la cantidad de minutos que se pasan como parametro (parte entera)
-     * @param t
-     * @return
-     */
-    public Time addMinutes(Double minutes) {
-    	return addMinutes(minutes.intValue());
-    }
-
-
-  /*  public Time sumADay () {
-        return new Time(minutes + HOURS_PER_DAY * MINUTES_PER_HOUR);
-    }*/
-
     /**
      * Devuelve la diferencia (en minutos) entre esta instancia y el tiempo dado
      * @return

@@ -160,11 +160,7 @@ public class Parser{
             // Si no hay weekDays "days" es una lista vacía.
         }
         List<Ticket> path = findPathWithOption(option, orig, dest, days);
-        if (path == null || path.isEmpty()) {
-            Output.notFoundMsg();
-        } else {
-            Output.printBestRoute(path);
-        }
+        Output.printBestRoute(path);
         return true;
     }
 

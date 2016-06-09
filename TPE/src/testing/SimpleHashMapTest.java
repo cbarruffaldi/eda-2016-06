@@ -3,7 +3,7 @@ package testing;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import structures.SimpleHashMap;
+import structures.AVLHashMap;
 import structures.SimpleMap;
 
 import java.util.*;
@@ -25,14 +25,14 @@ public class SimpleHashMapTest {
 
 
     @BeforeClass public static void initialize () {
-        intMap = new SimpleHashMap<>(200, new Comparator<Integer>() {
+        intMap = new AVLHashMap<>(200, new Comparator<Integer>() {
 
             @Override public int compare (Integer o1, Integer o2) {
                 return o1.compareTo(o2);
             }
         });
 
-        stringMap = new SimpleHashMap<String, String>(new Comparator<String>() {
+        stringMap = new AVLHashMap<String, String>(new Comparator<String>() {
             public int compare (String s1, String s2) {
                 return s1.compareTo(s2);
             }

@@ -13,13 +13,11 @@ import java.util.List;
  */
 public class OutputManager {
 
-    private static String fileName;
+	private PrintStream out = System.out;
     private boolean textFormat = true;   // Por defecto modo texto.
-    private boolean stdOut = true; // Por defecto va a salida estandar.
 
     public OutputManager () {
         textFormat = true;
-        stdOut = true;
     }
 
     /**
@@ -33,7 +31,7 @@ public class OutputManager {
      * Mensaje cuando no se encuentra un camino pedido entre dos aeropuertos.
      */
     public void notFoundMsg () {
-        System.out.println("NotFound");
+        out.println("NotFound");
     }
 
     public void fileOpenErrorMsg () {
@@ -41,7 +39,7 @@ public class OutputManager {
     }
 
     public void exitErrorMsg () {
-        System.err.print("Could not save program files");
+        System.err.println("Could not save program files");
     }
 
     /**
@@ -51,33 +49,19 @@ public class OutputManager {
      * @param tickets lista de tickets de vuelos que forman el camino pedido.
      */
     public void printBestRoute (List<Ticket> tickets) {
-        if (stdOut) {
-            printToStdout(tickets);
-        } else {
-            printToFile(tickets);
-        }
-    }
-
-    private void printToStdout (List<Ticket> tickets) {
-        print(tickets, System.out);
-    }
-
-    private void printToFile (List<Ticket> tickets) {
-        try {
-            print(tickets, new PrintStream(new FileOutputStream(fileName, true)));
-        } catch (FileNotFoundException e) {
-            System.err.println("Error writing/reading file");
-        }
+    	print(tickets, out);
     }
 
     private void print (List<Ticket> tickets, PrintStream out) {
-        if (textFormat) {
+    	if (tickets == null || tickets.isEmpty())
+    		notFoundMsg();
+    	else if (textFormat) {
             printText(tickets, out);
         } else {
         	printKML(tickets, out);
         }
+    	out.println();
     }
-
 
     private void printText (List<Ticket> tickets, PrintStream out) {
         RouteData data = new RouteData(tickets);
@@ -119,15 +103,18 @@ public class OutputManager {
      * Configura el destino de salida a la salida estándar. Queda guardado en la instancia de OutputManager.
      */
     public void setToStdOutput () {
-        stdOut = true;
+        out = System.out;
     }
 
     /**
      * Configura el destino de salida a un archivo txt. Queda guardado en la instancia de OutputManager.
      */
     public void setToFileOutput (String file) {
-        stdOut = false;
-        fileName = file;
+    	try {
+			out = new PrintStream(new FileOutputStream(file));
+		} catch (FileNotFoundException e) {
+            System.err.println("Error creating file");
+		}
     }
 
     /**

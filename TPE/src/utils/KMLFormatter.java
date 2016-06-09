@@ -31,7 +31,7 @@ public class KMLFormatter {
     private static void attachPlacemark (StringBuffer str, Airport airport) {
         str.append("<Placemark>\n");
         str.append("<name>" + airport.getId() + "</name>\n");
-        str.append("<description></description>\n"); // empty description
+        str.append("<description>" + "</description>\n"); // empty description
         attachPoint(str, airport.getLatitude(), airport.getLongitude());
         str.append("</Placemark>\n");
     }

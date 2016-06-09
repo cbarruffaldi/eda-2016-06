@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class SimpleHashMap <K, V> implements SimpleMap<K, V>, Serializable {
+public class AVLHashMap <K, V> implements SimpleMap<K, V>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,19 +15,19 @@ public class SimpleHashMap <K, V> implements SimpleMap<K, V>, Serializable {
     private int mod;
     private Comparator<K> cmp;
 
-    public SimpleHashMap (int capacity) {
+    public AVLHashMap (int capacity) {
         initiate(capacity, getNaturalComparator());
     }
 
-    public SimpleHashMap (int capacity, Comparator<K> comparator) {
+    public AVLHashMap (int capacity, Comparator<K> comparator) {
         initiate(capacity, comparator);
     }
 
-    public SimpleHashMap (Comparator<K> comparator) {
+    public AVLHashMap (Comparator<K> comparator) {
         initiate(DEFAULT_CAPACITY, comparator);
     }
 
-    public SimpleHashMap () {
+    public AVLHashMap () {
         initiate(DEFAULT_CAPACITY, getNaturalComparator());
     }
 
