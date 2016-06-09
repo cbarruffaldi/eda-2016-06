@@ -56,31 +56,40 @@ public class InfinityDijkstra {
             if (origin.flightExistsTo(adj)) {
             	for (Day day : days) {
 	                Iterator<Ticket> ticketIter = origin.ticketIterTo(adj, day);
-
+	                Ticket prev = null;
 	                while (ticketIter.hasNext()) {
-	                    // Para cada vuelo distinto creo el heap de vuelta con los pesos infinitos.
-	                    pq = queueAirports(fa.getAirports());
-	                    pq.decreasePriority(origin, 0);
-	                    pq.dequeue();
-
 	                    Ticket ticket = ticketIter.next();
-	                    fa.refreshAirportsNodeProperties();
-
-	                    origin.visit();
-	                    adj.setIncident(ticket);
-	                    pq.decreasePriority(adj, ticket.getDuration().getMinutes());
-
-	                    Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
-
-	                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
-	                        bestWeight = b.lastWeight;
-	                        bestPath = b.list;
+	                    if(prev == null || !sameTicketFeatures(ticket, prev)){
+		                	prev = ticket;
+		                    	
+		                	// Para cada vuelo distinto creo el heap de vuelta con los pesos infinitos.
+		                    pq = queueAirports(fa.getAirports());
+		                    pq.decreasePriority(origin, 0);
+		                    pq.dequeue();
+	
+		                    fa.refreshAirportsNodeProperties();
+	
+		                    origin.visit();
+		                    adj.setIncident(ticket);
+		                    pq.decreasePriority(adj, ticket.getDuration().getMinutes());
+	
+		                    Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
+	
+		                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
+		                        bestWeight = b.lastWeight;
+		                        bestPath = b.list;
+		                    }
 	                    }
 	                }
 	            }
             }
         }
         return bestPath;
+    }
+    
+    private static boolean sameTicketFeatures(Ticket ticket, Ticket other){
+    	return ticket.getDeparture().equals(other.getDeparture()) 
+    			&& ticket.getDuration().equals(other.getDuration());
     }
 
     private static Box findPath (BinaryMinHeap<Airport> pq, Airport dest,
