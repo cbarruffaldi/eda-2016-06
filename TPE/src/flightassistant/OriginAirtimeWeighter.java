@@ -18,7 +18,7 @@ public class OriginAirtimeWeighter implements Weighter {
             if (quickest == null || (aux != null && aux.isQuickerThan(quickest)))
                 quickest = aux;
         }
-        return new WeightedTicket(quickest, quickest.getPrice());
+        return new WeightedTicket(quickest, quickest.getDuration().getMinutes());
     }
 
 }
