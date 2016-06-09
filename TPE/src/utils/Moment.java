@@ -11,6 +11,8 @@ public class Moment implements Comparable<Moment>, TimeConstants, Serializable{
     // timeOfDay es el tiempo pasado desde las 00:00 hs de el Day dado.
     public Moment (Day day, Time timeOfDay) {
         this.day = day;
+        if(timeOfDay.getMinutes() > TimeConstants.MINUTES_PER_DAY - 1)//00:00 - 23:59 = 0 - MINUTES_PER_DAY - 1
+        	throw new IllegalArgumentException("Time tiene que ser entre 00:00 y 24:00");
         this.timeOfDay = timeOfDay;
     }
 
@@ -28,10 +30,9 @@ public class Moment implements Comparable<Moment>, TimeConstants, Serializable{
     public Time howMuchUntil (Moment other) {
         int diff = deltaMinutes(other);
 
-        if (diff
-            < 0) //El momento es "antes en la semana", es decir, calculo para la semana que viene
+        if (diff < 0) //El momento es "antes en la semana", es decir, calculo para la semana que viene
             diff += MINUTES_PER_WEEK;
-
+        
         return new Time(diff);
 
     }
@@ -48,7 +49,7 @@ public class Moment implements Comparable<Moment>, TimeConstants, Serializable{
     public Moment addTime (Time t) {
         Day newDay = day;
         int minSum = timeOfDay.getMinutes() + t.getMinutes();
-        if (minSum >= MINUTES_PER_DAY) {
+        while (minSum >= MINUTES_PER_DAY) {
             minSum -= MINUTES_PER_DAY;
             newDay = newDay.getNextDay();
         }
