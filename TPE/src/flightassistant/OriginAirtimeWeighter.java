@@ -4,6 +4,12 @@ import utils.Day;
 
 import java.util.List;
 
+/**
+ * Idem {@link AirtimeWeighter} pero que solo considera vuelos en determinados días dados en
+ * una {@link List<Day>}.
+ * @see WeightedFlight
+ * @see Day
+ */
 public class OriginAirtimeWeighter implements Weighter {
     private List<Day> days;
 

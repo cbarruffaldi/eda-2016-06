@@ -8,7 +8,8 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- * Created by Bianchi on 30/5/16.
+ * OutputManager presenta métodos para imprimir la salida del programa, con la opción de
+ * hacerlo hacia salida estándar o hacia un archivo de texto, y en formato texto o KML.
  */
 public class OutputManager {
 
@@ -21,10 +22,16 @@ public class OutputManager {
         stdOut = true;
     }
 
+    /**
+     * Mensaje cuando se ingresa un comando con formato inválido en la entrada.
+     */
     public void invalidCommand () {
         System.err.println("Invalid Command");
     }
 
+    /**
+     * Mensaje cuando no se encuentra un camino pedido entre dos aeropuertos.
+     */
     public void notFoundMsg () {
         System.out.println("NotFound");
     }
@@ -37,6 +44,12 @@ public class OutputManager {
         System.err.print("Could not save program files");
     }
 
+    /**
+     * Se encarga de calcular tiempo total, tiempo de vuelo y precio del conjunto de
+     * vuelos dados como parámetro, y lo imprime por salida estándar o a un archivo.
+     * @see this.setToStdOutput this.setToKMLOutput
+     * @param tickets lista de tickets de vuelos que forman el camino pedido.
+     */
     public void printBestRoute (List<Ticket> tickets) {
         if (stdOut) {
             printToStdout(tickets);
@@ -65,6 +78,7 @@ public class OutputManager {
         }
     }
 
+
     private void printText (List<Ticket> tickets, PrintStream out) {
         RouteData data = new RouteData(tickets);
         out.println(
@@ -87,18 +101,30 @@ public class OutputManager {
         out.print(KMLFormatter.airportsToKML(tickets));
     }
 
+    /**
+     * Configura el formato de salida como KML. Queda guardado en la instancia de OutputManager.
+     */
     public void setToKMLFormat () {
         textFormat = false;
     }
 
+    /**
+     * Configura el formato de salida como texto. Queda guardado en la instancia de OutputManager.
+     */
     public void setToTextFormat () {
         textFormat = true;
     }
 
+    /**
+     * Configura el destino de salida a la salida estándar. Queda guardado en la instancia de OutputManager.
+     */
     public void setToStdOutput () {
         stdOut = true;
     }
 
+    /**
+     * Configura el destino de salida a un archivo txt. Queda guardado en la instancia de OutputManager.
+     */
     public void setToFileOutput (String file) {
         stdOut = false;
         fileName = file;
