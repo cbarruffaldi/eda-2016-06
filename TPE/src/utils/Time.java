@@ -2,23 +2,52 @@ package utils;
 
 import java.io.Serializable;
 
+/**
+ * La clase <i>Time<i> representa un intervalo temporal, con unidad minima 
+ * en minutos. Adem&aacute;s de la informaci&oacute;n en minutos, se proveen 
+ * m&eacute;todos para construir a partir de (y obtener) la cantidad de horas completas.
+ * El objeto es inmutable.
+ */
 public class Time implements Comparable<Time>, TimeConstants, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int minutes;
 
-    public Time (int hours, int mins) {
-        minutes = hours * MINUTES_PER_HOUR + mins;
-    }
-
+	/**
+	 * Construye un intervalo a partir de una cantidad minutos dados
+	 */
     public Time (int mins) {
+    	if(mins < 0)
+    		throw new IllegalArgumentException("El argumento debe ser positivo");
+    	
         minutes = mins;
     }
 
+    
+	/**
+	 * Construye un intervalo a partir de una cantidad de horas y minutos dados
+	 */
+    public Time (int hours, int mins) {
+    	if(mins < 0 || hours < 0)
+    		throw new IllegalArgumentException("El argumento debe ser positivo");
+
+        minutes = hours * MINUTES_PER_HOUR + mins;
+    }
+
+    /**
+	 * Construye un intervalo a partir de una cantidad minutos dados. 
+	 * Se toma la parte entera del valor pasado como parametro
+     */
     public Time (Double mins) {
         this(mins.intValue());
     }
+
     
+    /**
+     * Construye un intervalo temporal parseando un String, que debe tener formato
+     * de numero entero positivo o dos numero enteros positivos separados por dos puntos
+     * (Debe validarse la expresion regular: \d+(:\d+)?
+     */
     public Time(String str) {
     	this(0);
     	if(str.matches("\\d+:\\d+")){
@@ -33,23 +62,65 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
     		throw new IllegalArgumentException("Formato: 'min' o 'horas:minutos'");
     	}
     }
+  
+    /**
+     * Devuelve un nuevo <i>Time</i> con un tiempo igual al del objeto actual mas 
+     * el que se pasa como parametro
+     * @param t
+     * @return
+     */
     public Time addTime (Time t) {
         return new Time(minutes + t.minutes);
     }
 
+    
+    /**
+     * Devuelve un nuevo <i>Time</i> con un tiempo igual al del objeto actual mas 
+     * la cantidad de minutos que se pasan como parametro
+     * @param t
+     * @return
+     */
     public Time addMinutes (int minutes) {
         return new Time(this.minutes + minutes);
     }
-
-    public Time sumADay () {
-        return new Time(minutes + HOURS_PER_DAY * MINUTES_PER_HOUR);
+    
+    /**
+     * Devuelve un nuevo <i>Time</i> con un tiempo igual al del objeto actual mas 
+     * la cantidad de minutos que se pasan como parametro (parte entera)
+     * @param t
+     * @return
+     */
+    public Time addMinutes(Double minutes) {
+    	return addMinutes(minutes.intValue());
     }
 
+
+  /*  public Time sumADay () {
+        return new Time(minutes + HOURS_PER_DAY * MINUTES_PER_HOUR);
+    }*/
+
+    /**
+     * Devuelve la diferencia (en minutos) entre esta instancia y el tiempo dado
+     * @return
+     */
     public int minutesDifference (Time t) {
         return Math.abs(this.minutes - t.minutes);
     }
-
-    public int getMinutes () {
+    
+    /**
+     * Devuelve un Time que representa la diferencia entre esta instancia y el tiempo dado
+     * @return
+     */
+    public Time timeDifference(Time t){
+    	return new Time(minutesDifference(t));
+    }
+    
+    
+    /**
+     * Devuelve la cantidad de minutos que tiene esta intervalo temporal
+     * @return
+     */
+    public int getMinutes() {
         return minutes;
     }
 
@@ -71,7 +142,7 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
     @Override public String toString () {
         int hours = minutes / MINUTES_PER_HOUR;
         int mins = minutes % MINUTES_PER_HOUR;
-        return String.format("%02dh%02dm", hours, mins);  // Formato: xxhyym
+        return String.format("%dh%dm", hours, mins);  // Formato: xxhyym
     }
 
     @Override public int compareTo (Time o) {
