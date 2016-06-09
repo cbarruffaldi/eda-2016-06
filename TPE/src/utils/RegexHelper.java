@@ -50,7 +50,7 @@ public class RegexHelper implements InputConstraints {
     //que en los archivos se separan las palabras por medio de "#".
     public static boolean validateFlightInsertion (String line, String separator) {
         String flightFormat =
-            (separator.equals(scannerWhitespace)) ? flightFromTextFormat : flightFromFileFormat;
+            (separator.equals(scannerWhitespace) || separator.equals(" ")) ? flightFromTextFormat : flightFromFileFormat;
         return line.matches(flightFormat);
     }
 
@@ -60,7 +60,7 @@ public class RegexHelper implements InputConstraints {
 
     public static boolean validateAirportInsertion (String line, String separator) {
         String airportFormat =
-            (separator.equals(scannerWhitespace)) ? airportFromTextFormat : airportFromFileFormat;
+            (separator.equals(scannerWhitespace) || separator.equals(" ")) ? airportFromTextFormat : airportFromFileFormat;
         return line.matches(airportFormat);
     }
 

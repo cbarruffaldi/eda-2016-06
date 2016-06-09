@@ -7,21 +7,21 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
 	private static final long serialVersionUID = 1L;
 	private int minutes;
 
-    public Time (int hour, int min) {
-        minutes = hour * 60 + min;
+    public Time (int hours, int mins) {
+        minutes = hours * MINUTES_PER_HOUR + mins;
     }
 
-    public Time (int min) {
-        minutes = min;
+    public Time (int mins) {
+        minutes = mins;
     }
 
-    public Time (Double min) {
-        this(min.intValue());
+    public Time (Double mins) {
+        this(mins.intValue());
     }
     
     public Time(String str) {
     	this(0);
-    	if(str.matches("[0-9]+:[0-9]+)")){
+    	if(str.matches("\\d+:\\d+")){
     		String[] timeStr = str.split(":");
     		this.minutes += Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR;
     		this.minutes += Integer.parseUnsignedInt(timeStr[1]);
@@ -32,9 +32,7 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
     	else{
     		throw new IllegalArgumentException("Formato: 'min' o 'horas:minutos'");
     	}
-		
     }
-
     public Time addTime (Time t) {
         return new Time(minutes + t.minutes);
     }

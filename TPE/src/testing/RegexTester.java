@@ -63,7 +63,7 @@ public class RegexTester {
             "LAN 11992 Ju EZE MIA 08:129 19h45m 0350.23",
             "AA 1432 Lu- BUE PAR 18:46 14h45m 1850.23", "AA 0 BUE PAR 18:46 14h45m 1850.23",
             "Abc 1432 Lu-Lu-Lu BUE PAR 128:46 14h45m 239239",
-            "Abc 1432 Ja-Je BUE 08:46 1124h45m 2390", "AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 5m 0",
+            "Abc 1432 Ja-Je BUE 08:46 1124h45m 2390", "AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 5m",
             //Los minutos deben ser 05m, no 5m
             "AA 1432 Lu-Ju-Ma-Sa BUE PAR 08:46 14h95m 1850.23"};
 
