@@ -170,7 +170,7 @@ public class Airport implements Serializable {
 	/**
 	 * Elimina la ruta entre este aeropuerto y otro. Si no existe
 	 * la ruta, no hace nada.
-	 * @param airport el otro aeropuerto
+	 * @param destination el otro aeropuerto
 	 */
 	public void removeRouteTo(Airport destination) {
 		routes.remove(destination);
@@ -183,7 +183,13 @@ public class Airport implements Serializable {
 		routes.clear();
 	}
 
-	
+	/**
+	 * Devuelve un iterador de vuelos que despegan en un Moment posterior a el Moment dado como
+	 * parámetro.
+	 * @param to aeropuerto hacia el que van los vuelos pedidos.
+	 * @param fromMoment Momento desde el cual se devuelven los vuelos
+	 * @return iterador de tickets de dichos vuelos
+	 */
 	public HigherIterator iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
 		Route route = routes.get(to);
 		if (route == null)

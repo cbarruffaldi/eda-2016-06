@@ -1,5 +1,11 @@
 package flightassistant;
 
+/**
+ * Clase que evalúa dos aeropuertos dados y devuelve un {@link WeightedFlight} con el vuelo
+ * mas rápido (según tiempo de vuelo) entre ellos.
+ * @see InfinityDijkstra
+ * @see WeightedFlight
+ */
 public class AirtimeWeighter implements Weighter {
     public static final Weighter WEIGHTER = new AirtimeWeighter();
 

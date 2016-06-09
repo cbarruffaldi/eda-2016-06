@@ -9,6 +9,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 
+/**
+ * Representa una ruta entre dos aeropuertos únicos. Contiene los vuelos entre ambos,
+ * en ambas direcciones.
+ */
 public class Route implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -80,7 +84,7 @@ public class Route implements Serializable {
             throw new IllegalArgumentException("This route does not connect s" + base);
     }
 
-    /*
+    /**
      * Determina la igualdad de dos Rutas, segun los dos aeropuertos visitados
      */
     @Override public boolean equals (Object o) {
@@ -119,6 +123,11 @@ public class Route implements Serializable {
         return container.weekArray.get(day).iterator();
     }
 
+    /**
+     * Clase que contiene todos los vuelos de un aeropuerto a otro, en una sola dirección.
+     * Consta de un {@link WeekArray} con el {@link Ticket} mas barato correspondiente a cada día
+     * de la semana, otro con el mas rápido, y otro con todos los vuelos de cada día.
+     */
     private static class TicketContainer {
 
         // Vuelos en el container ordenados por momento de salida.

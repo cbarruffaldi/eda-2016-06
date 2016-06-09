@@ -9,6 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Iterador de tickets. Itera sobre un conjunto ordenado (por tiempo de salida)
+ * de tickets, correspondientes a los vuelos entre dos determinados Airports,
+ * a partir de un cierto Moment dado.
+ * @see TotalTimeWeighter
+ * @see Airport
+ */
 public class HigherIterator implements Iterator<Ticket> {
     private Iterator<AVLSet<Ticket>> dayIter;
     private Iterator<Ticket> ticketIter;

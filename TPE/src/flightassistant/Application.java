@@ -1,15 +1,15 @@
 package flightassistant;
 
-import utils.FileManager2;
+import utils.FileManager;
 import utils.Parser;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Application {
-    private static FlightAssistant flightAssistant;
     private static final String AirportsFileString = "airports.txt";
     private static final String FlightsFileString = "flights.txt";
+    private static FlightAssistant flightAssistant;
     
     public static void main(String[] args) {
        // Por ahora lo saco porque no anda
@@ -30,8 +30,8 @@ public class Application {
 
     private static void exit() {
         try {
-        	FileManager2.saveAirports(flightAssistant);
-            FileManager2.saveFlights(flightAssistant);
+        	FileManager.saveAirports(flightAssistant);
+            FileManager.saveFlights(flightAssistant);
         } catch (IOException e) {
         	e.printStackTrace();
             System.out.println("Error");
