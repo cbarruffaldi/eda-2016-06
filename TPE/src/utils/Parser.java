@@ -260,7 +260,7 @@ public class Parser{
         String durationOfFlightStr = sc.next();
         double price = new Double(sc.next());
 
-        Time depTime = Time.getTimeFromString(timeOfDeparture);
+        Time depTime = new Time(timeOfDeparture);
         List<Moment> departures = departures(days, depTime);
         int duration = getDuration(durationOfFlightStr);
 

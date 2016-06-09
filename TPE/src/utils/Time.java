@@ -18,13 +18,21 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
     public Time (Double min) {
         this(min.intValue());
     }
-
-    // TODO: no podría ser un constructor o parsearse desde afuera?
-    public static Time getTimeFromString (String str) {
-        String[] timeStr = str.split(":");
-        Time t = new Time(Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR);
-        t.addMinutes(Integer.parseUnsignedInt(timeStr[1]));
-        return t;
+    
+    public Time(String str) {
+    	this(0);
+    	if(str.matches("[0-9]+:[0-9]+)")){
+    		String[] timeStr = str.split(":");
+    		this.minutes += Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR;
+    		this.minutes += Integer.parseUnsignedInt(timeStr[1]);
+    	}
+    	else if(str.matches("[0-9]+")){
+    		this.minutes += Integer.parseInt(str);
+    	}
+    	else{
+    		throw new IllegalArgumentException("Formato: 'min' o 'horas:minutos'");
+    	}
+		
     }
 
     public Time addTime (Time t) {
