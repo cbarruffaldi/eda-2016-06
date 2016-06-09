@@ -10,16 +10,45 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Clase que procesa y parsea la entrada, tanto la estándar como por un archivo de texto,
+ * y ejecuta los comandos ingresados en un {@link FlightAssistant} dado. Realiza todas las validaciones
+ * en cuanto al contenido de los comandos, y también imprime mensajes según corresponda.
+ * @see OutputManager
+ * @see RegexHelper
+ * @see FileManager
+ */
 public class Parser{
+
     private static final Pattern numeralPatt = Pattern.compile("#");
     private static final Pattern spacePatt = Pattern.compile("(\\s)*");
+
+    /**
+     * {@link Pattern} que representa cualquier caracter.
+     */
     private static final Pattern allPatt = Pattern.compile(".*");
+
+    /**
+     * {@link FlightAssistant} sobre el cual se ejecutan los comandos ingresados.
+     */
     private static FlightAssistant flightAssistant;
-    private static boolean hasEnded = false; // Dice si usaron el comando exitAndClose. Pensar mejor solución.
+
+    /**
+     * Expresa si se usó el comando "exitAndClose" para terminar la ejecución del programa.
+     */
+    private static boolean hasEnded = false;
+
+    /**
+     * {@link OutputManager} que se usa para manejar la impresión de la salida del parser.
+     */
     private static OutputManager Output = new OutputManager();
 
-    // ARGUMENTOS SHELL
-
+    /**
+     * Parsea los argumentos cuando estos se ingresan por entrada estándar (comandos shell).
+     * @param sc {@link Scanner} del texto ingresado.
+     * @param fa {@link FlightAssistant} sobre el que se ejecutan los comandos.
+     * @return
+     */
     public static boolean parseShell(Scanner sc, FlightAssistant fa) {
         flightAssistant = fa;
         if (flightAssistant == null) {
@@ -62,7 +91,10 @@ public class Parser{
         }
     }
 
-
+    /**
+     * Consume el resto del texto pendiente en el Scanner.
+     * @param sc {@link Scanner} a vaciar.
+     */
     private static void consumeScanner(Scanner sc) {
         sc.skip(allPatt);
     }
@@ -348,8 +380,6 @@ public class Parser{
 		return departs;
 	}
 
-    // ARGUMENTOS POR LINEA DE COMANDOS.
-
 	public static void insertAirportsFromFile(String fileName, FlightAssistant fa) {
 		flightAssistant = fa;
 		insertFromFile(fileName, true);
@@ -382,6 +412,12 @@ public class Parser{
         return valid;
     }
 
+
+    /**
+     * Parsea los argumentos cuando estos se ingresan como parámetros del programa.
+     * @param cmd conjunto de argumentos.
+     * @param fa {@link FlightAssistant} sobre el que se ejecutan los comandos.
+     */
     public static void parseArguments(String[] cmd, FlightAssistant fa) {
         boolean valid = false;
         flightAssistant = fa;
@@ -406,7 +442,6 @@ public class Parser{
         }
     }
 
-    // TODO Ver como no repetir codigo entre esta y la misma pero de los vuelos
     private static boolean parseAirportArgument(String[] cmd) {
         if (cmd.length != 3) return false;
         Scanner filePathSc = new Scanner(cmd[1]);
@@ -443,6 +478,11 @@ public class Parser{
         return ans;
     }
 
+    /**
+     * Avanza el {@link Scanner} hasta el final de la línea y devuelve toda esa línea sin
+     * espacios el principio.
+     * @return resto de la línea
+     */
     // Avanza el scanner hasta el final de la linea y devuelve toda esa línea sin espacios al principio.
     private static String restOfLine(Scanner sc) {
         sc.skip(spacePatt);
