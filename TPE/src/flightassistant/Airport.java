@@ -57,31 +57,47 @@ public class Airport implements Serializable {
 		});
 	}
 
+	/**
+	 * Validacion de coordenadas
+	 */
 	private boolean validCoordinates(double latitude, double longitude) {
 		return Double.compare(-90, latitude) <= 0 && Double.compare(90, latitude) >= 0 
 				&& Double.compare(-180, latitude) <= 0 && Double.compare(180, latitude) >= 0;
 	}
 
+	/**
+	 * Devuelve el ID del aeropuerto
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Devuelve la latitud del aeropuerto
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
-
+	
+	/**
+	 * Devuelve la longitud (geografica) del aeropuerto
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Agrega un vuelo con origen en este aeropuerto
+	 * a la ruta existente entre este aeropuerto y el aeropuerto destino
+	 * 
+	 * @throws IllegalArgumentException si el origen del vuelo es incorrecto
+	 * @throws IllegalStateException si no existe la ruta entre este aeropuerto
+	 * y el aeropuerto destino
+	 */
 	public void addFlight(Flight flight) {
-		if (flight == null)
-			throw new NullPointerException("null flight");
-
+		assertCorrectFlight(flight);
+		
 		Airport destination = flight.getDestination();
-		if (!routeExistsTo(destination)) { //Un acceso mas, pero queda mas claro
-			throw new IllegalStateException();
-		}
 
 		Route r = routes.get(destination);
 		List<Ticket> tickets = TicketMachine.makeTickets(flight);
@@ -90,14 +106,19 @@ public class Airport implements Serializable {
 			r.addTicket(ticket);
 	}
 
+	/**
+	 * Elimina un vuelo con origen en este aeropuerto de la ruta entre los aeropuertos.
+	 * @param flight
+	 *
+	 * @throws IllegalArgumentException si el origen del vuelo es incorrecto
+	 * @throws IllegalStateException si no existe la ruta entre este aeropuerto
+	 * y el aeropuerto destino
+
+	 */
 	public void removeFlight(Flight flight) {
-		if (flight == null)
-			throw new NullPointerException("null flight");
+		assertCorrectFlight(flight);
 
 		Airport destination = flight.getDestination();
-		if (!routeExistsTo(destination)) {
-			throw new IllegalStateException();
-		}
 
 		Route r = routes.get(destination);
 		List<Ticket> tickets = TicketMachine.makeTickets(flight);
@@ -105,27 +126,64 @@ public class Airport implements Serializable {
 		for (Ticket ticket : tickets)
 			r.removeTicket(ticket);
 	}
+ 
+	/**
+	 * Validacion de vuelo existente desde este aeropuerto
+	 */
+	private void assertCorrectFlight(Flight flight){
+		if (flight == null)
+			throw new NullPointerException("null flight");
+		
+		if(!flight.getOrigin().equals(this))
+			throw new IllegalArgumentException("Invalid flight origin");
 
+		if (!routeExistsTo(flight.getDestination())) {
+			throw new IllegalStateException();
+		}
+
+	}
+	
+	/**
+	 * Devuelve la @Route entre dos aeropuertos dados, o null si no existe
+	 * @param airport el otro aeropuerto de la ruta
+	 */
 	public Route getRouteTo(Airport airport) {
 		return routes.get(airport);
 	}
 
+	/**
+	 * Indica si existe o no una ruta entre este aeropuerto y el
+	 * pasado como parametro
+	 */
 	public boolean routeExistsTo(Airport airport) {
 		return routes.containsKey(airport);
 	}
 
+	/**
+	 * Crea una ruta nueva entre este aeropuerto y otro
+	 * @param airport el otro aeropuerto
+	 */
 	public void addRoute(Airport airport, Route r) {
 		routes.put(airport, r);
 	}
-
+	
+	/**
+	 * Elimina la ruta entre este aeropuerto y otro. Si no existe
+	 * la ruta, no hace nada.
+	 * @param airport el otro aeropuerto
+	 */
 	public void removeRouteTo(Airport destination) {
 		routes.remove(destination);
 	}
 
+	/**
+	 * Elimina todas las rutas existentes desde este aeropuerto
+	 */
 	public void removeAllRoutes() {
 		routes.clear();
 	}
 
+	
 	public HigherIterator iteratorOfHigherFlightsTo(Airport to, Moment fromMoment) {
 		Route route = routes.get(to);
 		if (route == null)
