@@ -138,15 +138,25 @@ public class Parser{
 
     private static List<Ticket> findPathWithOption(String option, String orig, String dest, List<Day> days) {
         List<Ticket> path = new LinkedList<>(); // para que no tire warning
+        long tick, tock;
         switch (option) {
             case "ft":
+            	tick = System.currentTimeMillis();
                 path = flightAssistant.findQuickestPath(orig, dest, days);
+                tock = System.currentTimeMillis();
+                System.err.println("Time:" + (tock-tick) / 1000.0 + "s");
                 break;
             case "pr":
+            	tick = System.currentTimeMillis();
                 path = flightAssistant.findCheapestPath(orig, dest, days);
+                tock = System.currentTimeMillis();
+                System.err.println("Time: " +(tock-tick) / 1000.0 + "s");
                 break;
             case "tt":
+            	tick = System.currentTimeMillis();
                 path = flightAssistant.findShortestTotalTimeRoute(orig, dest, days);
+            	tock = System.currentTimeMillis();
+                System.err.println("Time: " + (tock-tick) / 1000.0 + "s");
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Option");

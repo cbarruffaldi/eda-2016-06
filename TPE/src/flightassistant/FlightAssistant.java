@@ -106,21 +106,26 @@ public class FlightAssistant implements Serializable {
     }
 
     public List<Ticket> findShortestTotalTimeRoute(String orig, String dest, List<Day> days) {
+    	Airport origin = airports.get(orig);
+    	Airport destination = airports.get(dest);
+    	if(origin == null || destination == null || origin.equals(destination))
+    		return null;
+    	
         return InfinityDijkstra.minPathTotalTime(this, airports.get(orig), airports.get(dest), days);
     }
 
     private List<Ticket> findPath (String orig, String dest, List<Day> days, Weighter weighter,
         Weighter originWeighter) {
-        Airport from = airports.get(orig);
-        Airport to = airports.get(dest);
-        if (from == null || to == null || from.equals(to)) {
+        Airport origin = airports.get(orig);
+        Airport destination = airports.get(dest);
+        if (origin == null || destination == null || origin.equals(destination)) {
             return null; // Ver que hacer
         }
         refreshAirportsNodeProperties();
         if (days.isEmpty()) {
-            return InfinityDijkstra.minPath(airports, from, to, weighter, days);
+            return InfinityDijkstra.minPath(airports, origin, destination, weighter, days);
         }
-        return InfinityDijkstra.minpath(airports, from, to, weighter, originWeighter, days);
+        return InfinityDijkstra.minpath(airports, origin, destination, weighter, originWeighter, days);
 
     }
 

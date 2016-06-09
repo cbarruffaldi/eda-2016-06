@@ -69,8 +69,9 @@ public class BinaryMinHeap <T> implements PriorityQueue<T> {
         Integer index = indexMap.get(elem);
         if (index == null)
             return;
-        if (array[index].priority <= priority) {
-        	System.out.println("Augmenting!!!");
+        if (array[index].priority < priority) {
+        	if(array[index].priority > priority){
+        	System.out.println("Augmenting!!!");}
             array[index].priority = priority;
             moveDown(index);
         } else {
