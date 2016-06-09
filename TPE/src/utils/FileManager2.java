@@ -15,13 +15,13 @@ import java.util.List;
  * <p>
  * Existen dos tipos de archivos, uno que guarda todos los {@link Airport} de un {@link FlightAssistant}
  * y otro que guarda todos los {@link Flight}
- * 
+ *
  */
 public class FileManager2 {
-	
+
 	/**
 	 * Guarda en un archivo de texto por defecto "flights.txt" todos los vuelos que almacena un <tt>FlighAssistant</tt>
-	 * con el formato 
+	 * con el formato
 	 * [aerolinea]#[nroVuelo]#[diasSemana]#[origen]#[destino]#[horaSalida]#[duracion]#[precio]
 	 * @param {@link FlighAssistant} del cual se quieren guardar los <tt>Flight</tt>
 	 * @throws FileNotFoundException
@@ -31,13 +31,13 @@ public class FileManager2 {
 		Iterator<Flight> it = fa.getFlights().valueIterator();
 		while(it.hasNext()){
 			Flight flight = it.next();
-			out.println(airline(flight) + "#" + flight.getId().getNumber() + "#" + departuresStr(flight) + "#" + 
+			out.println(airline(flight) + "#" + flight.getId().getNumber() + "#" + departuresStr(flight) + "#" +
 			originAirport(flight) + "#" + destAirport(flight) + "#" + departureTime(flight) + "#" + duration(flight) +
 			"#" + flight.getPrice());
 		}
 		out.close();
 	}
-	
+
 	/**
 	 * Guarda en un archivo de texto "airports.txt" todos los aeropuertos que almacena un <tt>FlightAssistant</tt>
 	 * con el formato
@@ -54,7 +54,7 @@ public class FileManager2 {
 		}
 		out.close();
 	}
-	
+
 	/**
 	 * Retorna los dias de la semana en la que sale un determinado vuelo separados por un guión "-" en caso de ser
 	 * varios.
@@ -65,12 +65,12 @@ public class FileManager2 {
 		List<Moment> departures = f.getDepartures();
 		StringBuffer buffer = new StringBuffer();
 		for(Moment m : departures) {
-			buffer.append(m.getDay().toString() + "-");			
+			buffer.append(m.getDay().toString() + "-");
 		}
 		buffer.deleteCharAt(buffer.length()-1);
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Retorna la aerolinea correspondiente a un determinado vuelo
 	 * @param <tt>Flight</tt> acerca del cual se quiere averiguar la aerolínea
@@ -79,7 +79,7 @@ public class FileManager2 {
 	private static String airline(Flight f) {
 		return f.getId().getAirline();
 	}
-	
+
 	/**
 	 * Retorna el nombre del {@link Airport} de origen de un <tt>Flight</tt> determinado
 	 * @param <tt>Flight</tt> acerca del cual se quiere averiguar la aerolínea
@@ -88,7 +88,7 @@ public class FileManager2 {
 	private static String originAirport(Flight f) {
 		return f.getOrigin().toString();
 	}
-	
+
 	/**
 	 * Retorna el nombre del {@link Airport} de destino de un <tt>Flight</tt> determinado
 	 * @param <tt>Flight</tt> acerca del cual se quiere averiguar la aerolínea
@@ -97,7 +97,7 @@ public class FileManager2 {
 	private static String destAirport(Flight f) {
 		return f.getDestination().toString();
 	}
-	
+
 	/**
 	 * Retorna la duración de un <tt>Flight</tt> determinado
 	 * @param <tt>Flight</tt> acerca del cual se quiere averiguar la duración
@@ -106,7 +106,7 @@ public class FileManager2 {
 	private static String duration(Flight f) {
 		return f.getDuration().toString();
 	}
-	
+
 	/**
 	 * Retorna la hora de salida de un <tt>Flight</tt> determinado
 	 * @param <tt>Flight</tt> acerca del cual se quiere obtener el horario de salida
@@ -118,7 +118,6 @@ public class FileManager2 {
 		int hours = minutes/ TimeConstants.MINUTES_PER_HOUR;
 		minutes = minutes % TimeConstants.MINUTES_PER_HOUR;
 		return String.format("%02d:%02d", hours ,minutes);
-		
 	}
 
 }

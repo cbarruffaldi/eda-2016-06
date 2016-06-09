@@ -23,7 +23,7 @@ public class Time implements Comparable<Time>, TimeConstants, Serializable {
     public static Time getTimeFromString (String str) {
         String[] timeStr = str.split(":");
         Time t = new Time(Integer.parseUnsignedInt(timeStr[0]) * MINUTES_PER_HOUR);
-        t.addMinutes(Integer.parseUnsignedInt(timeStr[1]));
+        t = t.addMinutes(Integer.parseUnsignedInt(timeStr[1]));
         return t;
     }
 

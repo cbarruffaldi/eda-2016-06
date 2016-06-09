@@ -1,6 +1,5 @@
 package utils;
 
-import flightassistant.Airport;
 import flightassistant.Ticket;
 
 import java.io.FileNotFoundException;
@@ -38,31 +37,31 @@ public class OutputManager {
         System.err.print("Could not save program files");
     }
 
-    public void printBestRoute (List<Ticket> airports) {
+    public void printBestRoute (List<Ticket> tickets) {
         if (stdOut) {
-            printToStdout(airports);
+            printToStdout(tickets);
         } else {
-            printToFile(airports);
+            printToFile(tickets);
         }
     }
 
-    private void printToStdout (List<Ticket> airports) {
-        print(airports, System.out);
+    private void printToStdout (List<Ticket> tickets) {
+        print(tickets, System.out);
     }
 
-    private void printToFile (List<Ticket> airports) {
+    private void printToFile (List<Ticket> tickets) {
         try {
-            print(airports, new PrintStream(new FileOutputStream(fileName, true)));
+            print(tickets, new PrintStream(new FileOutputStream(fileName, true)));
         } catch (FileNotFoundException e) {
             System.err.println("Error writing/reading file");
         }
     }
 
-    private void print (List<Ticket> airports, PrintStream out) {
+    private void print (List<Ticket> tickets, PrintStream out) {
         if (textFormat) {
-            printText(airports, out);
+            printText(tickets, out);
         } else {
-            // TODO: printKML(airports, out);
+        	printKML(tickets, out);
         }
     }
 
@@ -84,8 +83,8 @@ public class OutputManager {
         out.println(origin + "#" + airline + "#" + flightNum + "#" + destination);
     }
 
-    private void printKML (List<Airport> airports, PrintStream out) {
-        out.print(KMLFormatter.airportsToKML(airports));
+    private void printKML (List<Ticket> tickets, PrintStream out) {
+        out.print(KMLFormatter.airportsToKML(tickets));
     }
 
     public void setToKMLFormat () {
@@ -105,7 +104,10 @@ public class OutputManager {
         fileName = file;
     }
 
-    // Tambien podria almacenar el caminito con los vuelos, y cosas para el KML
+    /**
+     * Se encarga de calcular el precio, el tiempo total y el tiempo de vuelo
+     * de la lista de tickets.
+     */
     private static class RouteData {
         private double price;
         private Time fltime;
@@ -133,5 +135,4 @@ public class OutputManager {
             return t;
         }
     }
-
 }

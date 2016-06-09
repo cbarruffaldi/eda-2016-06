@@ -1,6 +1,7 @@
 package utils;
 
 import flightassistant.Airport;
+import flightassistant.Ticket;
 
 import java.util.List;
 
@@ -8,19 +9,19 @@ import java.util.List;
  * Se encarga de generar un string con el formato correspondiente a un documento KML
  *
  */
-// TODO: cambiar KML para maneje lista de flight
 public class KMLFormatter {
     private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     private static final String KML_OPENER = "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n";
     private static final String KML_CLOSER = "</kml>\n";
 
-    public static String airportsToKML (List<Airport> airports) {
+    public static String airportsToKML (List<Ticket> tickets) {
         StringBuffer str = new StringBuffer();
         str.append(HEADER);
         str.append(KML_OPENER);
 
-        for (Airport airport : airports)
-            attachPlacemark(str, airport);
+        attachPlacemark(str,tickets.get(0).getOrigin());
+        for (Ticket ticket : tickets)
+            attachPlacemark(str, ticket.getDestination());
 
         str.append(KML_CLOSER);
 
