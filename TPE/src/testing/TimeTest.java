@@ -65,4 +65,16 @@ public class TimeTest {
 	}
 	
 
+	@Test
+	public void compareTest(){
+		Time t0 = new Time(1,30);
+		Time t1 = new Time(1,30);
+		
+		Time t2 = t1.addMinutes(120);
+		assertTrue(t2.compareTo(t1) > 0);
+		
+	
+	}
+	
+
 }

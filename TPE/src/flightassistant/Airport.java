@@ -12,6 +12,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Un aeropouerto. El mismo se identifica segun su ID (nombre), pero tiene
+ * tambien informacion de latitud y longitud.
+ * Un aeropuerto se vincula a otro mediante {@link Route}s bidireciconales,
+ * que guardan todos los vuelos entre los mismos.
+ * 
+ * @see Route
+ */
 public class Airport implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -23,7 +31,20 @@ public class Airport implements Serializable {
 	private Ticket incident;
 	private boolean visited;
 
+	/**
+	 * Construye un aeropuerto
+	 * @param id - El nombre del aeropuerto
+	 * @param latitude - latitud del aeropuerto
+	 * @param longitude - longitud del aeropuerto
+	 */
 	public Airport(String id, double latitude, double longitude) {
+		if(!id.matches("[A-Za-z]{3}")){
+			throw new IllegalArgumentException("ID invalido (deben ser 3 letras)");
+		}
+		if(!validCoordinates(latitude, longitude))
+			throw new IllegalArgumentException("Coordenadas invalidas");
+		
+		
 		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -34,6 +55,11 @@ public class Airport implements Serializable {
 				return o1.getId().compareTo(o2.getId());
 			}
 		});
+	}
+
+	private boolean validCoordinates(double latitude, double longitude) {
+		return Double.compare(-90, latitude) <= 0 && Double.compare(90, latitude) >= 0 
+				&& Double.compare(-180, latitude) <= 0 && Double.compare(180, latitude) >= 0;
 	}
 
 	public String getId() {
@@ -127,7 +153,7 @@ public class Airport implements Serializable {
 	}
 
 	/*
-	 * Determina la igualdad de dos Aeropuertos según su nombre (id)
+	 * Determina la igualdad de dos Aeropuertos segun su nombre (id)
 	 */
 	@Override
 	public boolean equals(Object o) {
@@ -142,7 +168,7 @@ public class Airport implements Serializable {
 	}
 
 
-	//Cosas de Dijkstrksja
+	//Lo que sigue es modelado de Nodo, para utilizar en los algoritmos de caminos minimos
 
 	public boolean flightExistsTo(Airport destination) {
 		return	routeExistsTo(destination) && routes.get(destination).flightExistsFrom(this);

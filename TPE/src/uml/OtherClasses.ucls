@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="utils.Moment" project="TPE" file="/TPE/src/utils/Moment.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="670" y="555"/>    
+    <position height="-1" width="-1" x="491" y="583"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,7 +30,7 @@
   </class>  
   <class id="4" language="java" name="utils.Time" project="TPE" file="/TPE/src/utils/Time.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="333" width="158" x="888" y="380"/>    
+    <position height="-1" width="-1" x="729" y="585"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -39,8 +39,12 @@
   </class>  
   <association id="5">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="6" name="timeOfDay"/>      
-      <multiplicity id="7" minimum="0" maximum="1"/>    
+      <attribute id="6" name="timeOfDay">        
+        <position height="0" width="0" x="-238" y="39"/>      
+      </attribute>      
+      <multiplicity id="7" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-238" y="39"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  

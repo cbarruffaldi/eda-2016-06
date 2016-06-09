@@ -62,6 +62,14 @@ public class MomentTest {
 		assertEquals(m2,m3);
 		
 		//howMuchUntil() coherente con addTime()
+		m3 = m2.addTime(m2.howMuchUntil(m1));
+		assertEquals(m1,m3);
+		
+		
+		m3 = m1.addTime(m1.howMuchUntil(m2));
+		assertEquals(m2,m3);
+
+		
 		m1 = new Moment(Day.LU, new Time("00:01"));
 		m2 = new Moment(Day.DO, new Time("23:59"));
 		

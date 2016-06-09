@@ -95,24 +95,7 @@ public class Moment implements /*Comparable<Moment>,*/ TimeConstants, Serializab
         return new Moment(newDay, new Time(minSum));
     }
 
-//    @Override public int compareTo (Moment o) {
-//        return deltaMinutes(o);
-//    }
-//
-//    /**
-//     * Devuelve si est� antes en la semana
-//     */
-//    public boolean isBefore (Moment other) {
-//        return compareTo(other) < 0;
-//    }
-//
-//    /**
-//     * Devuelve si est� despu�s en la semana
-//     */
-//    public boolean isAfter (Moment other) {
-//        return compareTo(other) > 0;
-//    }
-//
+
     @Override public boolean equals (Object o) {
         if (this == o)
             return true;
