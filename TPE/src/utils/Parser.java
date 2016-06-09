@@ -50,7 +50,7 @@ public class Parser{
             case "output":
                 valid = parseOutputTarget(sc);
                 break;
-            case "exitAndClose":
+            case "exitAndSave":
                 valid = true;
                 hasEnded = true;
                 break;
