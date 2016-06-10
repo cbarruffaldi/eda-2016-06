@@ -64,8 +64,6 @@ public class Parser{
         String str = sc.next();
         boolean valid = false;
         
-    	long tick = System.currentTimeMillis();
-
         switch(str) {
             case "insert":
                 valid = parseInsert(sc);
@@ -90,7 +88,6 @@ public class Parser{
         
         if(valid){
         	System.out.println(">Done");
-        	System.out.print((System.currentTimeMillis() - tick) / 1000.0);
         }
 
         if (!valid) {
@@ -385,7 +382,7 @@ public class Parser{
 		flightAssistant = null;
 	}
 
-    //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
+    //Pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
     private static boolean insertFromFile(String pathToFile, boolean insertAirport) {
     	boolean valid = true;
         try {
