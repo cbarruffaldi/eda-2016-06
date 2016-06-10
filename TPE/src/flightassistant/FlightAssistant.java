@@ -14,6 +14,7 @@ public class FlightAssistant implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //20,50
     private static final int AIRPORTS_SIZE = 20;
     private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
     

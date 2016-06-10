@@ -20,7 +20,7 @@ public class Application {
         } else {
             //flightAssistant = new FlightAssistant();
             Scanner sc = new Scanner(System.in);
-
+            System.out.println("Done loading");
             while (!Parser.parseShell(sc, flightAssistant));
             // el parser devuelve si se usó el comando para terminar el programa o no
             sc.close();
