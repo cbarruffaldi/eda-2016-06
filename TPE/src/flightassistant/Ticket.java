@@ -77,7 +77,7 @@ public class Ticket implements Serializable {
         return flight.hashCode() ^ departure.hashCode();
     }
 
-    @Override public String toString () { //TODO: hacerlo bien
+    @Override public String toString () {
         return flight.toString();
     }
 }

@@ -16,22 +16,30 @@ public class KMLFormatter {
 
     public static String airportsToKML (List<Ticket> tickets) {
         StringBuffer str = new StringBuffer();
+        Ticket lastTicket = tickets.get(tickets.size()-1);
         str.append(HEADER);
         str.append(KML_OPENER);
 
-        attachPlacemark(str,tickets.get(0).getOrigin());
         for (Ticket ticket : tickets)
-            attachPlacemark(str, ticket.getDestination());
+            attachPlacemark(str, ticket.getOrigin(), buildTicketDescription(ticket));
+        attachPlacemark(str,lastTicket.getDestination(), "Aeropuerto destino");
 
         str.append(KML_CLOSER);
 
         return new String(str);
     }
 
-    private static void attachPlacemark (StringBuffer str, Airport airport) {
+    private static String buildTicketDescription(Ticket ticket) {
+    	StringBuffer str = new StringBuffer();
+    	str.append("El vuelo " + ticket.getFlightId());
+    	str.append(" parte con destino a " + ticket.getDestination());
+		return str.toString();
+	}
+
+	private static void attachPlacemark (StringBuffer str, Airport airport, String description) {
         str.append("<Placemark>\n");
         str.append("<name>" + airport.getId() + "</name>\n");
-        str.append("<description>" + "</description>\n"); // empty description
+        str.append("<description>" + description + "</description>\n"); // empty description
         attachPoint(str, airport.getLatitude(), airport.getLongitude());
         str.append("</Placemark>\n");
     }

@@ -44,7 +44,7 @@ public class FlightId implements Comparable<FlightId>, Serializable {
     }
 
     public String toString () {
-        return airline + number;
+        return airline + " " + number;
     }
 
     @Override public int compareTo (FlightId o) {

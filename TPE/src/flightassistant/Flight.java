@@ -70,7 +70,7 @@ public class Flight implements Serializable {
     }
 
     @Override public String toString () {
-        return "Flight: " + id.toString() + " Time: " + getDuration().getMinutes();
+        return id.toString();
     }
 
     @Override public boolean equals (Object o) {
