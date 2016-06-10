@@ -64,9 +64,7 @@ public class Parser{
         String str = sc.next();
         boolean valid = false;
         
-        long tick = System.currentTimeMillis(); //TODO: Tick-tock
-        boolean ticktock = true;
-        
+       
         switch(str) {
         
             case "insert":
@@ -76,7 +74,6 @@ public class Parser{
                 valid = parseDelete(sc);
                 break;
             case "findRoute":
-            	ticktock=false; 
                 valid = parseRoute(sc);
                 break;
             case "outputFormat":
@@ -90,10 +87,7 @@ public class Parser{
                 hasEnded = true;
                 break;
         }
-        long tock = System.currentTimeMillis();
-        if(ticktock)
-        	System.out.println(">done in " + (tock-tick)/1000.0);
-        
+     
 
         if (!valid) {
             Output.invalidCommand();

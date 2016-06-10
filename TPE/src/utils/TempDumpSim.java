@@ -61,21 +61,21 @@ public class TempDumpSim {
 		}
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
-		PrintStream outFlights = new PrintStream(new FileOutputStream("hugeFlights.txt"));
-		PrintStream outAirs = new PrintStream(new FileOutputStream("hugeAirs.txt"));
-		
-		genAirports(15000);
-		for(int i = 0 ; i < 500000 ; i++){
-			outFlights.println(generateFlightString());
-		}
-		
-		for(Integer i = 0; i < airs.length ; i++){
-			String air = airs[i] + "#1.0#1.0";
-			outAirs.println(air);
-		}
-
-		outFlights.close();
-		outAirs.close();
-	}
+//	public static void main(String[] args) throws FileNotFoundException {
+//		PrintStream outFlights = new PrintStream(new FileOutputStream("hugeFlights.txt"));
+//		PrintStream outAirs = new PrintStream(new FileOutputStream("hugeAirs.txt"));
+//		
+//		genAirports(15000);
+//		for(int i = 0 ; i < 100000 ; i++){
+//			outFlights.println(generateFlightString());
+//		}
+//		
+//		for(Integer i = 0; i < airs.length ; i++){
+//			String air = airs[i] + "#1.0#1.0";
+//			outAirs.println(air);
+//		}
+//
+//		outFlights.close();
+//		outAirs.close();
+//	}
 }

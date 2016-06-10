@@ -21,6 +21,8 @@ import java.util.Set;
  */
 public class Airport{
 
+    private static final int ROUTE_SIZE = 6000;
+
 	private String id;
 	private double latitude;
 	private double longitude;
@@ -46,7 +48,7 @@ public class Airport{
 		this.latitude = latitude;
 		this.longitude = longitude;
 
-		routes = new AVLHashMap<>(100, new Comparator<Airport>() {
+		routes = new AVLHashMap<>(ROUTE_SIZE, new Comparator<Airport>() {
 			@Override
 			public int compare(Airport o1, Airport o2) {
 				return o1.getId().compareTo(o2.getId());

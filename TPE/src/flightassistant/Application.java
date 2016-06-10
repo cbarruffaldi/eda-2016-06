@@ -34,8 +34,6 @@ public class Application {
             SaveManager.saveFlights(flightAssistant);
         } catch (IOException e) {
         	e.printStackTrace();
-            System.out.println("Error");
-            //TODO hacer con el outputmanager
         }
     }
 
