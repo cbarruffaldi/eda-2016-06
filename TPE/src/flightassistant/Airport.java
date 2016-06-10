@@ -6,7 +6,6 @@ import structures.SimpleMap;
 import utils.Day;
 import utils.Moment;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
