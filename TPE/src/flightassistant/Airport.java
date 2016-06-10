@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class Airport{
 
-    private static final int ROUTE_SIZE = 6000;
+    private static final int ROUTE_SIZE = 30;
 
 	private String id;
 	private double latitude;

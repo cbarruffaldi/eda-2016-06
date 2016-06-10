@@ -23,12 +23,10 @@ public class Application {
     private static FlightAssistant flightAssistant;
 
     public static void main(String[] args) {
-        flightAssistant = load();	//carga el flightAssistant
-    	
+    	flightAssistant = load();	//carga el flightAssistant
     	if (calledWithArgument(args)) {
             Parser.parseArguments(args, flightAssistant);
         } else {
-            //flightAssistant = new FlightAssistant();
             Scanner sc = new Scanner(System.in);
             System.out.println("Done loading");
             while (!Parser.parseShell(sc, flightAssistant));
@@ -62,7 +60,6 @@ public class Application {
         FlightAssistant fa = new FlightAssistant();
         Parser.insertAirportsFromFile(AirportsFileString, fa);
         Parser.insertFlightsFromFile(FlightsFileString, fa);
-        
         return fa;
     }
     

@@ -64,9 +64,9 @@ public class Parser{
         String str = sc.next();
         boolean valid = false;
         
-       
+    	long tick = System.currentTimeMillis();
+
         switch(str) {
-        
             case "insert":
                 valid = parseInsert(sc);
                 break;
@@ -87,7 +87,11 @@ public class Parser{
                 hasEnded = true;
                 break;
         }
-     
+        
+        if(valid){
+        	System.out.println(">Done");
+        	System.out.print((System.currentTimeMillis() - tick) / 1000.0);
+        }
 
         if (!valid) {
             Output.invalidCommand();
@@ -170,25 +174,15 @@ public class Parser{
 
     private static List<Ticket> findPathWithOption(String option, String orig, String dest, List<Day> days) {
         List<Ticket> path = new LinkedList<>(); // para que no tire warning
-        long tick, tock;
         switch (option) {
             case "ft":
-            	tick = System.currentTimeMillis();
                 path = flightAssistant.findQuickestPath(orig, dest, days);
-                tock = System.currentTimeMillis();
-                System.err.println("Time:" + (tock-tick) / 1000.0 + "s");
                 break;
             case "pr":
-            	tick = System.currentTimeMillis();
                 path = flightAssistant.findCheapestPath(orig, dest, days);
-                tock = System.currentTimeMillis();
-                System.err.println("Time: " +(tock-tick) / 1000.0 + "s");
                 break;
             case "tt":
-            	tick = System.currentTimeMillis();
                 path = flightAssistant.findShortestTotalTimeRoute(orig, dest, days);
-            	tock = System.currentTimeMillis();
-                System.err.println("Time: " + (tock-tick) / 1000.0 + "s");
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Option");
@@ -393,7 +387,7 @@ public class Parser{
 
     //Ahora pasa un booleano para indicar si se agrega aeropuerto o vuelo (no aeropuerto).
     private static boolean insertFromFile(String pathToFile, boolean insertAirport) {
-        boolean valid = true;
+    	boolean valid = true;
         try {
             Scanner fileSc = new Scanner(new File(pathToFile));
             fileSc.useDelimiter(numeralPatt);

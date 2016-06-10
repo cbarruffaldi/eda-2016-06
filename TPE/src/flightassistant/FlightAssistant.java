@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FlightAssistant {
 
-    private static final int AIRPORTS_SIZE = 1500;
+    private static final int AIRPORTS_SIZE = 1000;
     private static final int FLIGHTS_SIZE = 6000;
     
     /** Coleccion de Aeropuertos */
