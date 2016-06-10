@@ -1,5 +1,11 @@
 package flightassistant;
 
+/**
+ * Representa un {@link Flight} con un peso asociado para poder ser comparado
+ * @see InfinityDijkstra
+ * @see Flight
+ *
+ */
 public class WeightedFlight {
     private Flight flight;
     private double weight;
