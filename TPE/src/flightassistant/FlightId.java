@@ -1,10 +1,11 @@
 package flightassistant;
 
-import java.io.Serializable;
+/**
+ * Clase que representa los atributos principales de un {@link Flight}
+ *
+ */
+public class FlightId implements Comparable<FlightId>{
 
-public class FlightId implements Comparable<FlightId>, Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private String airline;
     private int number;
@@ -18,10 +19,18 @@ public class FlightId implements Comparable<FlightId>, Serializable {
         this.number = number;
     }
 
+    /**
+     * Devuelve el nombre de la aerolinea de un vuelo
+     * @return nombre de la aerolinea
+     */
     public String getAirline () {
         return airline;
     }
 
+    /**
+     * Decuelve el numero del vuelo
+     * @return numero de vuelo
+     */
     public int getNumber () {
         return number;
     }

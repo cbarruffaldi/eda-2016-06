@@ -1,7 +1,7 @@
 package utils;
 
 /**
- * Created by Bianchi on 31/5/16.
+ * Constantes de tiempo
  */
 public interface TimeConstants {
 

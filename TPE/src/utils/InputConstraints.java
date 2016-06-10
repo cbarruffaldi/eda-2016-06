@@ -1,7 +1,7 @@
 package utils;
 
 /**
- * Created by Bianchi on 3/6/16.
+ * Constantes respecto a longitudes de nombres
  */
 public interface InputConstraints {
     int AIRPORT_NAME_LENGHT = 3;
