@@ -1,16 +1,13 @@
 package utils;
 
-import java.io.Serializable;
-
 /**
  * La clase <i>Time<i> representa un intervalo temporal, con unidad minima 
  * en minutos. Adem&aacute;s de la informaci&oacute;n en minutos, se proveen 
  * m&eacute;todos para construir a partir de (y obtener) la cantidad de horas completas.
  * El objeto es inmutable.
  */
-public class Time implements Comparable<Time>, TimeConstants, Serializable {
+public class Time implements Comparable<Time>, TimeConstants {
 
-	private static final long serialVersionUID = 1L;
 	private int minutes;
 
 	/**

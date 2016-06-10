@@ -1,12 +1,9 @@
 package structures;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class AVLHashMap <K, V> implements SimpleMap<K, V>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class AVLHashMap <K, V> implements SimpleMap<K, V> {
 
     private static final int DEFAULT_CAPACITY = 20;
 

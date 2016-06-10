@@ -1,14 +1,11 @@
 package utils;
 
-import java.awt.geom.GeneralPath;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-
-import javax.print.attribute.HashAttributeSet;
 
 public class TempDumpSim {
 	

@@ -11,13 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * {@code FileManager} se encarga de guardar datos con un formato correspondiente en archivos de texto.
+ * {@code SaveManager} se encarga de guardar datos con un formato correspondiente en archivos de texto.
  * <p>
  * Existen dos tipos de archivos, uno que guarda todos los {@link Airport} de un {@link FlightAssistant}
  * y otro que guarda todos los {@link Flight}
  *
  */
-public class FileManager {
+public class SaveManager {
 
 	/**
 	 * Guarda en un archivo de texto por defecto "flights.txt" todos los vuelos que almacena un <tt>FlighAssistant</tt>

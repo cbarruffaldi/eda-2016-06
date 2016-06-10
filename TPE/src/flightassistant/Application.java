@@ -1,6 +1,6 @@
 package flightassistant;
 
-import utils.FileManager;
+import utils.SaveManager;
 import utils.Parser;
 
 import java.io.IOException;
@@ -30,8 +30,8 @@ public class Application {
 
     private static void exit() {
         try {
-        	FileManager.saveAirports(flightAssistant);
-            FileManager.saveFlights(flightAssistant);
+        	SaveManager.saveAirports(flightAssistant);
+            SaveManager.saveFlights(flightAssistant);
         } catch (IOException e) {
         	e.printStackTrace();
             System.out.println("Error");

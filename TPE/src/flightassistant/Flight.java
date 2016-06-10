@@ -3,7 +3,6 @@ package flightassistant;
 import utils.Moment;
 import utils.Time;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**

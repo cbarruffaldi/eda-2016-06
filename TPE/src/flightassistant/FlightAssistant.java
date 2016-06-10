@@ -6,13 +6,10 @@ import utils.Day;
 import utils.Moment;
 import utils.Time;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-public class FlightAssistant implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class FlightAssistant {
 
     //20,50
     private static final int AIRPORTS_SIZE = 20;
@@ -41,7 +38,7 @@ public class FlightAssistant implements Serializable {
         Airport origAir = airports.get(origin);
         Airport destAir = airports.get(destination);
         if (origAir == null || destAir == null) {
-            return; // podria devolver boolean para indicar si se pudo agregar el vuelo o no.
+            return; // TODO: podria devolver boolean para indicar si se pudo agregar el vuelo o no.
         }
         // Crea la ruta en caso de que todavía no exista
         if (!origAir.routeExistsTo(destAir)) {

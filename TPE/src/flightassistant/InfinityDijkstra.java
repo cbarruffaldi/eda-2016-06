@@ -20,7 +20,7 @@ public class InfinityDijkstra {
 
         BinaryMinHeap<Airport> pq = queueAirports(airports);
 
-        pq.decreasePriority(origin, 0);
+        pq.decreasePriority(origin, 0);  // El orígen queda al tope de la cola
 
         if (originWeighter != null) {
             findPath(pq, dest, originWeighter, days, true, Double.POSITIVE_INFINITY);
@@ -40,9 +40,10 @@ public class InfinityDijkstra {
     			days.add(day);
     	}
 
-        List<Ticket> bestPath = null;
         BinaryMinHeap<Airport> pq;
-        double bestWeight = Double.POSITIVE_INFINITY;
+        
+        List<Ticket> bestPath = null; // Mejor camino encontrado
+        double bestWeight = Double.POSITIVE_INFINITY;  // Peso del mejor camino
 
         Iterator<Airport> adjIter = origin.connectedAirportsIterator();
 
@@ -72,6 +73,7 @@ public class InfinityDijkstra {
 	
 		                    Box b = findPath(pq, dest, TotalTimeWeighter.WEIGHTER, days, false, bestWeight);
 	
+		                    // Si se encontró camino de menor peso se reemplaza
 		                    if (b != null && Double.compare(bestWeight,b.lastWeight) > 0) {
 		                        bestWeight = b.lastWeight;
 		                        bestPath = b.list;
@@ -90,7 +92,7 @@ public class InfinityDijkstra {
     }
 
     private static Box findPath (BinaryMinHeap<Airport> pq, Airport dest,
-        Weighter weighter, List<Day> days, boolean isOrigin, double cutWeight) { // si es -1 no se tiene en cuenta
+        Weighter weighter, List<Day> days, boolean isOrigin, double cutWeight) {
 
         while (!pq.isEmpty()) {
             Double minWeight = pq.minPriority();
@@ -98,7 +100,7 @@ public class InfinityDijkstra {
             if (minWeight.compareTo(Double.POSITIVE_INFINITY) == 0) {
                 return null; // No existe el camino, no tiene sentido seguir
             }
-                
+ 
             if (minWeight >= cutWeight) { // El peso acumulado es mayor al del mejor camino encontrado
             	return null;
             }
@@ -106,7 +108,7 @@ public class InfinityDijkstra {
             Airport current = pq.dequeue();
             current.visit();
 
-
+            // Camino encontrado
             if (current.equals(dest)) {
                 return new Box(buildList(dest), minWeight);
             }
@@ -114,6 +116,10 @@ public class InfinityDijkstra {
             Iterator<Airport> iter = current.connectedAirportsIterator();
             while (iter.hasNext()) {
                 Airport next = iter.next();
+                
+                // Si el adyacente no está visitado y si existen vuelos hacia él entre los días
+                // indicados por la lista en el caso de que se quiera partir desde el aeropuerto
+                // orígen; sino que simplemente existan vuelos si no se parte desde el orígen.
                 if (!next.visited() && ((isOrigin && current.flightExistsTo(next, days)) || (
                     !isOrigin && current.flightExistsTo(next)))) {
                     WeightedTicket wTicket = weighter.minTicket(current, next);

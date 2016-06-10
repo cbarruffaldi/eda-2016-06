@@ -1,12 +1,9 @@
 package structures;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class AVLSet <T> implements Iterable<T>, Set<T>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class AVLSet <T> implements Set<T> {
 
     private Node<T> root;
     private Comparator<T> cmp;
