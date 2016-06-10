@@ -3,6 +3,12 @@ package flightassistant;
 import utils.Moment;
 import utils.Time;
 
+/**
+ * Se encarga de elegir el mejor camino respecto del tiempo total, es decir
+ * respecto de su momento de salida, tiempo de vuelo y tiempo de espera
+ * @see InfinityDijkstra
+ *
+ */
 public class TotalTimeWeighter implements Weighter {
     public static final Weighter WEIGHTER = new TotalTimeWeighter();
 

@@ -5,7 +5,7 @@ import structures.AVLMap;
 import structures.AVLSet;
 
 import java.util.Iterator;
-
+//TODO: BORRAR LA CLASE
 public class ArrivalTimesFunction {
     private Airport airport;
     private AVLMap<Double, Double> function;

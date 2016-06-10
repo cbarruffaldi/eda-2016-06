@@ -9,7 +9,7 @@ import java.util.List;
 public class TicketMachine {
 
     /**
-     * Devuelve una lista de Ticket dado un Flight. Esta lista contiene un Ticket por cada
+     * Devuelve una lista de {@link Ticket} dado un {@link Flight}. Esta lista contiene un Ticket por cada
      * Momento de salida del vuelo.
      *
      * @param flight - vuelo correspondiente a los Ticket a generar.
