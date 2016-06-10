@@ -65,8 +65,8 @@ public class TempDumpSim {
 		PrintStream outFlights = new PrintStream(new FileOutputStream("hugeFlights.txt"));
 		PrintStream outAirs = new PrintStream(new FileOutputStream("hugeAirs.txt"));
 		
-		genAirports(5000);
-		for(int i = 0 ; i < 125000 ; i++){
+		genAirports(15000);
+		for(int i = 0 ; i < 500000 ; i++){
 			outFlights.println(generateFlightString());
 		}
 		

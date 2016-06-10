@@ -91,7 +91,8 @@ public class Parser{
                 break;
         }
         long tock = System.currentTimeMillis();
-        System.out.println(">done in " + (tock-tick)/1000.0);
+        if(ticktock)
+        	System.out.println(">done in " + (tock-tick)/1000.0);
         
 
         if (!valid) {
@@ -270,7 +271,7 @@ public class Parser{
         double lng = new Double(sc.next());
 
         flightAssistant.insertAirport(name, lat, lng);
-        consumeScanner(sc);
+        sc.close();
         return true;
     }
 
@@ -283,7 +284,6 @@ public class Parser{
         //  Matchea la expresion regular.
         if(!RegexHelper.validateFlightInsertion(line, sc.delimiter().toString()))
         	return false; //Salir, algo esta mal escrito
-
         Pattern delimiter = sc.delimiter();
         sc = new Scanner(line);
         sc.useDelimiter(delimiter);
@@ -302,7 +302,7 @@ public class Parser{
         int duration = getDuration(durationOfFlightStr);
 
         flightAssistant.insertFlight(airline, flnumber, price, departures, new Time(duration), orig, dest);
-        consumeScanner(sc);
+        sc.close();
         return true;
     }
 
@@ -332,7 +332,7 @@ public class Parser{
         sc = new Scanner(line);
         String airline = sc.next();
         int flnumber = new Integer(sc.next());
-
+        sc.close();
         flightAssistant.removeFlight(airline, flnumber);
         return true;
     }
@@ -411,6 +411,7 @@ public class Parser{
             	else
             		valid = flightInsert(fileSc);
             }
+            fileSc.close();
         } catch (FileNotFoundException e) {
             Output.fileOpenErrorMsg();
         }
@@ -462,6 +463,7 @@ public class Parser{
                 ans = true;
                 break;
         }
+        filePathSc.close();
         return ans;
     }
 
@@ -480,6 +482,7 @@ public class Parser{
                 ans = true;
                 break;
         }
+        filePathSc.close();
         return ans;
     }
 

@@ -47,7 +47,7 @@ public class Airport{
 		this.latitude = latitude;
 		this.longitude = longitude;
 
-		routes = new AVLHashMap<>(new Comparator<Airport>() {
+		routes = new AVLHashMap<>(100, new Comparator<Airport>() {
 			@Override
 			public int compare(Airport o1, Airport o2) {
 				return o1.getId().compareTo(o2.getId());

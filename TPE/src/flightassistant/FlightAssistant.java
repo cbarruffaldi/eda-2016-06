@@ -12,8 +12,8 @@ import java.util.List;
 public class FlightAssistant {
 
     //20,50
-    private static final int AIRPORTS_SIZE = 20;
-    private static final int FLIGHTS_SIZE = 50; // TODO: pensar tamaños
+    private static final int AIRPORTS_SIZE = 1500;
+    private static final int FLIGHTS_SIZE = 6000; // TODO: pensar tamaños
     
     // Coleccion de Aeropuertos;
     private SimpleMap<String, Airport> airports;
@@ -47,9 +47,10 @@ public class FlightAssistant {
             destAir.addRoute(origAir, r);
         }
         Flight newFlight = new Flight(airline, number, price, departures, duration, origAir, destAir);
-        flights.put(newFlight.getId(), newFlight);
-
-        origAir.addFlight(newFlight);
+        if(!flights.containsKey(newFlight.getId())){
+        	flights.put(newFlight.getId(), newFlight);
+        	origAir.addFlight(newFlight);
+        }
     }
 
     public void removeFlight (String airline, int number) {
