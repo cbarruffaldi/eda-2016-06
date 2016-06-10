@@ -16,10 +16,15 @@ AVLSet. De esta forma se reusa código.
 
 AVLMap implements SimpleMap
 	Mapa compuesto por un AVLSet. Se insertan nodos con los pares clave valor
-y se comparan según la clave. En el método put se hace uso de addAndReplace
+y se comparan según la clave. 
+	En el método put se hace uso de addAndReplace
 para poder pisar el valor de una clave ya existente. En el método get se hace
 uso de find: el set buscará respecto de la key y devolverá el par clave valor.
 
+AVLHashMap implements SimpleMap
+    Tabla de Hash abierta compuesta por Mapas Avl en las zonas de overflow.
+Tiene una cantidad de buckets fija otorgada al inicializar el hash; no se
+expande.
 
 BinaryMinHeap implements PriorityQueue
 	Heap binario que asegura O(1) en los métodos getPriority, minPriority,

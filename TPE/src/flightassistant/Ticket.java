@@ -3,8 +3,6 @@ package flightassistant;
 import utils.Moment;
 import utils.Time;
 
-import java.io.Serializable;
-
 /**
  * Representa un pasaje con información acerca del vuelo y un {@link Moment} de partida específico
  *
