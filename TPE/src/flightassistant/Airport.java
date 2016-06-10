@@ -13,16 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Un aeropouerto. El mismo se identifica segun su ID (nombre), pero tiene
+ * Un aeropuerto. El mismo se identifica segun su ID (nombre), pero tiene
  * tambien informacion de latitud y longitud.
- * Un aeropuerto se vincula a otro mediante {@link Route}s bidireciconales,
+ * Un aeropuerto se vincula a otro mediante {@link Route}s bidireccionales,
  * que guardan todos los vuelos entre los mismos.
  * 
  * @see Route
  */
-public class Airport implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Airport{
 
 	private String id;
 	private double latitude;
@@ -197,7 +195,11 @@ public class Airport implements Serializable {
 		else
 			return route.iteratorOfHigherFlightsFrom(this, fromMoment);
 	}
-
+	
+	/**
+	 * Retorna un Set con todos los aeropuertos a los cuales se puede llegar con vuelo directo
+	 * @return Set de los aeropuertos conectados
+	 */
 	public Set<Airport> getConnectedAirports() {
 		return routes.keySet();
 	}
@@ -216,7 +218,7 @@ public class Airport implements Serializable {
 		return id.hashCode();
 	}
 
-	/*
+	/**
 	 * Determina la igualdad de dos Aeropuertos segun su nombre (id)
 	 */
 	@Override
@@ -234,6 +236,11 @@ public class Airport implements Serializable {
 
 	//Lo que sigue es modelado de Nodo, para utilizar en los algoritmos de caminos minimos
 
+	/**
+	 * Retorna si existe un vuelo directo hacia un aeropuerto
+	 * @param <tt>Airport</tt> destino
+	 * @return true si existe un vuelo directo hacia el aeropuerto, false sino
+	 */
 	public boolean flightExistsTo(Airport destination) {
 		return	routeExistsTo(destination) && routes.get(destination).flightExistsFrom(this);
 	}
@@ -264,19 +271,46 @@ public class Airport implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Retorna un {@link Ticket} con los datos del vuelo mas barato
+	 * @param <tt>Airport</tt> destino
+	 * @return Ticket con la informacion del vuelo mas barato
+	 * @see Ticket
+	 */
 	public Ticket getCheapestTo(Airport destination) {
 		return routes.get(destination).getCheapestFrom(this);
 	}
-
+	
+	/**
+	 * Retorna un {@link Ticket} con los datos del vuelo mas rápido, es decir,
+	 * con menor tiempo de vuelo.
+	 * @param <tt>Airport</tt> destino
+	 * @return Ticket con la informacion del vuelo mas rápido
+	 * @see Ticket
+	 */
 	public Ticket getQuickestTo(Airport destination) {
 		return routes.get(destination).getQuickestFrom(this);
 	}
 
+	/**
+	 * Retorna un {@link Ticket} con los datos del vuelo mas barato que sale en un
+	 * {@link Day} determinado
+	 * @param <tt>Airport</tt> destino
+	 * @return Ticket con la informacion del vuelo mas barato en un día determinado
+	 * @see Ticket
+	 */
 	public Ticket getCheapestTo(Airport destination, Day day) {
 		Route route = routes.get(destination);
 		return route.getCheapestFrom(this, day);
 	}
 
+	/**
+	 * Retorna un {@link Ticket} con los datos del vuelo mas rápido, es decir,
+	 * con menor tiempo de vuelo, saliendo un {@link Day} determinado.
+	 * @param <tt>Airport</tt> destino
+	 * @return Ticket con la informacion del vuelo mas rápido en un dia determinado
+	 * @see Ticket
+	 */
 	public Ticket getQuickestTo(Airport destination, Day day) {
 		Route route = routes.get(destination);
 		return route.getQuickestFrom(this, day);
@@ -287,26 +321,54 @@ public class Airport implements Serializable {
 		incident = null;
 	}
 
+	/**
+	 * Marca el aeropuerto como visitado
+	 * @see InfinityDijkstra
+	 */
 	public void visit(){
 		visited = true;
 	}
 
+	/**
+	 * Marca el aeropuerto como no visitado
+	 */
 	public void unvisit(){
 		visited = false;
 	}
 
+	/**
+	 * Consulta si un aeropuerto fue visitado
+	 * @return true si el aeropuerto fue visitado, false en caso contrario
+	 */
 	public boolean visited() {
 		return visited;
 	}
 
+	/**
+	 * Retorna el <tt>Ticket</tt> con informacion acerca del vuelo incidente
+	 * @return Ticket con informacion acerca del vuelo que llega al aeropuerto
+	 * @see InfinityDijkstra
+	 * @see Ticket
+	 */
 	public Ticket getIncident(){
 		return incident;
 	}
 
+	/**
+	 * Setea el vuelo que llega al aeropuerto
+	 * @param <tt>Ticket</tt> con informacion acerca del vuelo incidente
+	 * @see InfinityDijkstra
+	 */
 	public void setIncident(Ticket t){
 		incident = t;
 	}
 
+	/**
+	 * Retorna un {@link AVLSet} con los horarios de los vuelos que salen del Aeropuerto
+	 * un día determinado
+	 * @param <tt>Day</tt> de partida
+	 * @return AVLSet con horarios de partida de todos los vuelos que salen del aeropuerto
+	 */
 	public AVLSet<Double> getFlightTimes(Day departure) {
 		AVLSet<Double> set = new AVLSet<>();
 
